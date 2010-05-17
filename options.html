@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+  <TITLE> Options </TITLE>
+  <style>
+  body {
+    font-family:helvetica, arial, sans-serif,simsun;
+    font-size:80%;
+    margin:10px;
+  }
+  #header {
+    padding-bottom:1em;
+    padding-top:2em;
+  }
+  #header h1 {
+    font-size: 30px;
+    display:inline;
+    color: #3d5d6a;
+    padding-bottom:40px;
+    padding-left:90px;
+    padding-top:80px;
+    background:url(logo_64.png) no-repeat;
+    background-position:1px 62px;
+  }
+  h4 {
+    padding-left:0.5em;
+    border-bottom: 2px dotted #c3c3c3;
+    color: #333333;
+    line-height: 28px;
+    font-size:15px;
+  }
+  p {
+    padding-left:2em;
+    font-family:verdana, arial, sans-serif,simsun;
+    font-size:14px;
+  }
+  .section-header {
+    background:#ebeff9;
+    border-top:1px solid #b5c7de;
+    font-size:99%;
+    padding:3px 0 2px 5px;
+    font-weight:bold;
+    margin-bottom:1em;
+    margin-top:1em;
+  }
+  .contentBox {
+    border: 3px solid #bec9ce;
+    border-bottom-left-radius: 20px 20px;
+    border-bottom-right-radius: 20px 20px;
+    border-top-left-radius: 20px 20px;
+    border-top-right-radius: 20px 20px;
+    padding: 30px;
+    text-align: left;
+    margin:50px auto;
+    width: 600px;
+  }
+  #flashget, #thunder, #chromeDownloader {
+    padding:5px 0px 5px 30px;
+    line-height:30px;
+  }
+  #flashget {
+    background:url(flashget_25.png) no-repeat;
+  }
+  #thunder {
+    background:url(thunder_25.png) no-repeat;
+  }
+  #chromeDownloader {
+    background:url(default_25.png) no-repeat;
+  }
+  </style>
+ </HEAD>
+ <BODY onload="init();">
+  <div class="contentBox">
+  <div id="header">
+    <h1><span id="pageTitle">Download Helper</span></h1>
+    <span style="color:#cccccc; font-size:18px;margin-left:18px;"> <sub>Version 1.0</sub></span>
+  </div>
+  <h4 id="downloader"></h4>
+  <p><label><input type="radio" name="downloader" id="radioFlashget" disabled="true"> <span id="flashget">flashget</span></label></p>
+  <p><label><input type="radio" name="downloader" id="radioThunder" disabled="true"> <span id="thunder">thunder</span></label></p>
+  <p><label><input type="radio" checked="true" name="downloader" id="radioChrome"> <span id="chromeDownloader">chrome</span></label></p>
+  <p id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="mContextMenu"></span></label></p>
+  </div>
+  <script>
+    var radioFlashget = document.getElementById("radioFlashget");
+    var radioThunder = document.getElementById("radioThunder");
+    var radioChrome = document.getElementById("radioChrome");
+    var checkboxContextMenu = document.getElementById("checkboxContextMenu");
+    bg = chrome.extension.getBackgroundPage();
+    function init() {
+      i18nReplace("pageTitle");
+      i18nReplace("downloader");
+      i18nReplace("flashget");
+      i18nReplace("thunder");
+      i18nReplace("chromeDownloader");
+      i18nReplace("mContextMenu");
+      if (bg.useExperimentalAPI) {
+        document.getElementById('contextMenuItem').style.display = 'none';
+      }
+      if (eval(localStorage.flashget)) {
+        radioFlashget.disabled = false;
+      }
+      if (eval(localStorage.thunder)) {
+        radioThunder.disabled = false;
+      }
+      if (localStorage.downloader == "flashget") {
+        if (eval(localStorage.flashget)) {
+          radioFlashget.checked = true;
+        }
+      } else if (localStorage.downloader == "thunder") {
+        if (eval(localStorage.thunder)) {
+          radioThunder.checked = true;
+        }
+      }
+      if (!eval(localStorage.contextmenu)) {
+        checkboxContextMenu.checked = true;
+      }
+      radioFlashget.addEventListener("change",save,false);
+      radioThunder.addEventListener("change",save,false);
+      radioChrome.addEventListener("change",save,false);
+      checkboxContextMenu.addEventListener("change",save,false);
+    };
+    
+    function save() {
+      localStorage.downloader =
+          (radioFlashget.checked ? 'flashget' : '') ||
+          (radioThunder.checked ? 'thunder' : '') ||
+          (radioChrome.checked ? 'chromeDownloader' : '');
+      localStorage.contextmenu = (checkboxContextMenu.checked ? 'false' : 'true');
+    };
+
+	function i18nReplace(id) {
+	  return document.getElementById(id).innerText = chrome.i18n.getMessage(id);
+	};
+  </script>
+ </BODY>
+</HTML>

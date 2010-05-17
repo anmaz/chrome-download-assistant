@@ -19,15 +19,15 @@ chrome.extension.onRequest.addListener(
 
 function generateContextMenu() {
   var contextMenu = document.createElement('div');
-  contextMenu.id = 'dh-myMenu';
+  contextMenu.id = 'dh-menu';
   contextMenu.style.display = 'none';
   var menuList = ['mFlashget', 'mThunder', 'mChrome', '', 'mContextMenu'];
   for (var i = 0; i < menuList.length; i++) {
     var menuItem = document.createElement('div');
     if (menuList[i] == '') {
-      menuItem.className = 'dh-myMenu-line';
+      menuItem.className = 'dh-menu-line';
     } else {
-      menuItem.className = 'dh-myMenu-item';
+      menuItem.className = 'dh-menu-item';
       var a = document.createElement('a');
       a.id = menuList[i];
       a.href = 'javascript:void(0)';
@@ -39,7 +39,10 @@ function generateContextMenu() {
   document.body.appendChild(contextMenu);
 
   document.onclick = function() {
-    contextMenu.style.display = 'none';
+    if (document.getElementById('dh-menu')) {
+      contextMenu.parentNode.removeChild(contextMenu);
+      console.log("remove");
+    }
   }
 }
 
@@ -58,9 +61,7 @@ function init() {
   chrome.extension.sendRequest({command: 'isUseExperimentalAPI'},
     function(response) {
       useExperimentalAPI = response.useExperimentalAPI;
-      if (useExperimentalAPI) {
-      } else {
-        generateContextMenu();
+      if (!useExperimentalAPI) {
         chrome.extension.sendRequest(
           {command: 'update'}, function(response) {
             downloader = response.downloader;
@@ -87,8 +88,12 @@ function init() {
           if (!useExperimentalAPI) {
             document.links[i].oncontextmenu = function () {
               if (contextMenuStatus) {
-                  // Not show the original context menu.
+                // Not show the original context menu.
                 window.event.returnValue = false;
+                if (!document.getElementById('dh-menu')) {
+                  generateContextMenu();
+                  console.log("generate");
+                }
                 showMyMenu(this);
               } else {
                 return true;
@@ -132,27 +137,27 @@ function disableContextMenu() {
 }
 
 function showMyMenu(link) {
-  var contextMenu = document.getElementById('dh-myMenu');
+  var contextMenu = document.getElementById('dh-menu');
   contextMenu.style.top = event.pageY + 'px';
   contextMenu.style.left = event.pageX + 'px';
   contextMenu.style.display = 'block';
   var mFlashget = document.getElementById('mFlashget');
   if (flashgetStatus) {
-    mFlashget.parentNode.className = 'dh-myMenu-item';
+    mFlashget.parentNode.className = 'dh-menu-item';
     mFlashget.onclick = function() {
       downloadByExternalDownloader(link, 'flashget');
     }
   } else {
-    mFlashget.parentNode.className = 'dh-myMenu-item-disable';
+    mFlashget.parentNode.className = 'dh-menu-item-disable';
   }
   var mThunder = document.getElementById('mThunder');
   if (thunderStatus) {
-    mThunder.parentNode.className = 'dh-myMenu-item';
+    mThunder.parentNode.className = 'dh-menu-item';
     mThunder.onclick = function() {
       downloadByExternalDownloader(link, 'thunder');
     }
   } else {
-    mThunder.parentNode.className = 'dh-myMenu-item-disable';
+    mThunder.parentNode.className = 'dh-menu-item-disable';
   }
   document.getElementById('mChrome').href = link.href;
   document.getElementById('mContextMenu').onclick = function() {
