@@ -1,0 +1,31 @@
+{
+   "background_page": "background.html",
+   "browser_action": {
+      "default_icon": "logo_64.png",
+      "default_title": "__MSG_default_title__",
+      "popup": "popup.html"
+   },
+   "content_scripts": [ {
+      "js": [ "head.js" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*" ],
+      "run_at": "document_end"
+   }, {
+      "js": [ "npdownload.js" ],
+      "css": [ "style.css" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*" ],
+      "run_at": "document_end",
+      "all_frames": true
+   } ],
+   "default_locale": "zh_CN",
+   "description": "__MSG_description__",
+   "icons": {
+      "48": "logo_64.png"
+   },
+   "name": "__MSG_name__",
+   "permissions": [ "tabs", "http://*/", "https://*/" ],
+   "plugins": [ {
+      "path": "plugin\\npdownload.dll"
+   } ],
+   "options_page": "options.html",
+   "version": "1.0"
+}

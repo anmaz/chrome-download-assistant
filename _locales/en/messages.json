@@ -1,0 +1,30 @@
+{
+  "default_title": {
+    "description": "Extension browser action tooltip text in manifest.",
+    "message": "Download Helper"
+  },
+  "description": {
+    "description": "Extension description in manifest.",
+    "message": "Download links on the page with popular downloaders such as FlashGet (www.flashget.com) and Thunder (www.xunlei.com)."
+  },
+  "name": {
+    "description": "Extension name in manifest.",
+    "message": "Download Helper"
+  },
+  "downloadAllByFlashget": {"message": "Download all Links by Flashget"},
+  "downloadAllByThunder": {"message": "Download all Links by Thunder"},
+  "mFlashget": {"message": "Download link by Flashget"},
+  "mThunder": {"message": "Download link by Thunder"},
+  "mChrome": {"message": "Download link by Chrome"},
+  "mContextMenu": {"message": "Disable download menu"},
+  "pageTitle": {"message": "Download Helper"},
+  "introductionTitle": {"message": "Introduction:"},
+  "introduction": {"message": "Download links on the page with popular downloaders such as FlashGet (www.flashget.com) and Thunder (www.xunlei.com)."},
+  "downloader": {"message": "Select Downloader:"},
+  "save": {"message": "Save"},
+  "flashget": {"message": "Flashget"},
+  "thunder": {"message": "Thunder"},
+  "chromeDownloader": {"message": "Chrome"},
+  "success": {"message": "Preference saved."},
+  "option": {"message": "Options"}
+}

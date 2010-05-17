@@ -1,0 +1,58 @@
+<html>
+<head>
+<style type="text/css">
+body {
+  font-family: arial, sans-serif;
+  font-size: 13px;
+  width: 230px;
+}
+.menu, .menu-disable {
+  border: 1px solid #bec9ce;
+  margin-top: 5px;
+  line-height: 22px;
+  text-indent: 1em;
+  width: 220px;
+}
+.menu {
+  color: #3d5d6a;
+  cursor: pointer;
+}
+.menu-disable {
+  color: #bec9ce;
+  cursor: default;
+}
+.menu:hover {
+  background-color: #3d5d6a;
+  color: #ffffff;
+}
+</style>
+<script>
+function init() {
+  var thunder = document.getElementById("btnThunder");
+  var flashget = document.getElementById("btnFlashget");
+  thunder.innerText = chrome.i18n.getMessage('downloadAllByThunder');
+  flashget.innerText = chrome.i18n.getMessage('downloadAllByFlashget');
+  if (eval(localStorage.thunder)) {
+    thunder.className = "menu";
+  }
+  if (eval(localStorage.flashget))  {
+    flashget.className = "menu";
+  }
+}
+function downloadAllByThunder(){
+  chrome.tabs.executeScript(null, {code : 'downloadAllByThunder();'});
+}
+function downloadAllByFlashget(){
+  chrome.tabs.executeScript(null, {code : 'downloadAllByFlashget();'});
+}
+
+
+</script>
+</head>
+<body onload="init()">
+  <div id="item">
+    <div class="menu-disable" onclick="downloadAllByFlashget()" id="btnFlashget"></div>
+    <div class="menu-disable" onclick="downloadAllByThunder()" id="btnThunder"></div>
+  </div>
+</body>
+</html>
