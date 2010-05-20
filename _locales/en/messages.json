@@ -17,7 +17,7 @@
   "mThunder": {"message": "Download link by Thunder"},
   "mChrome": {"message": "Download link by Chrome"},
   "mContextMenu": {"message": "Disable download menu"},
-  "pageTitle": {"message": "Download Helper"},
+  "pageTitle": {"message": "Download Helper Options"},
   "introductionTitle": {"message": "Introduction:"},
   "introduction": {"message": "Download links on the page with popular downloaders such as FlashGet (www.flashget.com) and Thunder (www.xunlei.com)."},
   "downloader": {"message": "Select Downloader:"},
@@ -26,5 +26,6 @@
   "thunder": {"message": "Thunder"},
   "chromeDownloader": {"message": "Chrome"},
   "success": {"message": "Preference saved."},
-  "option": {"message": "Options"}
+  "option": {"message": "Options"},
+  "tip": {"message": "There are no links on this page"}
 }

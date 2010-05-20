@@ -10,11 +10,15 @@ var useExperimentalAPI;
 
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
-      downloader = request.downloader;
+      if (request && request.msg == 'init_check') {
+        downloader = request.downloader;
       contextMenuStatus = eval(request.contextmenu);
       flashgetStatus = eval(request.flashget);
       thunderStatus = eval(request.thunder);
       sendResponse(true);
+      }else if (request.msg == 'content_script_is_load') {
+        sendResponse(true);
+      }
 });
 
 function generateContextMenu() {
@@ -58,6 +62,7 @@ function loadContextMenuCss() {
 
 function init() {
   loadContextMenuCss();
+  
   chrome.extension.sendRequest({command: 'isUseExperimentalAPI'},
     function(response) {
       useExperimentalAPI = response.useExperimentalAPI;
@@ -209,6 +214,10 @@ function downloadAll(url, downlaoder) {
 
 function downloadAllByThunder() {
   var links_ = getAllLink();
+  if (links_.length < 1) {
+    chrome.extension.sendRequest({'msg': 'noLink'});
+    return;
+  }
   var message_ = {command : '', content : ''};
   var port_ = chrome.extension.connect();
   var script_ = 'pluginobj.thunderDownloadAll("' + location.href + '",';  
@@ -225,6 +234,10 @@ function downloadAllByThunder() {
 
 function downloadAllByFlashget() {
   var links_ = getAllLink();
+  if (links_.length < 1) {
+    chrome.extension.sendRequest({'msg': 'noLink'});
+    return;
+  }
   var message_ = {command : '', content : ''};
   var port_ = chrome.extension.connect();
   var script_ = 'pluginobj.flashgetDownloadAll("' + location.href + '",';

@@ -83,6 +83,7 @@ function init() {
   chrome.tabs.onSelectionChanged.addListener(function(tabId) {
     js = 'chrome.tabs.executeScript(' + tabId + ', {file: "npdownload.js"});';
     chrome.tabs.sendRequest(tabId, {
+        "msg": 'init_check',
         "downloader": localStorage.downloader,
         "contextmenu": localStorage.contextmenu,
         "flashget": localStorage.flashget,

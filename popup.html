@@ -12,6 +12,7 @@ body {
   line-height: 22px;
   text-indent: 1em;
   width: 220px;
+  display: none;
 }
 .menu {
   color: #3d5d6a;
@@ -25,19 +26,33 @@ body {
   background-color: #3d5d6a;
   color: #ffffff;
 }
+
 </style>
 <script>
 function init() {
-  var thunder = document.getElementById("btnThunder");
-  var flashget = document.getElementById("btnFlashget");
+  var thunder = document.getElementById('btnThunder');
+  var flashget = document.getElementById('btnFlashget');
+  var tip = document.getElementById('tip');
   thunder.innerText = chrome.i18n.getMessage('downloadAllByThunder');
   flashget.innerText = chrome.i18n.getMessage('downloadAllByFlashget');
+  tip.innerText = chrome.i18n.getMessage('tip');
+
   if (eval(localStorage.thunder)) {
-    thunder.className = "menu";
+    thunder.className = 'menu';
   }
   if (eval(localStorage.flashget))  {
-    flashget.className = "menu";
+    flashget.className = 'menu';
   }
+  chrome.tabs.getSelected(null, function(tab) {
+    chrome.tabs.sendRequest(tab.id, {msg: 'content_script_is_load'},
+        function(response) {
+          if (response) {
+            document.getElementById('btnThunder').style.display = 'block';
+            document.getElementById('btnFlashget').style.display = 'block';
+            document.getElementById('tip').style.display = 'none';
+          }
+        });
+    });
 }
 function downloadAllByThunder(){
   chrome.tabs.executeScript(null, {code : 'downloadAllByThunder();'});
@@ -46,6 +61,14 @@ function downloadAllByFlashget(){
   chrome.tabs.executeScript(null, {code : 'downloadAllByFlashget();'});
 }
 
+chrome.extension.onRequest.addListener(function (request, sender, response){
+  if (request && request.msg == 'noLink') {
+    document.getElementById('btnThunder').style.display = 'none';
+    document.getElementById('btnFlashget').style.display = 'none';
+    document.getElementById('tip').style.display = 'block';
+  }
+});
+
 
 </script>
 </head>
@@ -53,6 +76,7 @@ function downloadAllByFlashget(){
   <div id="item">
     <div class="menu-disable" onclick="downloadAllByFlashget()" id="btnFlashget"></div>
     <div class="menu-disable" onclick="downloadAllByThunder()" id="btnThunder"></div>
+    <div id="tip"></div>
   </div>
 </body>
 </html>

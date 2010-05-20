@@ -17,7 +17,7 @@
   "mThunder": {"message": "使用迅雷下载链接"},
   "mChrome": {"message": "使用Chrome下载链接"},
   "mContextMenu": {"message": "禁用下载助手菜单"},
-  "pageTitle": {"message": "下载助手"},
+  "pageTitle": {"message": "下载助手选项"},
   "introductionTitle": {"message": "功能介绍："},
   "introduction": {"message": "使用网际快车（www.flashget.com）或迅雷（www.xunlei.com）下载网页链接。"},
   "downloader": {"message": "选择下载器："},
@@ -26,5 +26,6 @@
   "thunder": {"message": "迅雷"},
   "chromeDownloader": {"message": "内置下载器"},
   "success": {"message": "设置成功"},
-  "option": {"message": "设置"}
+  "option": {"message": "设置"},
+  "tip": {"message": "此页面没有链接可供下载"}
 }
