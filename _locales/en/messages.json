@@ -27,5 +27,6 @@
   "chromeDownloader": {"message": "Chrome"},
   "success": {"message": "Preference saved."},
   "option": {"message": "Options"},
-  "tip": {"message": "There are no links on this page"}
+  "tipNolink": {"message": "There are no links on this page"},
+  "tipUnable": {"message": "Unable to use download helper on this page"}
 }

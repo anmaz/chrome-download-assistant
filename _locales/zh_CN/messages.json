@@ -27,5 +27,6 @@
   "chromeDownloader": {"message": "内置下载器"},
   "success": {"message": "设置成功"},
   "option": {"message": "设置"},
-  "tip": {"message": "此页面没有链接可供下载"}
+  "tipNolink": {"message": "此页面没有链接可供下载"},
+  "tipUnable": {"message": "此页面无法使用下载助手"}
 }
