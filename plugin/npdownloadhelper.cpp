@@ -80,22 +80,19 @@ bool CPlugin::Invoke(NPObject* obj, NPIdentifier methodName,
                      NPVariant* result) {
   DebugLog("npDownloadHelper: Invoke\n");
   char* name = npnfuncs->utf8fromidentifier(methodName);
-  bool ret_val = false;
   if (!name) {
     return false;
   }
+  bool ret_val = true;
   if (!strncmp((const char*)name, kThunderIsEnabledMethod,
                strlen(kThunderIsEnabledMethod))) {
-    ret_val = InvokeThunderIsEnabled(obj, args, argCount, result);
+    InvokeThunderIsEnabled(obj, args, argCount, result);
   } else if (!strncmp((const char*)name, kThunderAddLinkMethod,
                       strlen(kThunderAddLinkMethod))) {
-    ret_val = InvokeThunderAddLink(obj, args, argCount, result);
-  } else if (!strncmp((const char*)name, kThunderCommitMethod,
-                      strlen(kThunderCommitMethod))) {
-    ret_val = InvokeThunderCommit(obj, args, argCount, result);
+    InvokeThunderAddLink(obj, args, argCount, result);
   } else if (!strncmp((const char*)name, kThunderDownloadAllMethod,
                       strlen(kThunderDownloadAllMethod))) {
-    ret_val = InvokeThunderDownloadAll(obj, args, argCount, result);
+    InvokeThunderDownloadAll(obj, args, argCount, result);
   } else if (!strncmp((const char*)name, kFlashgetIsEnabledMethod,
                       strlen(kFlashgetIsEnabledMethod))) {
     ret_val = InvokeFlashgetIsEnabled(obj, args, argCount, result);

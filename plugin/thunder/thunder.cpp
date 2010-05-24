@@ -29,91 +29,122 @@
 * the terms of any one of the NPL, the GPL or the LGPL.
 * ***** END LICENSE BLOCK ***** */
 
-#include "thunder.h"
-#include "../utils.h"
+#include <comutil.h>
+#include <atlbase.h>
+#include <atlcom.h>
+#include <string>
 
-#import "ThunderAgent.dll"
-using namespace THUNDERAGENTLib;
+#include "thunder.h"
+
+using namespace std;
+
+std::wstring GetProgID() {
+  return L"ThunderAgent.Agent";
+}
 
 // Check if Thunder is enabled.
-bool InvokeThunderIsEnabled(NPObject* obj, const NPVariant* args,
+void InvokeThunderIsEnabled(NPObject* obj, const NPVariant* args,
                             uint32_t argCount, NPVariant* result) {
   result->type = NPVariantType_Bool;
-  HRESULT hr = ::CoInitialize(0);
-  IAgent *pAgent = NULL; 
-  hr = Utils::GetCom(__uuidof(Agent), __uuidof(IAgent), (void**)&pAgent); 
-  if (FAILED(hr)) {
-      result->value.intValue = FALSE;
-  } else {
-    result->value.intValue = TRUE;
-    pAgent->Release();
-  }
-  return true;
+  CComPtr<IDispatch> dispatch;
+
+  if (FAILED(dispatch.CoCreateInstance(GetProgID().c_str(), NULL)))
+    result->value.intValue = FALSE;
+  result->value.intValue = TRUE;
 }
 
 // Add a link to download in Thunder.
-bool InvokeThunderAddLink(NPObject* obj, const NPVariant* args,
+void InvokeThunderAddLink(NPObject* obj, const NPVariant* args,
                           uint32_t argCount, NPVariant* result) {
-  bool flag = true;
-  if (argCount == 0) {
-    flag = false;
-  } else if (argCount == 3 && NPVARIANT_IS_STRING(args[0]) &&
-             NPVARIANT_IS_STRING(args[1]) && NPVARIANT_IS_STRING(args[2])){
-    HRESULT hr = ::CoInitialize(0);
-    IAgent *pAgent;
-    hr = Utils::GetCom(__uuidof(Agent),  __uuidof(IAgent), (void**)&pAgent); 
-    if (FAILED(hr)) {
-      flag = false;
-    } else {
-      hr = pAgent->AddTask(
-          NPVARIANT_TO_STRING(args[0]).UTF8Characters, "", "",
-          Utils::Utf8ToUnicode(
-              (char*)NPVARIANT_TO_STRING(args[1]).UTF8Characters),
-          NPVARIANT_TO_STRING(args[2]).UTF8Characters, 1, 0, -1);
-      pAgent->CommitTasks();
-      pAgent->Release();
-    }
-  }
-  return true;
-}
+  if (argCount != 3 || !NPVARIANT_IS_STRING(args[0]) ||
+      !NPVARIANT_IS_STRING(args[1]) || !NPVARIANT_IS_STRING(args[2]))
+    return;
 
-bool InvokeThunderCommit(NPObject* obj, const NPVariant* args,
-                         uint32_t argCount, NPVariant* result){
-  // HRESULT hr = pAgent->CommitTasks();
-  return true;
+  CComPtr<IDispatch> dispatch;
+
+  if (FAILED(dispatch.CoCreateInstance(GetProgID().c_str(), NULL)))
+    return;
+
+  OLECHAR* name = L"AddTask";
+  DISPID dispid;
+  if (FAILED(dispatch->GetIDsOfNames(
+      IID_NULL, &name, 1, LOCALE_SYSTEM_DEFAULT, &dispid)))
+    return;
+
+  _bstr_t referrer = NPVARIANT_TO_STRING(args[2]).UTF8Characters;
+  _bstr_t comments = NPVARIANT_TO_STRING(args[1]).UTF8Characters;
+  _bstr_t filename = L"";
+  _bstr_t path = L"";
+  _bstr_t url = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+
+  VARIANT v[8];
+  v[3].vt = v[4].vt = v[5].vt = v[6].vt = v[7].vt = VT_BSTR;
+  v[0].vt = v[1].vt = v[2].vt = VT_INT;
+  v[3].bstrVal = referrer;
+  v[4].bstrVal = comments;
+  v[5].bstrVal = filename;
+  v[6].bstrVal = path;
+  v[7].bstrVal = url;
+  v[2].intVal = -1;
+  v[1].intVal = 0;
+  v[0].intVal = -1;
+
+  if (FAILED(dispatch.InvokeN(dispid, v, 8, NULL)))
+    return;
+
+  name = L"CommitTasks";
+  if (FAILED(dispatch->GetIDsOfNames(
+      IID_NULL, &name, 1, LOCALE_SYSTEM_DEFAULT, &dispid)))
+    return;
+  if (FAILED(dispatch.Invoke0(dispid, NULL)))
+    return;
 }
 
 // Download all links with Thunder.
-bool InvokeThunderDownloadAll(NPObject* obj, const NPVariant* args,
+void InvokeThunderDownloadAll(NPObject* obj, const NPVariant* args,
                               uint32_t argCount, NPVariant* result){
-  bool flag = true;
-  if (argCount == 0) {
-    flag = false;
-  } else if (NPVARIANT_IS_STRING(args[0]) &&
-             NPVARIANT_IS_INT32(args[argCount - 1])) {
-    int count = argCount - 1;
-    HRESULT hr = ::CoInitialize(0);
-    IAgent *pAgent;
-    hr = Utils::GetCom(__uuidof(Agent), __uuidof(IAgent), (void**)&pAgent); 
-    if (FAILED(hr)) {
-      flag = false;
-    } else {
-      for (int i = 2 ; i < count ; i += 2) {
-        if (NPVARIANT_IS_STRING(args[i]) && NPVARIANT_IS_STRING(args[i - 1])) {
-          hr = pAgent->AddTask(
-              NPVARIANT_TO_STRING(args[i - 1]).UTF8Characters, "", "",
-              Utils::Utf8ToUnicode(
-                  (char*)NPVARIANT_TO_STRING(args[i]).UTF8Characters),
-              NPVARIANT_TO_STRING(args[0]).UTF8Characters, 1, 0, -1);
-        } else {
-          break;
-        }
-      }
-      pAgent->CommitTasks();
-      pAgent->Release();
-    }
-  } else {
-    flag = false;
+  if (argCount == 0 || !NPVARIANT_IS_STRING(args[0]) ||
+      !NPVARIANT_IS_INT32(args[argCount - 1]))
+    return;
+
+  CComPtr<IDispatch> dispatch;
+
+  if (FAILED(dispatch.CoCreateInstance(GetProgID().c_str(), NULL)))
+    return;
+
+  OLECHAR* name = L"AddTask";
+  DISPID dispid;
+  if (FAILED(dispatch->GetIDsOfNames(
+      IID_NULL, &name, 1, LOCALE_SYSTEM_DEFAULT, &dispid)))
+    return;
+
+  for (uint32_t i = 1; i < argCount - 1; i += 2) {
+    _bstr_t referrer = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+    _bstr_t comments = NPVARIANT_TO_STRING(args[i + 1]).UTF8Characters;
+    _bstr_t filename = L"";
+    _bstr_t path = L"";
+    _bstr_t url = NPVARIANT_TO_STRING(args[i]).UTF8Characters;
+
+    VARIANT v[8];
+    v[3].vt = v[4].vt = v[5].vt = v[6].vt = v[7].vt = VT_BSTR;
+    v[0].vt = v[1].vt = v[2].vt = VT_INT;
+    v[3].bstrVal = referrer;
+    v[4].bstrVal = comments;
+    v[5].bstrVal = filename;
+    v[6].bstrVal = path;
+    v[7].bstrVal = url;
+    v[2].intVal = -1;
+    v[1].intVal = 0;
+    v[0].intVal = -1;
+
+    if (FAILED(dispatch.InvokeN(dispid, v, 8, NULL)))
+      return;
   }
-  return flag;
+
+  name = L"CommitTasks";
+  if (FAILED(dispatch->GetIDsOfNames(
+      IID_NULL, &name, 1, LOCALE_SYSTEM_DEFAULT, &dispid)))
+    return;
+  if (FAILED(dispatch.Invoke0(dispid, NULL)))
+    return;
 }

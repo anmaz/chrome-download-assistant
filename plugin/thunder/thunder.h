@@ -31,11 +31,9 @@
 
 #include "npfunctions.h"
 
-bool InvokeThunderIsEnabled(NPObject* obj, const NPVariant* args,
+void InvokeThunderIsEnabled(NPObject* obj, const NPVariant* args,
                             uint32_t argCount, NPVariant* result);
-bool InvokeThunderAddLink(NPObject* obj, const NPVariant* args,
+void InvokeThunderAddLink(NPObject* obj, const NPVariant* args,
                           uint32_t argCount, NPVariant* result);
-bool InvokeThunderCommit(NPObject* obj, const NPVariant* args,
-                         uint32_t argCount, NPVariant* result);
-bool InvokeThunderDownloadAll(NPObject* obj, const NPVariant* args,
+void InvokeThunderDownloadAll(NPObject* obj, const NPVariant* args,
                               uint32_t argCount, NPVariant* result);
