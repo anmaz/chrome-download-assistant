@@ -34,6 +34,7 @@
 #include <atlbase.h>
 #include <atlcom.h>
 #include <comutil.h>
+#include "../utils.h"
 
 using namespace std;
 
@@ -77,7 +78,8 @@ void ThunderSupport::AddLink(NPObject* obj, const NPVariant* args,
     return;
 
   _bstr_t referrer = NPVARIANT_TO_STRING(args[2]).UTF8Characters;
-  _bstr_t comments = NPVARIANT_TO_STRING(args[1]).UTF8Characters;
+  _bstr_t comments = Utils::Utf8ToUnicode((char*)
+      NPVARIANT_TO_STRING(args[1]).UTF8Characters);
   _bstr_t filename = L"";
   _bstr_t path = L"";
   _bstr_t url = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
@@ -127,7 +129,8 @@ void ThunderSupport::DownloadAll(NPObject* obj, const NPVariant* args,
   _bstr_t filename = L"";
   _bstr_t path = L"";
   for (uint32_t i = 1; i < argCount - 1; i += 2) {
-    _bstr_t comments = NPVARIANT_TO_STRING(args[i + 1]).UTF8Characters;
+    _bstr_t comments = Utils::Utf8ToUnicode((char*)
+        NPVARIANT_TO_STRING(args[i + 1]).UTF8Characters);
     _bstr_t url = NPVARIANT_TO_STRING(args[i]).UTF8Characters;
 
     VARIANT v[8];
