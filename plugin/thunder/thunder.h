@@ -29,11 +29,27 @@
 * the terms of any one of the NPL, the GPL or the LGPL.
 * ***** END LICENSE BLOCK ***** */
 
+#ifndef NPDOWNLOAD__THUNDER_H_
+#define NPDOWNLOAD__THUNDER_H_
+
+#include <string>
 #include "npfunctions.h"
 
-void InvokeThunderIsEnabled(NPObject* obj, const NPVariant* args,
-                            uint32_t argCount, NPVariant* result);
-void InvokeThunderAddLink(NPObject* obj, const NPVariant* args,
+using namespace std;
+
+class ThunderSupport {
+ public:
+  ThunderSupport();
+  ~ThunderSupport();
+
+  static void IsEnabled(NPObject* obj, const NPVariant* args,
+                        uint32_t argCount, NPVariant* result);
+  static void AddLink(NPObject* obj, const NPVariant* args,
+                      uint32_t argCount, NPVariant* result);
+  static void DownloadAll(NPObject* obj, const NPVariant* args,
                           uint32_t argCount, NPVariant* result);
-void InvokeThunderDownloadAll(NPObject* obj, const NPVariant* args,
-                              uint32_t argCount, NPVariant* result);
+
+  static std::wstring GetProgID();
+};
+
+#endif  // NPDOWNLOAD__THUNDER_H_

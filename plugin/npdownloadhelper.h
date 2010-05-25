@@ -33,8 +33,6 @@
 #define NPDOWNLOAD__NPDOWNLOADHELPER_H_
 
 #include "npfunctions.h"
-#include "flashget/flashget.h"
-#include "thunder/thunder.h"
 
 class CPlugin: NPObject {
 public:

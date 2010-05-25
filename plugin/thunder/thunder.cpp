@@ -29,21 +29,26 @@
 * the terms of any one of the NPL, the GPL or the LGPL.
 * ***** END LICENSE BLOCK ***** */
 
-#include <comutil.h>
+#include "thunder.h"
+
 #include <atlbase.h>
 #include <atlcom.h>
-#include <string>
-
-#include "thunder.h"
+#include <comutil.h>
 
 using namespace std;
 
-std::wstring GetProgID() {
+ThunderSupport::ThunderSupport() {
+}
+
+ThunderSupport::~ThunderSupport() {
+}
+
+std::wstring ThunderSupport::GetProgID() {
   return L"ThunderAgent.Agent";
 }
 
 // Check if Thunder is enabled.
-void InvokeThunderIsEnabled(NPObject* obj, const NPVariant* args,
+void ThunderSupport::IsEnabled(NPObject* obj, const NPVariant* args,
                             uint32_t argCount, NPVariant* result) {
   result->type = NPVariantType_Bool;
   CComPtr<IDispatch> dispatch;
@@ -54,7 +59,7 @@ void InvokeThunderIsEnabled(NPObject* obj, const NPVariant* args,
 }
 
 // Add a link to download in Thunder.
-void InvokeThunderAddLink(NPObject* obj, const NPVariant* args,
+void ThunderSupport::AddLink(NPObject* obj, const NPVariant* args,
                           uint32_t argCount, NPVariant* result) {
   if (argCount != 3 || !NPVARIANT_IS_STRING(args[0]) ||
       !NPVARIANT_IS_STRING(args[1]) || !NPVARIANT_IS_STRING(args[2]))
@@ -101,7 +106,7 @@ void InvokeThunderAddLink(NPObject* obj, const NPVariant* args,
 }
 
 // Download all links with Thunder.
-void InvokeThunderDownloadAll(NPObject* obj, const NPVariant* args,
+void ThunderSupport::DownloadAll(NPObject* obj, const NPVariant* args,
                               uint32_t argCount, NPVariant* result){
   if (argCount == 0 || !NPVARIANT_IS_STRING(args[0]) ||
       !NPVARIANT_IS_INT32(args[argCount - 1]))
@@ -118,11 +123,11 @@ void InvokeThunderDownloadAll(NPObject* obj, const NPVariant* args,
       IID_NULL, &name, 1, LOCALE_SYSTEM_DEFAULT, &dispid)))
     return;
 
+  _bstr_t referrer = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+  _bstr_t filename = L"";
+  _bstr_t path = L"";
   for (uint32_t i = 1; i < argCount - 1; i += 2) {
-    _bstr_t referrer = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
     _bstr_t comments = NPVARIANT_TO_STRING(args[i + 1]).UTF8Characters;
-    _bstr_t filename = L"";
-    _bstr_t path = L"";
     _bstr_t url = NPVARIANT_TO_STRING(args[i]).UTF8Characters;
 
     VARIANT v[8];

@@ -29,18 +29,27 @@
 * the terms of any one of the NPL, the GPL or the LGPL.
 * ***** END LICENSE BLOCK ***** */
 
+#ifndef NPDOWNLOAD__FLASHGET_H_
+#define NPDOWNLOAD__FLASHGET_H_
+
+#include <string>
 #include "npfunctions.h"
 
-enum FlashgetVer {
-  Flashget3 = 3,
-  Flashget1 = 1
+using namespace std;
+
+class FlashgetSupport {
+ public:
+  FlashgetSupport();
+  ~FlashgetSupport();
+
+  static void IsEnabled(NPObject* obj, const NPVariant* args,
+                        uint32_t argCount, NPVariant* result);
+  static void AddLink(NPObject* obj, const NPVariant* args,
+                      uint32_t argCount, NPVariant* result);
+  static void DownloadAll(NPObject* obj, const NPVariant* args,
+                          uint32_t argCount, NPVariant* result);
+
+  static std::wstring GetProgID(int version = 2);
 };
 
-bool InvokeFlashgetIsEnabled(NPObject* obj, const NPVariant* args,
-                             uint32_t argCount, NPVariant* result);
-bool InvokeFlashgetAddLink(NPObject* obj, const NPVariant* args,
-                           uint32_t argCount, NPVariant* result);
-bool InvokeFlashgetCommit(NPObject* obj, const NPVariant* args,
-                          uint32_t argCount, NPVariant* result);
-bool InvokeFlashgetDownloadAll(NPObject* obj, const NPVariant* args,
-                               uint32_t argCount, NPVariant* result);
+#endif  // NPDOWNLOAD__FLASHGET_H_

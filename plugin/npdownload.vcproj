@@ -226,6 +226,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="comsupp.lib comsuppwd.lib"
 				ShowProgress="0"
 				LinkIncremental="2"
 				GenerateManifest="false"
@@ -344,6 +345,10 @@
 			</File>
 			<File
 				RelativePath=".\thunder\thunder.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\utils.cpp"
 				>
 			</File>
 		</Filter>

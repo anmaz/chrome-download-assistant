@@ -30,17 +30,17 @@
 * ***** END LICENSE BLOCK ***** */
 
 #include "npdownloadhelper.h"
+#include "flashget/flashget.h"
+#include "thunder/thunder.h"
 
 static NPObject* so = NULL;
 NPNetscapeFuncs* npnfuncs = NULL;
 
 const char* kThunderIsEnabledMethod = "thunderIsEnabled";
 const char* kThunderAddLinkMethod = "thunderAddLink";
-const char* kThunderCommitMethod = "thunderCommit";
 const char* kThunderDownloadAllMethod = "thunderDownloadAll";
 const char* kFlashgetIsEnabledMethod = "flashgetIsEnabled";
 const char* kFlashgetAddLinkMethod = "flashgetAddLink";
-const char* kFlashgetCommitMethod = "flashgetCommit";
 const char* kFlashgetDownloadAllMethod = "flashgetDownloadAll";
 
 void DebugLog(const char* msg) {
@@ -86,25 +86,22 @@ bool CPlugin::Invoke(NPObject* obj, NPIdentifier methodName,
   bool ret_val = true;
   if (!strncmp((const char*)name, kThunderIsEnabledMethod,
                strlen(kThunderIsEnabledMethod))) {
-    InvokeThunderIsEnabled(obj, args, argCount, result);
+    ThunderSupport::IsEnabled(obj, args, argCount, result);
   } else if (!strncmp((const char*)name, kThunderAddLinkMethod,
                       strlen(kThunderAddLinkMethod))) {
-    InvokeThunderAddLink(obj, args, argCount, result);
+    ThunderSupport::AddLink(obj, args, argCount, result);
   } else if (!strncmp((const char*)name, kThunderDownloadAllMethod,
                       strlen(kThunderDownloadAllMethod))) {
-    InvokeThunderDownloadAll(obj, args, argCount, result);
+    ThunderSupport::DownloadAll(obj, args, argCount, result);
   } else if (!strncmp((const char*)name, kFlashgetIsEnabledMethod,
                       strlen(kFlashgetIsEnabledMethod))) {
-    ret_val = InvokeFlashgetIsEnabled(obj, args, argCount, result);
+    FlashgetSupport::IsEnabled(obj, args, argCount, result);
   } else if (!strncmp((const char*)name, kFlashgetAddLinkMethod,
                       strlen(kFlashgetAddLinkMethod))) {
-    ret_val = InvokeFlashgetAddLink(obj, args, argCount, result);
-  } else if (!strncmp((const char*)name, kFlashgetCommitMethod,
-                      strlen(kFlashgetCommitMethod))) {
-    ret_val = InvokeFlashgetCommit(obj, args, argCount, result);
+    FlashgetSupport::AddLink(obj, args, argCount, result);
   } else if (!strncmp((const char*)name, kFlashgetDownloadAllMethod,
                       strlen(kFlashgetDownloadAllMethod))) {
-    ret_val = InvokeFlashgetDownloadAll(obj, args, argCount, result);
+    FlashgetSupport::DownloadAll(obj, args, argCount, result);
   } else {
     // Exception handling. 
     npnfuncs->setexception(obj, "exception during invocation");
