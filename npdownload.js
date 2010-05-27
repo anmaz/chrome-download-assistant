@@ -171,7 +171,7 @@ function showMyMenu(link) {
 }
 
 function trim(str) {
-  return str.replace(/(^\s*)|(\s*$)/g, "").replace(/"/g,"\\\"");
+  return str.replace(/(^\s*)|(\s*$)/g, "").replace(/\n/g, ' ').replace(/"/g,"\\\"");
 }
 
 function initLinks(links, array) {
@@ -220,7 +220,7 @@ function downloadAllByThunder() {
   }
   var message_ = {command : '', content : ''};
   var port_ = chrome.extension.connect();
-  var script_ = 'pluginobj.thunderDownloadAll("' + location.href + '",';  
+  var script_ = 'pluginobj.thunderDownloadAll("' + location.href + '",';
   for (var i = 0 ; i < links_.length ; i++) {
     script_ += '"' + (links_[i].src||links_[i].href) + '","' +
                (links_[i].alt||trim(links_[i].innerText||links_[i].textContent)||" ") + '",';
