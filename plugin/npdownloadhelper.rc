@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 英语(美国) resources
+// English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
@@ -44,13 +44,13 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "FileDescription", "This is a npapi plugin built for Chrome on Windows."
-            VALUE "FileOpenName", "Switch Proxy Plugin"
+            VALUE "FileOpenName", "Download Helper Plugin"
             VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "SwitchProxyPlugin"
-            VALUE "LegalCopyright", "Copyright 2009 Wenzhang Zhu."
+            VALUE "InternalName", "DownloadHelperPlugin"
+            VALUE "LegalCopyright", "Copyright 2010 Jing Zhao"
             VALUE "MIMEType", "application/x-downloadhelper"
             VALUE "OriginalFilename", "npdownloadhelper.dll"
-            VALUE "ProductName", "Switch Proxy Plugin"
+            VALUE "ProductName", "Download Helper Plugin"
             VALUE "ProductVersion", "1, 0, 0, 3"
         END
     END
@@ -86,7 +86,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // 英语(美国) resources
+#endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

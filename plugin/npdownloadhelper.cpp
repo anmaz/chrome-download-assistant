@@ -29,6 +29,7 @@
 * the terms of any one of the NPL, the GPL or the LGPL.
 * ***** END LICENSE BLOCK ***** */
 
+#include <prtypes.h>
 #include "npdownloadhelper.h"
 #include "flashget/flashget.h"
 #include "thunder/thunder.h"

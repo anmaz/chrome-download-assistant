@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;D:\Work\chrome\extention\xulrunner-sdk\include&quot;;&quot;\gecko-sdk\include&quot;"
+				AdditionalIncludeDirectories="&quot;C:\xulrunner-sdk\include&quot;;&quot;C:\xulrunner-sdk\include\nspr&quot;"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;NPSIMPLE_EXPORTS;XULRUNNER_SDK"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -67,6 +67,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="comsupp.lib comsuppwd.lib"
 				LinkIncremental="2"
 				ModuleDefinitionFile="npdownloadhelper.def"
 				GenerateDebugInformation="true"
