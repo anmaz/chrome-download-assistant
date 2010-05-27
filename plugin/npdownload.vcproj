@@ -151,6 +151,8 @@
 				ModuleDefinitionFile="npsimple.def"
 				GenerateDebugInformation="true"
 				SubSystem="9"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -299,6 +301,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				ModuleDefinitionFile="npdownloadhelper.def"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"

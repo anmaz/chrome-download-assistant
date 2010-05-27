@@ -49,7 +49,7 @@ class FlashgetSupport {
   static void DownloadAll(NPObject* obj, const NPVariant* args,
                           uint32_t argCount, NPVariant* result);
 
-  static std::wstring GetProgID(int version = 2);
+  static std::wstring GetProgID(int version = 3);
 };
 
 #endif  // NPDOWNLOAD__FLASHGET_H_

@@ -29,7 +29,6 @@
 * the terms of any one of the NPL, the GPL or the LGPL.
 * ***** END LICENSE BLOCK ***** */
 
-#include <prtypes.h>
 #include "npdownloadhelper.h"
 #include "flashget/flashget.h"
 #include "thunder/thunder.h"
@@ -194,6 +193,8 @@ static NPError NewNPInstance(NPMIMEType pluginType, NPP instance,
                              uint16_t mode, int16_t argc, char* argn[],
                              char* argv[], NPSavedData* saved) {
   DebugLog("npDownloadHelper: new\n");
+  npnfuncs->setvalue(instance, NPPVpluginWindowBool, NULL);
+
   return NPERR_NO_ERROR;
 }
 
@@ -206,6 +207,24 @@ static NPError DestroyNPInstance(NPP instance, NPSavedData** save) {
   return NPERR_NO_ERROR;
 }
 
+NPError SetWindow(NPP instance, NPWindow* window) {
+  return NPERR_NO_ERROR;
+}
+
+NPError NPP_NewStream(NPP instance, NPMIMEType type, NPStream* stream,
+                      NPBool seekable, uint16_t* stype) {
+
+  return NPERR_GENERIC_ERROR;
+}
+
+NPError NPP_DestroyStream(NPP instance, NPStream* stream, NPReason reason) {
+  return NPERR_GENERIC_ERROR;
+}
+
+int16_t NPP_HandleEvent(NPP instance, void* event) {
+  return 0;
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -215,6 +234,10 @@ extern "C" {
     nppfuncs->newp = NewNPInstance;
     nppfuncs->destroy = DestroyNPInstance;
     nppfuncs->getvalue = GetValue;
+    nppfuncs->setwindow = SetWindow;
+    nppfuncs->event = NPP_HandleEvent;
+    nppfuncs->newstream = NPP_NewStream;
+    nppfuncs->destroystream = NPP_DestroyStream;
     return NPERR_NO_ERROR;
   }
 
@@ -239,9 +262,9 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 #if !defined(_WINDOWS) && !defined(WEBKIT_DARWIN_SDK)
                  NP_GetEntryPoints(nppfuncs);
 #endif
-
                  return NPERR_NO_ERROR;
 }
+
 NPError  OSCALL NP_Shutdown() {
   DebugLog("npDownloadHelper: NP_Shutdown\n");
   return NPERR_NO_ERROR;
