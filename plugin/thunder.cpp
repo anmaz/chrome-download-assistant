@@ -29,12 +29,11 @@
 * the terms of any one of the NPL, the GPL or the LGPL.
 * ***** END LICENSE BLOCK ***** */
 
-#include "thunder.h"
-
 #include <atlbase.h>
 #include <atlcom.h>
 #include <comutil.h>
-#include "../utils.h"
+#include "utils.h"
+#include "thunder.h"
 
 using namespace std;
 
