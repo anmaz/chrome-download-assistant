@@ -68,6 +68,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="comsupp.lib comsuppwd.lib"
+				OutputFile="$(ProjectDir)\$(ProjectName).dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="npdownloadhelper.def"
 				GenerateDebugInformation="true"
@@ -231,6 +232,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="comsupp.lib comsuppwd.lib"
 				ShowProgress="0"
+				OutputFile="$(ProjectDir)\$(ProjectName).dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames=""
