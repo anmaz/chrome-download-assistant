@@ -78,7 +78,7 @@
   <p><label><input type="radio" name="downloader" id="radioFlashget" disabled="true"> <span id="flashget">flashget</span></label></p>
   <p><label><input type="radio" name="downloader" id="radioThunder" disabled="true"> <span id="thunder">thunder</span></label></p>
   <p><label><input type="radio" checked="true" name="downloader" id="radioChrome"> <span id="chromeDownloader">chrome</span></label></p>
-  <p id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="mContextMenu"></span></label></p>
+  <p id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="disableMenu"></span></label></p>
   </div>
   <script>
     var radioFlashget = document.getElementById("radioFlashget");
@@ -92,7 +92,7 @@
       i18nReplace("flashget");
       i18nReplace("thunder");
       i18nReplace("chromeDownloader");
-      i18nReplace("mContextMenu");
+      i18nReplace("disableMenu");
       if (bg.useExperimentalAPI) {
         document.getElementById('contextMenuItem').style.display = 'none';
       }
