@@ -171,7 +171,7 @@ function showMyMenu(link) {
 }
 
 function trim(str) {
-  return str.replace(/(^\s*)|(\s*$)/g, "").replace(/\n/g, ' ').replace(/"/g,"\\\"");
+  return str.replace(/(^\s*)|(\s*$)/g, '').replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/"/g,'\\\"');
 }
 
 function initLinks(links, array) {
@@ -223,9 +223,10 @@ function downloadAllByThunder() {
   var script_ = 'pluginobj.thunderDownloadAll("' + location.href + '",';
   for (var i = 0 ; i < links_.length ; i++) {
     script_ += '"' + (links_[i].src||links_[i].href) + '","' +
-               (links_[i].alt||trim(links_[i].innerText||links_[i].textContent)||" ") + '",';
+               (trim(links_[i].alt||links_[i].innerText||links_[i].textContent)||" ") + '",';
   }
   script_ += '0)';
+  console.log(script_);
   message_.command = 'ThunderEnd';
   message_.content = script_;
 
@@ -243,9 +244,10 @@ function downloadAllByFlashget() {
   var script_ = 'pluginobj.flashgetDownloadAll("' + location.href + '",';
   for (var i = 0 ; i < links_.length ; i++) {
     script_ += '"' + (links_[i].src||links_[i].href) + '","' +
-               (links_[i].alt||trim(links_[i].innerText||links_[i].textContent)||" ") + '",';
+               (trim(links_[i].alt||links_[i].innerText||links_[i].textContent)||" ") + '",';
   }
   script_ += '0)';
+  console.log(script_);
   message_.command = 'FlashgetEnd';
   message_.content = script_;
   port_.postMessage(message_);
