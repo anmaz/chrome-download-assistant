@@ -34,7 +34,6 @@
 #include "flashget.h"
 #include "thunder.h"
 
-static NPObject* so = NULL;
 NPNetscapeFuncs* npnfuncs = NULL;
 
 const char* kThunderIsEnabledMethod = "thunderIsEnabled";
@@ -43,18 +42,6 @@ const char* kThunderDownloadAllMethod = "thunderDownloadAll";
 const char* kFlashgetIsEnabledMethod = "flashgetIsEnabled";
 const char* kFlashgetAddLinkMethod = "flashgetAddLink";
 const char* kFlashgetDownloadAllMethod = "flashgetDownloadAll";
-
-void DebugLog(const char* msg) {
-#ifdef DEBUG
-#ifndef _WINDOWS
-  fputs(msg, stderr);
-#else
-  FILE* out = fopen("\\npdownloadhelper.log", "a");
-  fputs(msg, out);
-  fclose(out);
-#endif
-#endif
-}
 
 NPObject* CPlugin::Allocate(NPP instance, NPClass* npclass) {
   return (NPObject*)(new CPlugin);
@@ -65,48 +52,50 @@ void CPlugin::Deallocate(NPObject* obj) {
 }
 
 bool CPlugin::HasMethod(NPObject* obj, NPIdentifier methodName) {
-  DebugLog("npDownloadHelper: HasMethod\n");
   return true;
 }
 
 bool CPlugin::InvokeDefault(NPObject* obj, const NPVariant* args,
                             uint32_t argCount,
     NPVariant* result) {
-  DebugLog("npDownloadHelper: InvokeDefault\n");  
   return true;
 }
 
 bool CPlugin::Invoke(NPObject* obj, NPIdentifier methodName,
                      const NPVariant* args, uint32_t argCount,
                      NPVariant* result) {
-  DebugLog("npDownloadHelper: Invoke\n");
   char* name = npnfuncs->utf8fromidentifier(methodName);
+  bool ret_val = false;
   if (!name) {
-    return false;
+    return ret_val;
   }
-  bool ret_val = true;
   if (!strncmp((const char*)name, kThunderIsEnabledMethod,
                strlen(kThunderIsEnabledMethod))) {
     ThunderSupport::IsEnabled(obj, args, argCount, result);
+    ret_val = true;
   } else if (!strncmp((const char*)name, kThunderAddLinkMethod,
                       strlen(kThunderAddLinkMethod))) {
     ThunderSupport::AddLink(obj, args, argCount, result);
+    ret_val = true;
   } else if (!strncmp((const char*)name, kThunderDownloadAllMethod,
                       strlen(kThunderDownloadAllMethod))) {
     ThunderSupport::DownloadAll(obj, args, argCount, result);
+    ret_val = true;
   } else if (!strncmp((const char*)name, kFlashgetIsEnabledMethod,
                       strlen(kFlashgetIsEnabledMethod))) {
     FlashgetSupport::IsEnabled(obj, args, argCount, result);
+    ret_val = true;
   } else if (!strncmp((const char*)name, kFlashgetAddLinkMethod,
                       strlen(kFlashgetAddLinkMethod))) {
     FlashgetSupport::AddLink(obj, args, argCount, result);
+    ret_val = true;
   } else if (!strncmp((const char*)name, kFlashgetDownloadAllMethod,
                       strlen(kFlashgetDownloadAllMethod))) {
     FlashgetSupport::DownloadAll(obj, args, argCount, result);
+    ret_val = true;
   } else {
     // Exception handling. 
     npnfuncs->setexception(obj, "exception during invocation");
-    ret_val = false;
   }
   if (name) {
     npnfuncs->memfree(name);
@@ -115,7 +104,6 @@ bool CPlugin::Invoke(NPObject* obj, NPIdentifier methodName,
 }
 
 bool CPlugin::HasProperty(NPObject* obj, NPIdentifier propertyName) {
-  DebugLog("npDownloadHelper: HasProperty\n");
   char* name = npnfuncs->utf8fromidentifier(propertyName);
   bool ret_val = false;
   // if (name && !strncmp((const char*)name, kGetConnectionNameProperty,
@@ -130,13 +118,8 @@ bool CPlugin::HasProperty(NPObject* obj, NPIdentifier propertyName) {
 
 bool CPlugin::GetProperty(NPObject* obj, NPIdentifier propertyName,
                           NPVariant* result) {
-  DebugLog("npDownloadHelper: GetProperty\n");
   char* name = npnfuncs->utf8fromidentifier(propertyName);
   bool ret_val = false;
-  // if (name && !strncmp((const char*)name, kGetConnectionNameProperty,
-  //                      strlen(kGetConnectionNameProperty))) {    
-  //   ret_val = GetConnectionName(obj, result);
-  // }
   if (name) {
     npnfuncs->memfree(name);
   }
@@ -160,29 +143,24 @@ static NPClass plugin_ref_obj = {
 static NPError GetValue(NPP instance, NPPVariable variable, void* value) {
   switch(variable) {
   default:
-    DebugLog("npDownloadHelper: GetValue - default\n");
     return NPERR_GENERIC_ERROR;
   case NPPVpluginNameString:
-    DebugLog("npDownloadHelper: GetValue - name string\n");
     *((char **)value) = "DownloadHelperPlugin";
     break;
   case NPPVpluginDescriptionString:
-    DebugLog("npDownloadHelper: GetValue - description string\n");
     *((char **)value) = "DownloadHelperPlugin plugin.";
     break;
   case NPPVpluginScriptableNPObject:
-    DebugLog("npDownloadHelper: GetValue - scriptable object\n");
-    if(!so) {
-      so = npnfuncs->createobject(instance, &plugin_ref_obj);
+    if (!instance->pdata) {
+      instance->pdata = (void*)npnfuncs->createobject(instance, &plugin_ref_obj);
     }
     // Retain the object since we keep it in plugin code
     // so that it won't be freed by browser.
-    npnfuncs->retainobject(so);
-    *(NPObject **)value = so;
+    npnfuncs->retainobject((NPObject*)instance->pdata);
+    *(NPObject **)value = (NPObject*)instance->pdata;
     break;
 #if defined(XULRUNNER_SDK)
   case NPPVpluginNeedsXEmbed:
-    DebugLog("npDownloadHelper: GetValue - xembed\n");
     *((PRBool *)value) = PR_FALSE;
     break;
 #endif
@@ -193,18 +171,17 @@ static NPError GetValue(NPP instance, NPPVariable variable, void* value) {
 static NPError NewNPInstance(NPMIMEType pluginType, NPP instance,
                              uint16_t mode, int16_t argc, char* argn[],
                              char* argv[], NPSavedData* saved) {
-  DebugLog("npDownloadHelper: new\n");
   npnfuncs->setvalue(instance, NPPVpluginWindowBool, NULL);
+  instance->pdata = NULL;
 
   return NPERR_NO_ERROR;
 }
 
 static NPError DestroyNPInstance(NPP instance, NPSavedData** save) {
-  if(so) {
-    npnfuncs->releaseobject(so);
+  if (instance->pdata) {
+    npnfuncs->releaseobject((NPObject*)instance->pdata);
   }
-  so = NULL;
-  DebugLog("npDownloadHelper: DestroyNPInstance\n");
+  instance->pdata = NULL;
   return NPERR_NO_ERROR;
 }
 
@@ -230,7 +207,6 @@ int16_t NPP_HandleEvent(NPP instance, void* event) {
 extern "C" {
 #endif
   NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* nppfuncs) {
-    DebugLog("npDownloadHelper: NP_GetEntryPoints\n");
     nppfuncs->version = (NP_VERSION_MAJOR << 8) | NP_VERSION_MINOR;
     nppfuncs->newp = NewNPInstance;
     nppfuncs->destroy = DestroyNPInstance;
@@ -252,7 +228,6 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 #else
                ) {
 #endif
-                 DebugLog("npDownloadHelper: NP_Initialize\n");
                  if(npnf == NULL) {
                    return NPERR_INVALID_FUNCTABLE_ERROR;
                  }
@@ -267,12 +242,10 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 }
 
 NPError  OSCALL NP_Shutdown() {
-  DebugLog("npDownloadHelper: NP_Shutdown\n");
   return NPERR_NO_ERROR;
 }
 
 char* NP_GetMIMEDescription(void) {
-  DebugLog("npDownloadHelper: NP_GetMIMEDescription\n");
   return "application/x-downloadhelper";
 }
 
