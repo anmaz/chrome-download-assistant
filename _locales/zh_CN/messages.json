@@ -27,5 +27,7 @@
   "success": {"message": "设置成功"},
   "option": {"message": "设置"},
   "tipNolink": {"message": "此页面没有链接可供下载。"},
-  "tipUnable": {"message": "此页面是特殊页面，无法使用下载助手。"}
-}
+  "tipUnable": {"message": "此页面是特殊页面，无法使用下载助手。"},
+  "noDownloader": {"message": "您没有安装下载器，请安装网际快车或者迅雷后，刷新当前页面。"},
+  "downloadAllByThunderAndFlashget": {"message": "使用网际快车/迅雷下载所有链接"}
+
