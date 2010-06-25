@@ -2,8 +2,7 @@
    "background_page": "background.html",
    "browser_action": {
       "default_icon": "logo_64.png",
-      "default_title": "__MSG_default_title__",
-      "popup": "popup.html"
+      "default_title": "__MSG_default_title__"
    },
    "content_scripts": [ {
       "js": [ "head.js" ],

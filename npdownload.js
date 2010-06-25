@@ -17,7 +17,7 @@ chrome.extension.onRequest.addListener(
       thunderStatus = eval(request.thunder);
       sendResponse(true);
       }else if (request.msg == 'content_script_is_load') {
-        sendResponse(true);
+        sendResponse(checkLinks());
       }
 });
 
@@ -212,10 +212,18 @@ function downloadAll(url, downlaoder) {
   }
 }
 
+function checkLinks() {
+  var links = getAllLink();
+  if (links.length < 1) {
+    return {msg: 'noLinks'};
+  }
+  return {msg: 'haveLinks'}
+}
+
 function downloadAllByThunder() {
   var links_ = getAllLink();
   if (links_.length < 1) {
-    chrome.extension.sendRequest({'msg': 'noLink'});
+    //chrome.extension.sendRequest({'msg': 'noLink'});
     return;
   }
   var message_ = {command : '', content : ''};
@@ -236,7 +244,7 @@ function downloadAllByThunder() {
 function downloadAllByFlashget() {
   var links_ = getAllLink();
   if (links_.length < 1) {
-    chrome.extension.sendRequest({'msg': 'noLink'});
+    //chrome.extension.sendRequest({'msg': 'noLink'});
     return;
   }
   var message_ = {command : '', content : ''};

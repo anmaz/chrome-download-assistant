@@ -43,16 +43,19 @@ function init() {
   if (eval(localStorage.flashget))  {
     flashget.className = 'menu';
   }
-  chrome.tabs.getSelected(null, function(tab) {
-    chrome.tabs.sendRequest(tab.id, {msg: 'content_script_is_load'},
-        function(response) {
-          if (response) {
-            document.getElementById('btnThunder').style.display = 'block';
-            document.getElementById('btnFlashget').style.display = 'block';
-            document.getElementById('tip').style.display = 'none';
-          }
-        });
-    });
+  document.getElementById('btnThunder').style.display = 'block';
+  document.getElementById('btnFlashget').style.display = 'block';
+  document.getElementById('tip').style.display = 'none';
+//  chrome.tabs.getSelected(null, function(tab) {
+//    chrome.tabs.sendRequest(tab.id, {msg: 'content_script_is_load'},
+//        function(response) {
+//          if (response) {
+//            document.getElementById('btnThunder').style.display = 'block';
+//            document.getElementById('btnFlashget').style.display = 'block';
+//            document.getElementById('tip').style.display = 'none';
+//          }
+//        });
+//    });
 }
 function downloadAllByThunder(){
   chrome.tabs.executeScript(null, {code : 'downloadAllByThunder();'});
