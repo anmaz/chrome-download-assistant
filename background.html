@@ -16,6 +16,57 @@ function scanTF() {
   localStorage.flashget = pluginobj.flashgetIsEnabled();
 }
 
+function setPopupStatus() {
+ // scanTF();
+
+  chrome.browserAction.setTitle({title: chrome.i18n.getMessage('tipUnable')});
+  chrome.browserAction.setIcon(
+      {path: chrome.extension.getURL('logo_64_disable.png')});
+  chrome.browserAction.setPopup({popup: ''});
+  chrome.tabs.getSelected(null, function(tab) {
+    chrome.tabs.sendRequest(tab.id, {msg: 'content_script_is_load'}, function(response) {
+      var browserActionTitle;
+      var setBrowserActionIcon = 'logo_64_disable.png';
+      var setPopupUrl = '';
+      if (response && response.msg == 'noLinks') {
+        browserActionTitle = chrome.i18n.getMessage('tipNolink');
+      } else if (response.msg == 'haveLinks') {
+        setBrowserActionIcon = 'logo_64.png'
+        if (localStorage.thunder == 'true' && localStorage.flashget == 'true') {
+          browserActionTitle = chrome.i18n.getMessage('downloadAllByThunderAndFlashget');
+          setPopupUrl = 'popup.html';
+        } else if (localStorage.flashget == 'true') {
+          browserActionTitle = chrome.i18n.getMessage('downloadAllByFlashget');
+        } else if (localStorage.thunder == 'true') {
+          browserActionTitle = chrome.i18n.getMessage('downloadAllByThunder');
+        } else {
+          setBrowserActionIcon = 'logo_64_disable.png';
+          browserActionTitle = chrome.i18n.getMessage('noDownloader');
+          chrome.browserAction.setIcon(
+              {path: chrome.extension.getURL('logo_64_disable.png')});
+        }
+      }
+      console.log('browserActionTitle: ' + browserActionTitle);
+      chrome.browserAction.setTitle({title: browserActionTitle});
+      chrome.browserAction.setIcon(
+          {path: chrome.extension.getURL(setBrowserActionIcon)});
+      chrome.browserAction.setPopup({popup: setPopupUrl});
+    });
+  });
+}
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+ 
+  setPopupStatus();
+});
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+  if (localStorage.thunder == 'true' && localStorage.flashget == 'false') {
+      chrome.tabs.executeScript(tab.id, {code: 'downloadAllByThunder()'});
+    } else if (localStorage.thunder == 'false' && localStorage.flashget == 'true') {
+      chrome.tabs.executeScript(tab.id, {code: 'downloadAllByFlashget()'});
+    }
+});
+
 function addMyItemToContextMenu() {
   var downloaderName;
   if (eval(localStorage.flashget)) {
@@ -81,6 +132,7 @@ function downloadLinkByThunder(link) {
 
 function init() {
   chrome.tabs.onSelectionChanged.addListener(function(tabId) {
+
     js = 'chrome.tabs.executeScript(' + tabId + ', {file: "npdownload.js"});';
     chrome.tabs.sendRequest(tabId, {
         "msg": 'init_check',
@@ -94,8 +146,10 @@ function init() {
         js = "";
       }
     });
-    setTimeout("eval(js);", 500);
-
+    setTimeout(function() {
+      eval(js);
+      setPopupStatus();
+    }, 500);
   });
 
   chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
@@ -142,6 +196,7 @@ function init() {
   });
 
   scanTF();
+  setPopupStatus();
   if (useExperimentalAPI) {
     addMyItemToContextMenu();
   }
