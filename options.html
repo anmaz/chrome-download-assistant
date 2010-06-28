@@ -67,6 +67,9 @@
   #chromeDownloader {
     background:url(default_25.png) no-repeat;
   }
+  .closeBtn {
+    margin: 20px 0 0 0;
+  }
   </style>
  </HEAD>
  <BODY onload="init();">
@@ -79,6 +82,7 @@
   <p><label><input type="radio" name="downloader" id="radioThunder" disabled="true"> <span id="thunder">thunder</span></label></p>
   <p><label><input type="radio" checked="true" name="downloader" id="radioChrome"> <span id="chromeDownloader">chrome</span></label></p>
   <p id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="disableMenu"></span></label></p>
+  <div class="closeBtn"><button id="saveAndClose" onclick="saveAndClose()"></button></div>
   </div>
   <script>
     var radioFlashget = document.getElementById("radioFlashget");
@@ -93,6 +97,7 @@
       i18nReplace("thunder");
       i18nReplace("chromeDownloader");
       i18nReplace("disableMenu");
+      i18nReplace('saveAndClose');
       if (bg.useExperimentalAPI) {
         document.getElementById('contextMenuItem').style.display = 'none';
       }
@@ -114,18 +119,18 @@
       if (!eval(localStorage.contextmenu)) {
         checkboxContextMenu.checked = true;
       }
-      radioFlashget.addEventListener("change",save,false);
-      radioThunder.addEventListener("change",save,false);
-      radioChrome.addEventListener("change",save,false);
-      checkboxContextMenu.addEventListener("change",save,false);
+
     };
     
-    function save() {
+    function saveAndClose() {
       localStorage.downloader =
           (radioFlashget.checked ? 'flashget' : '') ||
           (radioThunder.checked ? 'thunder' : '') ||
           (radioChrome.checked ? 'chromeDownloader' : '');
       localStorage.contextmenu = (checkboxContextMenu.checked ? 'false' : 'true');
+      chrome.tabs.getSelected(null, function(tab) {
+        chrome.tabs.remove(tab.id);
+      });
     };
 
 	function i18nReplace(id) {
