@@ -17,7 +17,7 @@ function scanTF() {
 }
 
 function setPopupStatus() {
-  //scanTF();
+  scanTF();
 
   chrome.browserAction.setTitle({title: chrome.i18n.getMessage('tipUnable')});
   chrome.browserAction.setIcon(
