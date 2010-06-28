@@ -22,6 +22,10 @@
 .dh-menu-item a {
   color:#333;
 }
+.dh-menu-item-disable {
+  display:none;
+}
+
 .dh-menu-item-disable a {
   color:#aaa;
 }

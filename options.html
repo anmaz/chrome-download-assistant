@@ -78,8 +78,8 @@
     <h1><span id="pageTitle"></span></h1>
   </div>
   <h4 id="downloader"></h4>
-  <p><label><input type="radio" name="downloader" id="radioFlashget" disabled="true"> <span id="flashget">flashget</span></label></p>
-  <p><label><input type="radio" name="downloader" id="radioThunder" disabled="true"> <span id="thunder">thunder</span></label></p>
+  <p id="flashgetDiv"><label><input type="radio" name="downloader" id="radioFlashget"> <span id="flashget">flashget</span></label></p>
+  <p id="thunderDiv"><label><input type="radio" name="downloader" id="radioThunder"> <span id="thunder">thunder</span></label></p>
   <p><label><input type="radio" checked="true" name="downloader" id="radioChrome"> <span id="chromeDownloader">chrome</span></label></p>
   <p id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="disableMenu"></span></label></p>
   <div class="closeBtn"><button id="saveAndClose" onclick="saveAndClose()"></button></div>
@@ -101,11 +101,11 @@
       if (bg.useExperimentalAPI) {
         document.getElementById('contextMenuItem').style.display = 'none';
       }
-      if (eval(localStorage.flashget)) {
-        radioFlashget.disabled = false;
+      if (!eval(localStorage.flashget)) {
+        document.getElementById('flashgetDiv').style.display = 'none';
       }
-      if (eval(localStorage.thunder)) {
-        radioThunder.disabled = false;
+      if (!eval(localStorage.thunder)) {
+        document.getElementById('thunderDiv').style.display = 'none';
       }
       if (localStorage.downloader == "flashget") {
         if (eval(localStorage.flashget)) {
@@ -121,7 +121,7 @@
       }
 
     };
-    
+
     function saveAndClose() {
       localStorage.downloader =
           (radioFlashget.checked ? 'flashget' : '') ||
