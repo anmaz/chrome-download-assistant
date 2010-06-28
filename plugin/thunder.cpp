@@ -55,7 +55,8 @@ void ThunderSupport::IsEnabled(NPObject* obj, const NPVariant* args,
 
   if (FAILED(dispatch.CoCreateInstance(GetProgID().c_str(), NULL)))
     result->value.boolValue = FALSE;
-  result->value.boolValue = TRUE;
+  else
+    result->value.boolValue = TRUE;
 }
 
 // Add a link to download in Thunder.
