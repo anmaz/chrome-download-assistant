@@ -28,6 +28,6 @@
   "tipNolink": {"message": "There are no links on this page"},
   "tipUnable": {"message": "This is a special page. Unable to use Download Helper on this page."},
   "noDownloader": {"message": "You haven't install any downloader. Please install FlashGet or Thunder, and refresh the page."},
-  "downloadAllByThunderAndFlashget": {"message": "Download all with FlashGet/Thunder"}
-
+  "downloadAllByThunderAndFlashget": {"message": "Download all with FlashGet/Thunder"},
+  "saveAndClose": {"message": "Save & Close"}
 }
