@@ -4,9 +4,9 @@
   <TITLE> Options </TITLE>
   <style>
   body {
-    font-family:helvetica, arial, sans-serif,simsun;
-    font-size:80%;
     margin:10px;
+    background: #EBEFF9;
+    font-family: arial, sans-serif;
   }
   #header {
     padding-bottom:1em;
@@ -31,7 +31,6 @@
   }
   p {
     padding-left:2em;
-    font-family:verdana, arial, sans-serif,simsun;
     font-size:14px;
   }
   .section-header {
@@ -44,14 +43,12 @@
     margin-top:1em;
   }
   .contentBox {
+    background-color: #ffffff;
     border: 3px solid #bec9ce;
-    border-bottom-left-radius: 20px 20px;
-    border-bottom-right-radius: 20px 20px;
-    border-top-left-radius: 20px 20px;
-    border-top-right-radius: 20px 20px;
+    -webkit-border-radius: 20px 20px;
     padding: 30px;
     text-align: left;
-    margin:50px auto;
+    margin:50px auto 20px auto;
     width: 600px;
   }
   #flashget, #thunder, #chromeDownloader {
@@ -70,6 +67,10 @@
   .closeBtn {
     margin: 20px 0 0 0;
   }
+  #footer {
+    text-align: center;
+    font-size: 13px;
+  }
   </style>
  </HEAD>
  <BODY onload="init();">
@@ -84,6 +85,7 @@
   <p id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="disableMenu"></span></label></p>
   <div class="closeBtn"><button id="saveAndClose" onclick="saveAndClose()"></button></div>
   </div>
+  <div id="footer">&copy;2010 Google</div>
   <script>
     var radioFlashget = document.getElementById("radioFlashget");
     var radioThunder = document.getElementById("radioThunder");
