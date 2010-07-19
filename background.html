@@ -200,7 +200,7 @@ function init() {
   if (useExperimentalAPI) {
     addMyItemToContextMenu();
   }
-  localStorage.contextmenu = 'true';
+  localStorage.contextmenu = localStorage.contextmenu ? localStorage.contextmenu : 'true';
 }
 </script>
 </head>
