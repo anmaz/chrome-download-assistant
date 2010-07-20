@@ -16,7 +16,7 @@
       "run_at": "document_end",
       "all_frames": true
    } ],
-   "default_locale": "zh_CN",
+   "default_locale": "en",
    "description": "__MSG_description__",
    "icons": {
       "16": "icon_16.png",
