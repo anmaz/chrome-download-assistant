@@ -143,8 +143,15 @@ function disableContextMenu() {
 
 function showMyMenu(link) {
   var contextMenu = document.getElementById('dh-menu');
-  contextMenu.style.top = event.pageY + 'px';
-  contextMenu.style.left = event.pageX + 'px';
+  var bodyStyle = window.getComputedStyle (document.body, "style");
+  var top = event.pageY;
+  var left = event.pageX;
+  if (bodyStyle.position == 'relative') {
+    left -= parseInt(bodyStyle.marginLeft);
+    top -= parseInt(bodyStyle.marginTop);
+  }
+  contextMenu.style.top = top + 'px';
+  contextMenu.style.left = left + 'px';
   contextMenu.style.display = 'block';
   var mFlashget = document.getElementById('mFlashget');
   if (flashgetStatus) {
