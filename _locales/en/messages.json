@@ -1,17 +1,7 @@
 {
-  "default_title": {
-    "description": "Extension browser action tooltip text in manifest.",
-    "message": "Download Helper"
-  },
-  "description": {
-    "description": "Extension description in manifest.",
-    "message": "Download links on a web page with popular downloaders such as FlashGet (www.flashget.com) and Thunder (www.xunlei.com)."
-  },
-  "name": {
-    "description": "Extension name in manifest.",
-    "message": "Download Helper"
-  },
-
+  "name": {"message": "Download Helper (by Google)"},
+  "default_title": {"message": "Download Helper"},
+  "description": {"message": "Download links on a web page with popular downloaders such as FlashGet (www.flashget.com) and Thunder (www.xunlei.com)."},
   "downloadAllByFlashget": {"message": "Download all Links with Flashget"},
   "downloadAllByThunder": {"message": "Download all Links with Thunder"},
   "mFlashget": {"message": "Download link with Flashget"},

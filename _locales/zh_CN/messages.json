@@ -1,16 +1,7 @@
 {
-  "default_title": {
-    "description": "Extension browser action tooltip text in manifest.",
-    "message": "下载助手"
-  },
-  "description": {
-    "description": "Extension description in manifest.",
-    "message": "使用网际快车（www.flashget.com）或迅雷（www.xunlei.com）下载网页链接。"
-  },
-  "name": {
-    "description": "Extension name in manifest.",
-    "message": "下载助手"
-  },
+  "name": {"message": "下载助手（由Google提供）"},
+  "default_title": {"message": "下载助手"},
+  "description": {"message": "使用网际快车（www.flashget.com）或迅雷（www.xunlei.com）下载网页链接。"},
   "downloadAllByFlashget": {"message": "使用网际快车下载所有链接"},
   "downloadAllByThunder": {"message": "使用迅雷下载所有链接"},
   "mFlashget": {"message": "使用网际快车下载链接"},
