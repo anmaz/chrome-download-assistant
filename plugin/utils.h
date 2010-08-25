@@ -29,6 +29,8 @@
 * the terms of any one of the NPL, the GPL or the LGPL.
 * ***** END LICENSE BLOCK ***** */
 
+#pragma once
+
 #include <windows.h>
 #include "npfunctions.h"
 

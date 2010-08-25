@@ -5,18 +5,24 @@
 var downloader = "";
 var contextMenuStatus = false;
 var flashgetStatus = false;
+var miniFlashgetStatus = false;
 var thunderStatus = false;
+//var webThunderStatus = false;
+var miniThunderStatus = false;
 var useExperimentalAPI;
 
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
       if (request && request.msg == 'init_check') {
         downloader = request.downloader;
-      contextMenuStatus = eval(request.contextmenu);
-      flashgetStatus = eval(request.flashget);
-      thunderStatus = eval(request.thunder);
-      sendResponse(true);
-      }else if (request.msg == 'content_script_is_load') {
+        contextMenuStatus = eval(request.contextmenu);
+        flashgetStatus = eval(request.flashget);
+        miniFlashgetStatus = eval(request.miniFlashget);
+        thunderStatus = eval(request.thunder);
+        //webThunderStatus = eval(request.webThunder);
+        miniThunderStatus = eval(request.miniThunder);
+        sendResponse({msg: 'is_content_script'});
+      } else if (request.msg == 'content_script_is_load') {
         sendResponse(checkLinks());
       }
 });
@@ -25,7 +31,7 @@ function generateContextMenu() {
   var contextMenu = document.createElement('div');
   contextMenu.id = 'dh-menu';
   contextMenu.style.display = 'none';
-  var menuList = ['mFlashget', 'mThunder', 'mChrome', '', 'mContextMenu'];
+  var menuList = ['mFlashget', 'mMiniFlashget', 'mThunder', 'mMiniThunder', 'mChrome', 'mCopyLink', '', 'mContextMenu'];
   for (var i = 0; i < menuList.length; i++) {
     var menuItem = document.createElement('div');
     if (menuList[i] == '') {
@@ -72,12 +78,20 @@ function init() {
             downloader = response.downloader;
             contextMenuStatus = eval(response.contextmenu);
             flashgetStatus = eval(response.flashget);
-            thunderStatus = eval(response.thunder);});
+            miniFlashgetStatus = eval(response.miniFlashget);
+            thunderStatus = eval(response.thunder);
+           // webThunderStatus = eval(response.webThunder);
+            miniThunderStatus = eval(response.miniThunder);});
       }
 
       var sufix = /(\.CRX|\.ZIP|\.EXE|\.BIN|\.GZ|\.Z|\.TAR|\.ARJ|\.LZH|\.MP3|\.A[0-9]?|\.RAR|\.R[0-9][0-9]|\.asf|\.avi|\.iso|\.mpeg|\.mpg|\.mpga|\.ra|\.rm|\.rmvb|\.wma|\.wmp|\.wmv|\.msi)$/i;
       for (var i = 0; i < document.links.length; i++) {
-        if (sufix.test(document.links[i].href)) {
+        if (document.links[i].getAttribute('thunderhref')) {
+          var thunderhref = document.links[i].getAttribute('thunderhref');
+          document.links[i].href = thunderhref;
+        }
+        if (sufix.test(document.links[i].href) ||
+            document.links[i].getAttribute('thunderhref')) {
           if (document.links[i].onclick) {
             document.links[i].click = document.links[i].onclick;
             document.links[i].onclick = function() {
@@ -93,6 +107,7 @@ function init() {
           if (!useExperimentalAPI) {
             document.links[i].oncontextmenu = function () {
               if (contextMenuStatus) {
+
                 // Not show the original context menu.
                 window.event.returnValue = false;
                 if (!document.getElementById('dh-menu')) {
@@ -114,7 +129,8 @@ function download(link) {
   if (event.ctrlKey) {
     return true;
   }
-  if (downloader == 'thunder' || downloader == 'flashget') {
+  if (downloader == 'thunder' || downloader == 'miniFlashget' ||
+      downloader == 'flashget' || downloader == 'miniThunder') {
     var message_ = {command : '', content : ['', '', '']};
     message_.command = downloader;
     message_.content[0] = link.href;
@@ -153,8 +169,9 @@ function showMyMenu(link) {
   contextMenu.style.top = top + 'px';
   contextMenu.style.left = left + 'px';
   contextMenu.style.display = 'block';
+  var thunderLink = (link.href.toLocaleLowerCase().indexOf('thunder://') == 0);
   var mFlashget = document.getElementById('mFlashget');
-  if (flashgetStatus) {
+  if (flashgetStatus && !thunderLink) {
     mFlashget.parentNode.className = 'dh-menu-item';
     mFlashget.onclick = function() {
       downloadByExternalDownloader(link, 'flashget');
@@ -162,6 +179,16 @@ function showMyMenu(link) {
   } else {
     mFlashget.parentNode.className = 'dh-menu-item-disable';
   }
+  var mMiniFlashget = document.getElementById('mMiniFlashget');
+  if (miniFlashgetStatus && !thunderLink) {
+    mMiniFlashget.parentNode.className = 'dh-menu-item';
+    mMiniFlashget.onclick = function() {
+      downloadByExternalDownloader(link, 'miniFlashget');
+    }
+  } else {
+    mMiniFlashget.parentNode.className = 'dh-menu-item-disable';
+  }
+  
   var mThunder = document.getElementById('mThunder');
   if (thunderStatus) {
     mThunder.parentNode.className = 'dh-menu-item';
@@ -170,6 +197,32 @@ function showMyMenu(link) {
     }
   } else {
     mThunder.parentNode.className = 'dh-menu-item-disable';
+  }
+// nonsupport web thunder now
+//  var mWebThunder = document.getElementById('mWebThunder');
+
+//  if (webThunderStatus) {
+//    mWebThunder.parentNode.className = 'dh-menu-item';
+//    mWebThunder.onclick = function() {
+//      downloadByExternalDownloader(link, 'webThunder');
+//    }
+//  } else {
+//    mWebThunder.parentNode.className = 'dh-menu-item-disable';
+//  }
+
+  var mMiniThunder = document.getElementById('mMiniThunder');
+  if (miniThunderStatus) {
+    mMiniThunder.parentNode.className = 'dh-menu-item';
+    mMiniThunder.onclick = function() {
+      downloadByExternalDownloader(link, 'miniThunder');
+    }
+  } else {
+    mMiniThunder.parentNode.className = 'dh-menu-item-disable';
+  }
+
+  var mCopyLink = document.getElementById('mCopyLink');
+  mCopyLink.onclick = function() {
+    chrome.extension.sendRequest({command: 'copyLink', content:link.href });
   }
   document.getElementById('mChrome').href = link.href;
   document.getElementById('mContextMenu').onclick = function() {
@@ -183,7 +236,9 @@ function trim(str) {
 
 function initLinks(links, array) {
   for (var i = 0; i < links.length; i++) {
-    array.push(links[i]);
+    var url = links[i].src||links[i].href;
+    var text = trim(links[i].alt||links[i].innerText||links[i].textContent)||" ";
+    array.push({url: url, text: text});
   }
 }
 
@@ -200,10 +255,10 @@ function getAllLink() {
   var frames = document.getElementsByTagName("frame");
   if (frames.length > 0) {
     for (var i = 0; i < frames.length; i++) {
-      var link_link = frames[i].contentDocument.links;
-      var link_img = frames[i].contentDocument.images;
-      initLinks(link_link, ret_);
-      initLinks(link_img, ret_);
+      var frames_link = frames[i].contentDocument.links;
+      var frames_img = frames[i].contentDocument.images;
+      initLinks(frames_link, ret_);
+      initLinks(frames_img, ret_);
     }
   }
   return ret_;
@@ -212,7 +267,7 @@ function getAllLink() {
 function downloadAll(url, downlaoder) {
   if (url == location.href) {
     if (downlaoder == 'thunder') {
-      downloadAllByThunder();
+      sendDownloadCommandToBg('thunder');
     } else if (downlaoder == 'flashget') {
       downloadAllByFlashget();
     }
@@ -221,31 +276,24 @@ function downloadAll(url, downlaoder) {
 
 function checkLinks() {
   var links = getAllLink();
+  var msg = 'haveLinks'
   if (links.length < 1) {
-    return {msg: 'noLinks'};
+    msg = 'noLinks'
   }
-  return {msg: 'haveLinks'}
+  chrome.extension.sendRequest({msg: msg});
 }
 
-function downloadAllByThunder() {
+function sendDownloadCommandToBg(type) {
   var links_ = getAllLink();
   if (links_.length < 1) {
     //chrome.extension.sendRequest({'msg': 'noLink'});
     return;
   }
-  var message_ = {command : '', content : ''};
+  
+  var message_ = {command : type, content : links_};
   var port_ = chrome.extension.connect();
-  var script_ = 'pluginobj.thunderDownloadAll("' + location.href + '",';
-  for (var i = 0 ; i < links_.length ; i++) {
-    script_ += '"' + (links_[i].src||links_[i].href) + '","' +
-               (trim(links_[i].alt||links_[i].innerText||links_[i].textContent)||" ") + '",';
-  }
-  script_ += '0)';
-  console.log(script_);
-  message_.command = 'ThunderEnd';
-  message_.content = script_;
-
   port_.postMessage(message_);
+
 }
 
 function downloadAllByFlashget() {
@@ -254,6 +302,7 @@ function downloadAllByFlashget() {
     //chrome.extension.sendRequest({'msg': 'noLink'});
     return;
   }
+
   var message_ = {command : '', content : ''};
   var port_ = chrome.extension.connect();
   var script_ = 'pluginobj.flashgetDownloadAll("' + location.href + '",';
@@ -267,5 +316,6 @@ function downloadAllByFlashget() {
   message_.content = script_;
   port_.postMessage(message_);
 }
+
 
 init();

@@ -1,69 +1,100 @@
 <html>
 <head>
+
+</head>
+<body onload="init()">
+<object id="pluginobj" type="application/x-npdownload" hidden="true">
+Failed to load np plugin. You might be using the old version of the extension.</object>
+
 <script>
+
 var TEMP;
 var js;
 var link;
 var allLinks;
+var pluginobj = document.getElementById('pluginobj');
+
 
 // When using experimental API, change this flag to true, and add
 // an "experimental" permission in manifest.json
 var useExperimentalAPI = false;
 
-// Check if Thunder/Flashget is enabled
-function scanTF() {
-  localStorage.thunder = pluginobj.thunderIsEnabled();
-  localStorage.flashget = pluginobj.flashgetIsEnabled();
+// Check if downloader is enabled
+
+function scanDownloader() {
+  localStorage.flashget = checkObjectByNP('FlashGet');
+  localStorage.miniFlashget = checkObjectByNP('miniFlashget');
+  localStorage.thunder = checkObjectByNP('ThunderAgent.Agent.1');
+  localStorage.miniThunder = checkObjectByNP('ToolbarThunder.DownloadAgent.1');
+
+}
+
+function checkObjectByNP(progID) {
+  return pluginobj.CheckObject(progID);
 }
 
 function setPopupStatus() {
-  scanTF();
-
+  scanDownloader();
   chrome.browserAction.setTitle({title: chrome.i18n.getMessage('tipUnable')});
   chrome.browserAction.setIcon(
       {path: chrome.extension.getURL('icon_19_disable.png')});
   chrome.browserAction.setPopup({popup: ''});
   chrome.tabs.getSelected(null, function(tab) {
-    chrome.tabs.sendRequest(tab.id, {msg: 'content_script_is_load'}, function(response) {
-      var browserActionTitle;
-      var setBrowserActionIcon = 'icon_19_disable.png';
-      var setPopupUrl = '';
-      if (response && response.msg == 'noLinks') {
-        browserActionTitle = chrome.i18n.getMessage('tipNolink');
-      } else if (response.msg == 'haveLinks') {
-        setBrowserActionIcon = 'icon_19.png'
-        if (localStorage.thunder == 'true' && localStorage.flashget == 'true') {
-          browserActionTitle = chrome.i18n.getMessage('downloadAllByThunderAndFlashget');
-          setPopupUrl = 'popup.html';
-        } else if (localStorage.flashget == 'true') {
-          browserActionTitle = chrome.i18n.getMessage('downloadAllByFlashget');
-        } else if (localStorage.thunder == 'true') {
-          browserActionTitle = chrome.i18n.getMessage('downloadAllByThunder');
-        } else {
-          setBrowserActionIcon = 'icon_19_disable.png';
-          browserActionTitle = chrome.i18n.getMessage('noDownloader');
-          chrome.browserAction.setIcon(
-              {path: chrome.extension.getURL('icon_19_disable.png')});
+    chrome.tabs.executeScript(tab.id, {code: 'checkLinks()'}, function() {
+      chrome.extension.onRequest.addListener(function(request, sender, response) {
+        var browserActionTitle;
+        var setBrowserActionIcon = 'icon_19_disable.png';
+        var setPopupUrl = '';
+        if (request && request.msg == 'noLinks') {
+          browserActionTitle = chrome.i18n.getMessage('tipNolink');
+        } else if (request.msg == 'haveLinks') {
+          setBrowserActionIcon = 'icon_19.png';
+          var count = 0;
+          if (localStorage.thunder == 'true') {
+            count++;
+            browserActionTitle = chrome.i18n.getMessage('downloadAllByThunder');
+          }
+          if (localStorage.flashget == 'true') {
+            count++;
+            browserActionTitle = chrome.i18n.getMessage('downloadAllByFlashget');
+          }
+          if (count == 2) {
+            browserActionTitle = chrome.i18n.getMessage('downloadAllByThunderAndFlashget');
+            setPopupUrl = 'popup.html';
+          } else if (count == 0) {
+            setBrowserActionIcon = 'icon_19_disable.png';
+            if (localStorage.miniFlashget == 'false' && localStorage.miniThunder == 'false') {
+              browserActionTitle = chrome.i18n.getMessage('noDownloader');
+            } else if (localStorage.miniFlashget == 'true' && localStorage.miniThunder == 'false') {
+              browserActionTitle = chrome.i18n.getMessage('noDownloader2');
+            } else if (localStorage.miniFlashget == 'false' && localStorage.miniThunder == 'true') {
+              browserActionTitle = chrome.i18n.getMessage('noDownloader3');
+            } else if (localStorage.miniFlashget == 'true' && localStorage.miniThunder == 'true') {
+              browserActionTitle = chrome.i18n.getMessage('noDownloader4');
+            }
+            chrome.browserAction.setIcon(
+                {path: chrome.extension.getURL('icon_19_disable.png')});
+          }
         }
-      }
-      console.log('browserActionTitle: ' + browserActionTitle);
-      chrome.browserAction.setTitle({title: browserActionTitle});
-      chrome.browserAction.setIcon(
-          {path: chrome.extension.getURL(setBrowserActionIcon)});
-      chrome.browserAction.setPopup({popup: setPopupUrl});
+        chrome.browserAction.setTitle({title: browserActionTitle});
+        chrome.browserAction.setIcon(
+            {path: chrome.extension.getURL(setBrowserActionIcon)});
+        chrome.browserAction.setPopup({popup: setPopupUrl});
+      });
     });
   });
 }
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
- 
   setPopupStatus();
 });
 
 chrome.browserAction.onClicked.addListener(function(tab) {
   if (localStorage.thunder == 'true' && localStorage.flashget == 'false') {
-      chrome.tabs.executeScript(tab.id, {code: 'downloadAllByThunder()'});
+      chrome.tabs.executeScript(tab.id,
+          {code: 'sendDownloadCommandToBg("ByThunder")'});
     } else if (localStorage.thunder == 'false' && localStorage.flashget == 'true') {
-      chrome.tabs.executeScript(tab.id, {code: 'downloadAllByFlashget()'});
+      chrome.tabs.executeScript(tab.id,
+          {code: 'sendDownloadCommandToBg("ByFlashget")'});
     }
 });
 
@@ -85,7 +116,8 @@ function addMyItemToContextMenu() {
          if (obj.frameUrl) {
            chrome.tabs.executeScript(null, {code: 'downloadAll("' + obj.frameUrl + '", "flashget")', allFrames: true})
          } else {
-           chrome.tabs.executeScript(null, {code: 'downloadAllByFlashget();'})
+           chrome.tabs.executeScript(null,
+               {code: 'sendDownloadCommandToBg("ByFlashget");'})
          }
        }});
   }
@@ -106,10 +138,9 @@ function addMyItemToContextMenu() {
          if (obj.frameUrl) {
            chrome.tabs.executeScript(null, {code: 'downloadAll("' + obj.frameUrl + '", "thunder")', allFrames: true})
          } else {
-           chrome.tabs.executeScript(null, {code: 'downloadAllByThunder();'})
+           chrome.tabs.executeScript(null,
+               {code: 'sendDownloadCommandToBg("ByThunder");'})
          }
-
-        // chrome.tabs.executeScript(null, {code: 'downloadAll();', allFrames: true})
        }});
 
     downloaderName = chrome.i18n.getMessage('option');
@@ -122,12 +153,30 @@ function addMyItemToContextMenu() {
   }
 }
 
-function downloadLinkByFlashget(link) {
-  pluginobj.flashgetAddLink(link[0], link[1], link[2]);
+function downloadLinkByFlashgetOrMiniFlashget(link, downloader) {
+  var flashgetAgent = pluginobj.CreateObject(downloader);
+  flashgetAgent.AddLink(link[0], link[1], link[2]);
 }
 
 function downloadLinkByThunder(link) {
-  pluginobj.thunderAddLink(link[0], link[1], link[2]);
+  var thunderAgent = pluginobj.CreateObject('ThunderAgent.Agent.1');
+  thunderAgent.AddTask5(link[0], '', '', '', '',
+      -1, 0, -1,  '', '', '', 1, '', -1);
+  thunderAgent.CommitTasks2(1);
+}
+
+function downloadLinkByMiniThunder(link) {
+  var miniThunderAgent = pluginobj.CreateObject('ToolbarThunder.DownloadAgent.1');
+  miniThunderAgent.AddTask(link[0], '', '', '', '');
+}
+
+function downloadLinkByWebThunder(link) {
+  var webThunderAgent = pluginobj.CreateObject('ThunderServer.WebThunder.1');
+  webThunderAgent.CallAddTask2(link[0], '', '', 2, '', '', '');
+}
+
+function copyLinkToClipboard(url) {
+  pluginobj.CopyToClipboard(url);
 }
 
 function init() {
@@ -135,11 +184,14 @@ function init() {
 
     js = 'chrome.tabs.executeScript(' + tabId + ', {file: "npdownload.js"});';
     chrome.tabs.sendRequest(tabId, {
-        "msg": 'init_check',
-        "downloader": localStorage.downloader,
-        "contextmenu": localStorage.contextmenu,
-        "flashget": localStorage.flashget,
-        "thunder": localStorage.thunder
+        'msg': 'init_check',
+        'downloader': localStorage.downloader,
+        'contextmenu': localStorage.contextmenu,
+        'flashget': localStorage.flashget,
+        'miniFlashget': localStorage.miniFlashget,
+        'thunder': localStorage.thunder,
+        'webThunder': localStorage.webThunder,
+        'miniThunder': localStorage.miniThunder
     }, function(response) {
       // If content script is loaded
       if (response) {
@@ -151,61 +203,108 @@ function init() {
       setPopupStatus();
     }, 500);
   });
-
+}
   chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-    if (request.command == 'isUseExperimentalAPI') {
-      sendResponse({'useExperimentalAPI': useExperimentalAPI});
-    }
-    if (request.command == 'update') {
-      if (localStorage.contextmenu == "") {
-        localStorage.contextmenu = 'true';
-      }
-      sendResponse({
+    switch(request.command) {
+      case 'isUseExperimentalAPI':
+        sendResponse({'useExperimentalAPI': useExperimentalAPI});
+        break;
+      case 'update':
+        localStorage.contextmenu = (localStorage.contextmenu == "" ?
+            'true': localStorage.contextmenu);
+        sendResponse({
           "downloader": localStorage.downloader,
           "contextmenu": localStorage.contextmenu,
           "flashget": localStorage.flashget,
-          "thunder": localStorage.thunder});
-    } else if (request.command == 'disable') {
-      localStorage.contextmenu = 'false';
-      sendResponse(localStorage.contextmenu);
-    } else if (request.command == 'flashget' ||
-        request.command == '' && localStorage.downloader == 'flashget') {
-      sendResponse(true);
-      downloadLinkByFlashget(request.content);
-    } else if (request.command == 'thunder' ||
-        request.command == '' && localStorage.downloader == 'thunder') {
-      sendResponse(true);
-      downloadLinkByThunder(request.content);
-    } else {
-      sendResponse(false);
+          "thunder": localStorage.thunder,
+          'webThunder': localStorage.webThunder,
+          'miniThunder': localStorage.miniThunder,
+          'miniFlashget': localStorage.miniFlashget});
+        break;
+      case 'disable':
+        localStorage.contextmenu = 'false';
+        sendResponse(localStorage.contextmenu);
+        break;
+      case 'flashget':
+      case 'miniFlashget':
+        sendResponse(true);
+        downloadLinkByFlashgetOrMiniFlashget(request.content, request.command);
+        break;
+      case 'thunder':
+        sendResponse(true);
+        downloadLinkByThunder(request.content);
+        break;
+      case 'webThunder':
+        sendResponse(true);
+        downloadLinkByWebThunder(request.content)
+        break;
+      case 'miniThunder':
+        sendResponse(true);
+        downloadLinkByMiniThunder(request.content);
+        break;
+      case 'copyLink':
+        sendResponse(true);
+        copyLinkToClipboard(request.content);
+        break;
+      default:
+        sendResponse(false);
     }
   });
+  
   chrome.extension.onConnect.addListener(function(port) {
     port.onMessage.addListener(function(message) {
+      
       if (message) {
         switch (message.command) {
-          case 'ThunderEnd':
-            eval(message.content);
+          case 'ByThunder':
+            downloadAllLinksByThunder(message.content);
             break;
-          case 'FlashgetEnd':
-            eval(message.content);
+          case 'ByFlashget':
+            downloadAllLinksByFlashget(message.content);
+            break;
+          case 'ByWebThunder':
+            downloadAllLinksByWebThunder(message.content);
             break;
         }
       }
     });
   });
 
-  scanTF();
+  function downloadAllLinksByFlashget(links) {
+    var flashgetAgent = pluginobj.CreateObject('Flashget');
+    var script_ = 'flashgetAgent.DownloadAll("",'
+    for (var i = 0; i < links.length; i++) {
+      script_ += '"' + links[i].url + '","' + links[i].text + '",';
+    }
+    script_ += '0)';
+    eval(script_);
+  }
+
+  function downloadAllLinksByThunder(links) {
+    var thunderAgent = pluginobj.CreateObject('ThunderAgent.Agent.1');
+    for (var i = 0; i < links.length; i++) {
+      thunderAgent.AddTask4(links[i].url, '', '', links[i].text, '', -1, 0, -1,
+          '', '', '');
+    }
+    thunderAgent.CommitTasks2(1);
+  }
+
+  function downloadAllLinksByWebThunder(links) {
+    var webThunderAgent = pluginobj.CreateObject('ThunderServer.WebThunder.1');
+    var BatchId = webThunderAgent.BeginBatchTask();
+    for (var i = 0; i < links.length; i++) {
+      webThunderAgent.AddTaskToBatch(BatchId, links[i].url, links[i].text, '', '', '')
+    }
+    webThunderAgent.EndBatchTask(BatchId)
+  }
+
+  scanDownloader();
   setPopupStatus();
   if (useExperimentalAPI) {
     addMyItemToContextMenu();
   }
   localStorage.contextmenu = localStorage.contextmenu ? localStorage.contextmenu : 'true';
-}
+
 </script>
-</head>
-<body onload="init()">
-<object id="pluginobj" type="application/x-downloadhelper" hidden="true">
-Failed to load np plugin. You might be using the old version of the extension.</object>
 </body>
 </html>

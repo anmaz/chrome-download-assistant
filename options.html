@@ -51,14 +51,14 @@
     margin:50px auto 20px auto;
     width: 600px;
   }
-  #flashget, #thunder, #chromeDownloader {
+  #flashget, #miniFlashget, #thunder,#webThunder, #miniThunder, #chromeDownloader {
     padding:5px 0px 5px 30px;
     line-height:30px;
   }
-  #flashget {
+  #flashget, #miniFlashget {
     background:url(flashget_25.png) no-repeat;
   }
-  #thunder {
+  #thunder, #webThunder, #miniThunder {
     background:url(thunder_25.png) no-repeat;
   }
   #chromeDownloader {
@@ -80,7 +80,9 @@
   </div>
   <h4 id="downloader"></h4>
   <p id="flashgetDiv"><label><input type="radio" name="downloader" id="radioFlashget"> <span id="flashget">flashget</span></label></p>
+  <p id="miniFlashgetDiv"><label><input type="radio" name="downloader" id="radioMiniFlashget"> <span id="miniFlashget">MiniFlashget</span></label></p>
   <p id="thunderDiv"><label><input type="radio" name="downloader" id="radioThunder"> <span id="thunder">thunder</span></label></p>
+  <p id="miniThunderDiv"><label><input type="radio" name="downloader" id="radioMiniThunder"> <span id="miniThunder">MiniThunder</span></label></p>
   <p><label><input type="radio" checked="true" name="downloader" id="radioChrome"> <span id="chromeDownloader">chrome</span></label></p>
   <p id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="disableMenu"></span></label></p>
   <div class="closeBtn"><button id="saveAndClose" onclick="saveAndClose()"></button></div>
@@ -88,7 +90,9 @@
   <div id="footer">&copy;2010 Google</div>
   <script>
     var radioFlashget = document.getElementById("radioFlashget");
+    var radioMiniFlashget = document.getElementById('radioMiniFlashget');
     var radioThunder = document.getElementById("radioThunder");
+    var radioMiniThunder = document.getElementById('radioMiniThunder');
     var radioChrome = document.getElementById("radioChrome");
     var checkboxContextMenu = document.getElementById("checkboxContextMenu");
     bg = chrome.extension.getBackgroundPage();
@@ -96,7 +100,9 @@
       i18nReplace("pageTitle");
       i18nReplace("downloader");
       i18nReplace("flashget");
+      i18nReplace("miniFlashget");
       i18nReplace("thunder");
+      i18nReplace("miniThunder");
       i18nReplace("chromeDownloader");
       i18nReplace("disableMenu");
       i18nReplace('saveAndClose');
@@ -106,16 +112,30 @@
       if (!eval(localStorage.flashget)) {
         document.getElementById('flashgetDiv').style.display = 'none';
       }
+      if (!eval(localStorage.miniFlashget)) {
+        document.getElementById('miniFlashgetDiv').style.display = 'none';
+      }
       if (!eval(localStorage.thunder)) {
         document.getElementById('thunderDiv').style.display = 'none';
+      }
+      if (!eval(localStorage.miniThunder)) {
+        document.getElementById('miniThunderDiv').style.display = 'none';
       }
       if (localStorage.downloader == "flashget") {
         if (eval(localStorage.flashget)) {
           radioFlashget.checked = true;
         }
+      } else if (localStorage.downloader == "miniFlashget") {
+        if (eval(localStorage.miniFlashget)) {
+          radioMiniFlashget.checked = true;
+        }
       } else if (localStorage.downloader == "thunder") {
         if (eval(localStorage.thunder)) {
           radioThunder.checked = true;
+        }
+      } else if (localStorage.downloader == 'miniThunder') {
+        if (eval(localStorage.miniThunder)) {
+          radioMiniThunder.checked = true;
         }
       }
       if (!eval(localStorage.contextmenu)) {
@@ -127,7 +147,9 @@
     function saveAndClose() {
       localStorage.downloader =
           (radioFlashget.checked ? 'flashget' : '') ||
+          (radioMiniFlashget.checked ? 'miniFlashget' : '') ||
           (radioThunder.checked ? 'thunder' : '') ||
+          (radioMiniThunder.checked ? 'miniThunder' : '') ||
           (radioChrome.checked ? 'chromeDownloader' : '');
       localStorage.contextmenu = (checkboxContextMenu.checked ? 'false' : 'true');
       chrome.tabs.getSelected(null, function(tab) {

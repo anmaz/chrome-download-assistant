@@ -35,16 +35,21 @@ function init() {
   var tip = document.getElementById('tip');
   thunder.innerText = chrome.i18n.getMessage('downloadAllByThunder');
   flashget.innerText = chrome.i18n.getMessage('downloadAllByFlashget');
+
   tip.innerText = chrome.i18n.getMessage('tipUnable');
 
   if (eval(localStorage.thunder)) {
     thunder.className = 'menu';
+    thunder.style.display = 'block';
   }
   if (eval(localStorage.flashget))  {
     flashget.className = 'menu';
+    flashget.style.display = 'block';
   }
-  document.getElementById('btnThunder').style.display = 'block';
-  document.getElementById('btnFlashget').style.display = 'block';
+
+
+
+
   document.getElementById('tip').style.display = 'none';
 //  chrome.tabs.getSelected(null, function(tab) {
 //    chrome.tabs.sendRequest(tab.id, {msg: 'content_script_is_load'},
@@ -57,12 +62,13 @@ function init() {
 //        });
 //    });
 }
-function downloadAllByThunder(){
-  chrome.tabs.executeScript(null, {code : 'downloadAllByThunder();'});
+function downloadAllByThunder() {
+  chrome.tabs.executeScript(null, {code : 'sendDownloadCommandToBg("ByThunder");'});
 }
-function downloadAllByFlashget(){
-  chrome.tabs.executeScript(null, {code : 'downloadAllByFlashget();'});
+function downloadAllByFlashget() {
+  chrome.tabs.executeScript(null, {code : 'sendDownloadCommandToBg("ByFlashget");'});
 }
+
 
 chrome.extension.onRequest.addListener(function (request, sender, response){
   if (request && request.msg == 'noLink') {

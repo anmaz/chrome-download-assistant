@@ -1,4 +1,4 @@
-LIBRARY   npdownload.dll
+LIBRARY	"npDownloadHelper"
 
 EXPORTS
 	NP_GetEntryPoints     @1
