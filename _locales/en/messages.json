@@ -1,31 +1,118 @@
 {
-  "name": {"message": "Download Helper (by Google)"},
-  "default_title": {"message": "Download Helper"},
-  "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder and Mini Thunder."},
-  "downloadAllByFlashget": {"message": "Download all Links with FlashGet"},
-  "downloadAllByThunder": {"message": "Download all Links with Thunder"},
-  "mFlashget": {"message": "Download link with FlashGet"},
-  "mMiniFlashget": {"message": "Download link with FlashGet Mini"},
-  "mThunder": {"message": "Download link with Thunder"},
-  "mChrome": {"message": "Download link with Chrome"},
-  "mMiniThunder": {"message": "Download link with Mini Thunder"},
-  "mCopyLink": {"message": "Copy link address"},
-  "mContextMenu": {"message": "Disable download menu"},
-  "pageTitle": {"message": "Download Helper Options"},
-  "downloader": {"message": "Select default downloader:"},
-  "flashget": {"message": "FlashGet"},
-  "miniFlashget": {"message": "FlashGet Mini"},
-  "thunder": {"message": "Thunder"},
-  "miniThunder": {"message": "Mini Thunder"},
-  "chromeDownloader": {"message": "Chrome"},
-  "option": {"message": "Options"},
-  "disableMenu": {"message": "Disable right-click download menu and use default Chrome context menu"},
-  "tipNolink": {"message": "There are no links on this page"},
-  "tipUnable": {"message": "This is a special page. Unable to use Download Helper on this page."},
-  "noDownloader": {"message": "No downloaders detected. To enable Download All feature, please install FlashGet or Thunder."},
-  "noDownloader2": {"message": "FlashGet Mini detected. To enable Download All feature, please install FlashGet or Thundet."},
-  "noDownloader3": {"message": "Mini Thunder detected. To enable Download All feature, please install FlashGet or Thunder."},
-  "noDownloader4": {"message": "FlashGet Mini and Mini Thunder detected. To enable Download All feature, please install FlashGet or Thunder."},
-  "downloadAllByThunderAndFlashget": {"message": "Download all with FlashGet/Thunder"},
-  "saveAndClose": {"message": "Save & Close"}
+  "name": {
+    "message": "Download Helper (by Google)",
+    "description": "Name of the extension"
+  },
+  "description": {
+    "message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder and Mini Thunder.",
+    "description": "Description of the extension, which appears in the gallery and Chrome extension management UI"
+  },
+  "default_title": {
+    "message": "Download Helper",
+    "description": "Browser action tooltip text."
+  },
+  "tipNolink": {
+    "message": "There are no links on this page",
+    "description": "Browser action tooltip text when there are no links to download."
+  },
+  "tipUnable": {
+    "message": "This is a special page. Unable to use Download Helper on this page.",
+    "description": "Browser action tooltip text when the current tab is a special page."
+  },
+  "noDownloader": {
+    "message": "No downloaders detected. To enable Download All feature, please install FlashGet or Thunder.",
+    "description": "Browser action tooltip text when no downloader is installed."
+  },
+  "noDownloader2": {
+    "message": "FlashGet Mini detected. To enable Download All feature, please install FlashGet or Thundet.",
+    "description": "Browser action tooltip text when only FlashGet Mini is installed."
+  },
+  "noDownloader3": {
+    "message": "Mini Thunder detected. To enable Download All feature, please install FlashGet or Thunder.",
+    "description": "Browser action tooltip text when only Mini Thunder is installed."
+  },
+  "noDownloader4": {
+    "message": "FlashGet Mini and Mini Thunder detected. To enable Download All feature, please install FlashGet or Thunder.",
+    "description": "Browser action tooltip text when only FlashGet Mini and Mini Thunder are installed."
+  },
+  "downloadAllByThunderAndFlashget": {
+    "message": "Download all with FlashGet/Thunder",
+    "description": "Browser action tooltip text when both FlashGet and Thunder are installed."
+  },
+  "downloadAllByFlashget": {
+    "message": "Download all Links with FlashGet",
+    "description": "The 1st menu item in browser action popup."
+  },
+  "downloadAllByThunder": {
+    "message": "Download all Links with Thunder",
+    "description": "The 2nd menu item in browser action popup."
+  },
+  "mFlashget": {
+    "message": "Download link with FlashGet",
+    "description": "The 1st menu item in context menu."
+  },
+  "mMiniFlashget": {
+    "message": "Download link with FlashGet Mini",
+    "description": "The 2nd menu item in context menu."
+  },
+  "mThunder": {
+    "message": "Download link with Thunder",
+    "description": "The 3rd menu item in context menu."
+  },
+  "mMiniThunder": {
+    "message": "Download link with Mini Thunder",
+    "description": "The 4th menu item in context menu."
+  },
+  "mChrome": {
+    "message": "Download link with Chrome",
+    "description": "The 5th menu item in context menu."
+  },
+  "mCopyLink": {
+    "message": "Copy link address",
+    "description": "The 6th menu item in context menu."
+  },
+  "mContextMenu": {
+    "message": "Disable download menu",
+    "description": "The 7th menu item in context menu."
+  },
+  "option": {
+    "message": "Options",
+    "description": "The 8th menu item in context menu."
+  },
+  "pageTitle": {
+    "message": "Download Helper Options",
+    "description": "Title of the Option page."
+  },
+  "downloader": {
+    "message": "Select default downloader:",
+    "description": "Sub-title of the Option page."
+  },
+  "flashget": {
+    "message": "FlashGet",
+    "description": "The 1st default downloader option, a popular download manager software."
+  },
+  "miniFlashget": {
+    "message": "FlashGet Mini",
+    "description": "The 2nd default downloader option, the mini version of FlashGet."
+  },
+  "thunder": {
+    "message": "Thunder",
+    "description": "The 3rd default downloader option, a popular download manager software in China."
+  },
+  "miniThunder": {
+    "message": "Mini Thunder",
+    "description": "The 4th default downloader option, the mini version of Thunder."
+  },
+  "chromeDownloader": {
+    "message": "Chrome",
+    "description": "The 5th default downloader option, Chrome."
+  },
+  "disableMenu": {
+    "message": "Disable right-click download menu and use default Chrome context menu",
+    "description": "Option to disable context menu."
+  },
+  "saveAndClose": {
+    "message": "Save & Close",
+    "description": "Save & Close button on the option page"
+  }
 }
