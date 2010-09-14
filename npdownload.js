@@ -7,7 +7,6 @@ var contextMenuStatus = false;
 var flashgetStatus = false;
 var miniFlashgetStatus = false;
 var thunderStatus = false;
-//var webThunderStatus = false;
 var miniThunderStatus = false;
 var useExperimentalAPI;
 
@@ -19,7 +18,6 @@ chrome.extension.onRequest.addListener(
         flashgetStatus = eval(request.flashget);
         miniFlashgetStatus = eval(request.miniFlashget);
         thunderStatus = eval(request.thunder);
-        //webThunderStatus = eval(request.webThunder);
         miniThunderStatus = eval(request.miniThunder);
         sendResponse({msg: 'is_content_script'});
       } else if (request.msg == 'content_script_is_load') {
@@ -31,7 +29,8 @@ function generateContextMenu() {
   var contextMenu = document.createElement('div');
   contextMenu.id = 'dh-menu';
   contextMenu.style.display = 'none';
-  var menuList = ['mFlashget', 'mMiniFlashget', 'mThunder', 'mMiniThunder', 'mChrome', 'mCopyLink', '', 'mContextMenu'];
+  var menuList = ['menu_flashget', 'menu_mini_flashget', 'menu_thunder',
+      'menu_mini_thunder', 'menu_chrome', 'menu_copy_link', '', 'menu_disable'];
   for (var i = 0; i < menuList.length; i++) {
     var menuItem = document.createElement('div');
     if (menuList[i] == '') {

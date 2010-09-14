@@ -35,7 +35,7 @@ function checkObjectByNP(progID) {
 
 function setPopupStatus() {
   scanDownloader();
-  chrome.browserAction.setTitle({title: chrome.i18n.getMessage('tipUnable')});
+  chrome.browserAction.setTitle({title: chrome.i18n.getMessage('tip_special')});
   chrome.browserAction.setIcon(
       {path: chrome.extension.getURL('icon_19_disable.png')});
   chrome.browserAction.setPopup({popup: ''});
@@ -46,31 +46,37 @@ function setPopupStatus() {
         var setBrowserActionIcon = 'icon_19_disable.png';
         var setPopupUrl = '';
         if (request && request.msg == 'noLinks') {
-          browserActionTitle = chrome.i18n.getMessage('tipNolink');
+          browserActionTitle = chrome.i18n.getMessage('tip_no_link');
         } else if (request.msg == 'haveLinks') {
           setBrowserActionIcon = 'icon_19.png';
           var count = 0;
           if (localStorage.thunder == 'true') {
             count++;
-            browserActionTitle = chrome.i18n.getMessage('downloadAllByThunder');
+            browserActionTitle = chrome.i18n.getMessage('download_all_with_thunder');
           }
           if (localStorage.flashget == 'true') {
             count++;
-            browserActionTitle = chrome.i18n.getMessage('downloadAllByFlashget');
+            browserActionTitle = chrome.i18n.getMessage('download_all_with_flashget');
           }
           if (count == 2) {
-            browserActionTitle = chrome.i18n.getMessage('downloadAllByThunderAndFlashget');
+            browserActionTitle =
+              chrome.i18n.getMessage('download_all_with_thunder_or_flashget');
             setPopupUrl = 'popup.html';
           } else if (count == 0) {
             setBrowserActionIcon = 'icon_19_disable.png';
-            if (localStorage.miniFlashget == 'false' && localStorage.miniThunder == 'false') {
-              browserActionTitle = chrome.i18n.getMessage('noDownloader');
-            } else if (localStorage.miniFlashget == 'true' && localStorage.miniThunder == 'false') {
-              browserActionTitle = chrome.i18n.getMessage('noDownloader2');
-            } else if (localStorage.miniFlashget == 'false' && localStorage.miniThunder == 'true') {
-              browserActionTitle = chrome.i18n.getMessage('noDownloader3');
-            } else if (localStorage.miniFlashget == 'true' && localStorage.miniThunder == 'true') {
-              browserActionTitle = chrome.i18n.getMessage('noDownloader4');
+            if (localStorage.miniFlashget == 'false' &&
+                localStorage.miniThunder == 'false') {
+              browserActionTitle = chrome.i18n.getMessage('tip_no_downloader');
+            } else if (localStorage.miniFlashget == 'true' &&
+                       localStorage.miniThunder == 'false') {
+              browserActionTitle = chrome.i18n.getMessage('tip_mini_flashget');
+            } else if (localStorage.miniFlashget == 'false' &&
+                       localStorage.miniThunder == 'true') {
+              browserActionTitle = chrome.i18n.getMessage('tip_mini_thunder');
+            } else if (localStorage.miniFlashget == 'true' &&
+                       localStorage.miniThunder == 'true') {
+              browserActionTitle =
+                chrome.i18n.getMessage('tip_mini_flashget_and_thunder');
             }
             chrome.browserAction.setIcon(
                 {path: chrome.extension.getURL('icon_19_disable.png')});
@@ -101,14 +107,14 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 function addMyItemToContextMenu() {
   var downloaderName;
   if (eval(localStorage.flashget)) {
-    downloaderName = chrome.i18n.getMessage('mFlashget');
+    downloaderName = chrome.i18n.getMessage('menu_flashget');
     chrome.experimental.contextMenu.create(
         {'title': downloaderName,
          'contexts': ['LINK'],
          'onclick': function(obj){
            pluginobj.flashgetAddLink(obj.linkUrl, '', obj.mainFrameUrl);
          }});
-    downloaderName = chrome.i18n.getMessage('downloadAllByFlashget');
+    downloaderName = chrome.i18n.getMessage('download_all_with_flashget');
     chrome.experimental.contextMenu.create(
       {'title': downloaderName,
        'contexts': ['ALL'],
@@ -122,7 +128,7 @@ function addMyItemToContextMenu() {
        }});
   }
   if (eval(localStorage.thunder)) {
-    downloaderName = chrome.i18n.getMessage('mThunder');
+    downloaderName = chrome.i18n.getMessage('menu_thunder');
     chrome.experimental.contextMenu.create(
         {'title': downloaderName,
          'contexts': ['LINK'],
@@ -130,7 +136,7 @@ function addMyItemToContextMenu() {
            pluginobj.thunderAddLink(obj.linkUrl, '', obj.mainFrameUrl);
          }});
 
-    downloaderName = chrome.i18n.getMessage('downloadAllByThunder');
+    downloaderName = chrome.i18n.getMessage('download_all_with_thunder');
     chrome.experimental.contextMenu.create(
       {'title': downloaderName,
        'contexts': ['ALL'],
