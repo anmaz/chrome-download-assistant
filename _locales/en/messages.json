@@ -1,36 +1,3 @@
-<<<<<<< HEAD
-{
-  "name": {"message": "Download Helper (by Google)"},
-  "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder and Mini Thunder."},
-  "default_title": {"message": "Download Helper"},
-  "tip_no_link": {"message": "There are no links on this page"},
-  "tip_special": {"message": "This is a special page. Unable to use Download Helper on this page."},
-  "tip_no_downloader": {"message": "No downloaders detected. To enable Download All feature, please install FlashGet or Thunder."},
-  "tip_mini_flashget": {"message": "FlashGet Mini detected. To enable Download All feature, please install FlashGet or Thundet."},
-  "tip_mini_thunder": {"message": "Mini Thunder detected. To enable Download All feature, please install FlashGet or Thunder."},
-  "tip_mini_flashget_and_thunder": {"message": "FlashGet Mini and Mini Thunder detected. To enable Download All feature, please install FlashGet or Thunder."},
-  "download_all_with_flashget_or_thunder": {"message": "Download all with FlashGet/Thunder"},
-  "download_all_with_flashget": {"message": "Download all Links with FlashGet"},
-  "download_all_with_thunder": {"message": "Download all Links with Thunder"},
-  "menu_flashget": {"message": "Download link with FlashGet"},
-  "menu_mini_flashget": {"message": "Download link with FlashGet Mini"},
-  "menu_thunder": {"message": "Download link with Thunder"},
-  "menu_mini_thunder": {"message": "Download link with Mini Thunder"},
-  "menu_chrome": {"message": "Download link with Chrome"},
-  "menu_copy_link": {"message": "Copy link address"},
-  "menu_disable": {"message": "Disable download menu"},
-  "option": {"message": "Options"},
-  "page_title": {"message": "Download Helper Options"},
-  "downloader": {"message": "Select default downloader: "},
-  "flashget": {"message": "FlashGet"},
-  "mini_flashget": {"message": "FlashGet Mini"},
-  "thunder": {"message": "Thunder"},
-  "mini_thunder": {"message": "Mini Thunder"},
-  "chrome_downloader": {"message": "Chrome"},
-  "disable": {"message": "Disable right-click download menu and use default Chrome context menu"},
-  "save_and_close": {"message": "Save & Close"}
-}
-=======
 {
   "name": {"message": "Download Helper (by Google)"},
   "default_title": {"message": "Download Helper"},
@@ -71,4 +38,3 @@
   "download_all": {"message": "Download all Links"},
   "save_and_close": {"message": "Save & Close"}
 }
->>>>>>> refactor

@@ -6,19 +6,10 @@
 
 extern Log g_Log;
 
-<<<<<<< HEAD
-ComPlugin::ComPlugin(void)
-{
-}
-
-ComPlugin::~ComPlugin(void)
-{
-=======
 ComPlugin::ComPlugin(void) {
 }
 
 ComPlugin::~ComPlugin(void) {
->>>>>>> refactor
 }
 
 NPError ComPlugin::Init(NPP instance, uint16_t mode, int16_t argc,

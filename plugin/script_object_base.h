@@ -9,13 +9,7 @@ using namespace std;
 
 #define FUNCTION_NAME_LEN 64
 
-<<<<<<< HEAD
-class ScriptObjectBase :
-  public NPObject
-{
-=======
 class ScriptObjectBase : public NPObject {
->>>>>>> refactor
 public:
   ScriptObjectBase(void);
   virtual ~ScriptObjectBase(void);

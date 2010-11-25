@@ -5,10 +5,7 @@
   <style>
   body {
     margin:10px;
-<<<<<<< HEAD
-=======
     font-size:13px;
->>>>>>> refactor
     background: #EBEFF9;
     font-family: arial, sans-serif;
   }
@@ -23,12 +20,7 @@
     padding-bottom:40px;
     padding-left:90px;
     padding-top:70px;
-<<<<<<< HEAD
-    background:url(icon_48.png) no-repeat;
-    background-position:1px 62px;
-=======
     background:url(images/icon_48.png) no-repeat 1px 62px;
->>>>>>> refactor
   }
   h4 {
     padding-left:0.5em;
@@ -59,20 +51,6 @@
     margin:50px auto 20px auto;
     width: 600px;
   }
-<<<<<<< HEAD
-  #flashget, #miniFlashget, #thunder,#webThunder, #miniThunder, #chromeDownloader {
-    padding:5px 0px 5px 30px;
-    line-height:30px;
-  }
-  #flashget, #miniFlashget {
-    background:url(flashget_25.png) no-repeat;
-  }
-  #thunder, #webThunder, #miniThunder {
-    background:url(thunder_25.png) no-repeat;
-  }
-  #chromeDownloader {
-    background:url(default_25.png) no-repeat;
-=======
   #downloaderOPtion div{
     line-height: 28px;
     margin-left: 30px;
@@ -84,7 +62,6 @@
 
   #contextMenuItem {
     margin-left: 32px;
->>>>>>> refactor
   }
   .closeBtn {
     margin: 20px 0 0 0;
@@ -101,88 +78,14 @@
     <h1><span id="pageTitle"></span></h1>
   </div>
   <h4 id="downloader"></h4>
-<<<<<<< HEAD
-  <p id="flashgetDiv"><label><input type="radio" name="downloader" id="radioFlashget"> <span id="flashget">flashget</span></label></p>
-  <p id="miniFlashgetDiv"><label><input type="radio" name="downloader" id="radioMiniFlashget"> <span id="miniFlashget">MiniFlashget</span></label></p>
-  <p id="thunderDiv"><label><input type="radio" name="downloader" id="radioThunder"> <span id="thunder">thunder</span></label></p>
-  <p id="miniThunderDiv"><label><input type="radio" name="downloader" id="radioMiniThunder"> <span id="miniThunder">MiniThunder</span></label></p>
-  <p><label><input type="radio" checked="true" name="downloader" id="radioChrome"> <span id="chromeDownloader">chrome</span></label></p>
-  <p id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="disableMenu"></span></label></p>
-=======
   <div id="downloaderOption">
     
   </div>
   <div id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="disableMenu"></span></label></div>
->>>>>>> refactor
   <div class="closeBtn"><button id="saveAndClose" onclick="saveAndClose()"></button></div>
   </div>
   <div id="footer">&copy;2010 Google</div>
   <script>
-<<<<<<< HEAD
-    var radioFlashget = document.getElementById("radioFlashget");
-    var radioMiniFlashget = document.getElementById('radioMiniFlashget');
-    var radioThunder = document.getElementById("radioThunder");
-    var radioMiniThunder = document.getElementById('radioMiniThunder');
-    var radioChrome = document.getElementById("radioChrome");
-    var checkboxContextMenu = document.getElementById("checkboxContextMenu");
-    bg = chrome.extension.getBackgroundPage();
-    function init() {
-      i18nReplace("page_title");
-      i18nReplace("downloader");
-      i18nReplace("flashget");
-      i18nReplace("mini_flashget");
-      i18nReplace("thunder");
-      i18nReplace("mini_thunder");
-      i18nReplace("chrome_downloader");
-      i18nReplace("disable");
-      i18nReplace('save_and_close');
-      if (bg.useExperimentalAPI) {
-        document.getElementById('contextMenuItem').style.display = 'none';
-      }
-      if (!eval(localStorage.flashget)) {
-        document.getElementById('flashgetDiv').style.display = 'none';
-      }
-      if (!eval(localStorage.miniFlashget)) {
-        document.getElementById('miniFlashgetDiv').style.display = 'none';
-      }
-      if (!eval(localStorage.thunder)) {
-        document.getElementById('thunderDiv').style.display = 'none';
-      }
-      if (!eval(localStorage.miniThunder)) {
-        document.getElementById('miniThunderDiv').style.display = 'none';
-      }
-      if (localStorage.downloader == "flashget") {
-        if (eval(localStorage.flashget)) {
-          radioFlashget.checked = true;
-        }
-      } else if (localStorage.downloader == "miniFlashget") {
-        if (eval(localStorage.miniFlashget)) {
-          radioMiniFlashget.checked = true;
-        }
-      } else if (localStorage.downloader == "thunder") {
-        if (eval(localStorage.thunder)) {
-          radioThunder.checked = true;
-        }
-      } else if (localStorage.downloader == 'miniThunder') {
-        if (eval(localStorage.miniThunder)) {
-          radioMiniThunder.checked = true;
-        }
-      }
-      if (!eval(localStorage.contextmenu)) {
-        checkboxContextMenu.checked = true;
-      }
-
-    };
-
-    function saveAndClose() {
-      localStorage.downloader =
-          (radioFlashget.checked ? 'flashget' : '') ||
-          (radioMiniFlashget.checked ? 'miniFlashget' : '') ||
-          (radioThunder.checked ? 'thunder' : '') ||
-          (radioMiniThunder.checked ? 'miniThunder' : '') ||
-          (radioChrome.checked ? 'chromeDownloader' : '');
-      localStorage.contextmenu = (checkboxContextMenu.checked ? 'false' : 'true');
-=======
     var defaultDownloader = localStorage['defaultDownloader'] || 'chrome_downloader';
     var checkboxContextMenu = document.getElementById("checkboxContextMenu");
     bg = chrome.extension.getBackgroundPage();
@@ -237,22 +140,15 @@
     function saveAndClose() {
       localStorage['defaultDownloader'] = defaultDownloader;
       localStorage['contextMenu'] = (checkboxContextMenu.checked ? 'false' : 'true');
->>>>>>> refactor
       chrome.tabs.getSelected(null, function(tab) {
         chrome.tabs.remove(tab.id);
       });
     };
 
-<<<<<<< HEAD
-    function i18nReplace(id) {
-      return document.getElementById(id).innerText = chrome.i18n.getMessage(id);
-    };
-=======
 	function i18nReplace(id, messageName) {
 	  return document.getElementById(id).innerText =
           chrome.i18n.getMessage(messageName);
 	};
->>>>>>> refactor
   </script>
  </BODY>
 </HTML>

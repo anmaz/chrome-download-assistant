@@ -53,13 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
-<<<<<<< HEAD
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
-=======
  FILEVERSION 1,0,0,2
  PRODUCTVERSION 1,0,0,2
->>>>>>> refactor
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -76,15 +71,6 @@ BEGIN
         BEGIN
             VALUE "FileDescription", "This is a npapi plugin built for Chrome on Windows."
             VALUE "FileOpenName", "Download Helper"
-<<<<<<< HEAD
-            VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "npDownload"
-            VALUE "LegalCopyright", "Copyright (C) 2010"
-            VALUE "MIMEType", "application/x-npdownload"
-            VALUE "OriginalFilename", "npMediaExtension.dll"
-            VALUE "ProductName", "npDownload"
-            VALUE "ProductVersion", "1, 0, 0, 1"
-=======
             VALUE "FileVersion", "1, 0, 0, 2"
             VALUE "InternalName", "download_helper"
             VALUE "LegalCopyright", "Copyright (C) 2010"
@@ -92,7 +78,6 @@ BEGIN
             VALUE "OriginalFilename", "download_helper.dll"
             VALUE "ProductName", "Download Helper"
             VALUE "ProductVersion", "1, 0, 0, 2"
->>>>>>> refactor
         END
     END
     BLOCK "VarFileInfo"

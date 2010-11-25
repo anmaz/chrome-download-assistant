@@ -5,12 +5,7 @@
 typedef PluginBase* (*ConstructorPtr)();
 #define MAX_PLUGIN_TYPE_COUNT 10
 
-<<<<<<< HEAD
-class PluginFactory
-{
-=======
 class PluginFactory {
->>>>>>> refactor
 public:
   PluginFactory(void);
   ~PluginFactory(void);

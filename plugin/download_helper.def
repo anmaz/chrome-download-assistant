@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-LIBRARY	"npDownloadHelper"
-=======
 LIBRARY	"download_helper"
->>>>>>> refactor
 
 EXPORTS
 	NP_GetEntryPoints     @1
