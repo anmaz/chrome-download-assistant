@@ -1,7 +1,7 @@
 {
   "name": {"message": "Download Helper (by Google)"},
   "default_title": {"message": "Download Helper"},
-  "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder and Mini Thunder."},
+  "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder, Mini Thunder, QQ Whirlwind, eMule, Orbit and Internet Download Manager."},
   "download_all_with_flashget": {"message": "Download all links with FlashGet"},
   "download_all_with_mini_flashget": {"message": "Download all links with FlashGet Mini"},
   "download_all_with_thunder": {"message": "Download all links with Thunder"},
