@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "plugin_base.h"
 
 PluginBase::PluginBase(void) {
@@ -41,7 +42,6 @@ int32_t PluginBase::Write(NPStream* stream, int32_t offset, int32_t len,
 }
 
 void PluginBase::StreamAsFile(NPStream* stream, const char* fname) {
-  
 }
 
 void PluginBase::Print(NPPrint* platformPrint) {
@@ -52,7 +52,6 @@ int16_t PluginBase::HandleEvent(void* event) {
 }
 
 void PluginBase::URLNotify(const char* url, NPReason reason, void* notifyData) {
-  
 }
 
 NPError PluginBase::GetValue(NPPVariable variable, void *value) {
@@ -62,4 +61,3 @@ NPError PluginBase::GetValue(NPPVariable variable, void *value) {
 NPError PluginBase::SetValue(NPNVariable variable, void *value) {
   return NPERR_NO_ERROR;
 }
-

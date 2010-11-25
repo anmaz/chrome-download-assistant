@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
+#include "log.h"
 #include "npfunctions.h"
 #include "plugin_base.h"
 #include "plugin_factory.h"
-#include "log.h"
 
 PluginFactory g_PluginFactory;
 extern Log g_Log;
@@ -19,7 +19,6 @@ NPError NP_LOADDS NPP_Initialize() {
 }
 
 void NP_LOADDS NPP_Shutdown() {
-
 }
 
 NPError NP_LOADDS NPP_New(NPMIMEType pluginType, NPP instance,

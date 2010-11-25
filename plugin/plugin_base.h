@@ -33,5 +33,4 @@ public:
 private:
   NPP npp_;
   HWND hwnd_;
-
 };

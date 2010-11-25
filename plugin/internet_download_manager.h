@@ -1,7 +1,9 @@
 #pragma once
-#include "script_object_base.h"
-#include <string> 
+
 #include <map>
+#include <string>
+
+#include "script_object_base.h"
 
 using namespace std;
 
@@ -10,7 +12,7 @@ public:
   InternetDownloadManager(void);
   virtual ~InternetDownloadManager(void);
 
-  static NPObject* Allocate(NPP npp, NPClass *aClass); 
+  static NPObject* Allocate(NPP npp, NPClass *aClass);
 
   void Deallocate();
   void Invalidate();

@@ -19,5 +19,4 @@ private:
   };
 
   Plugin_Type_Item plugin_type_list_[MAX_PLUGIN_TYPE_COUNT];
-
 };

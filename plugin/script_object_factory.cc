@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "script_object_factory.h"
 
 NPClass ScriptObjectFactory::npclass_ = {

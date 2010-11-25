@@ -1,4 +1,5 @@
 #pragma once
+
 #include "script_object_base.h"
 
 class ComObjectWapper : public ScriptObjectBase {
@@ -6,7 +7,7 @@ public:
   ComObjectWapper(void);
   virtual ~ComObjectWapper(void);
 
-  static NPObject* Allocate(NPP npp, NPClass *aClass); 
+  static NPObject* Allocate(NPP npp, NPClass *aClass);
 
   virtual void Deallocate();
   virtual void Invalidate();

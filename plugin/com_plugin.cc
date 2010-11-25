@@ -1,8 +1,9 @@
-#include "StdAfx.h"
+#include "stdafx.h"
+
 #include "com_plugin.h"
 #include "com_object_factory.h"
+#include "log.h"
 #include "script_object_factory.h"
-#include "Log.h"
 
 extern Log g_Log;
 
@@ -13,7 +14,7 @@ ComPlugin::~ComPlugin(void) {
 }
 
 NPError ComPlugin::Init(NPP instance, uint16_t mode, int16_t argc,
-                        char *argn[], char *argv[], 
+                        char *argn[], char *argv[],
                         NPSavedData *saved) {
   scriptobject_ = NULL;
   instance->pdata = this;
@@ -30,8 +31,8 @@ NPError ComPlugin::GetValue(NPPVariable variable, void *value) {
   switch(variable) {
     case NPPVpluginScriptableNPObject:
       if (scriptobject_ == NULL) {
-        scriptobject_ = ScriptObjectFactory::CreateObject(get_npp(), 
-            ComObjectFactory::Allocate);
+        scriptobject_ = ScriptObjectFactory::CreateObject(
+            get_npp(), ComObjectFactory::Allocate);
         g_Log.WriteLog("GetValue","GetValue");
       }
       if (scriptobject_ != NULL) {

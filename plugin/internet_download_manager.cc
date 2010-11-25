@@ -1,7 +1,9 @@
 #include "stdafx.h"
-#include "Internet_download_manager.h"
-#include "Log.h"
+
 #include <tchar.h>
+
+#include "internet_download_manager.h"
+#include "log.h"
 
 extern Log g_Log;
 
@@ -50,7 +52,7 @@ bool InternetDownloadManager::CheckObject() {
   HKEY hkey;
   if (RegOpenKey(HKEY_CURRENT_USER, L"Software\\DownloadManager", &hkey))
     return false;
-  if (RegQueryValueEx(hkey, L"ExePath", NULL, NULL, (LPBYTE)idm_exe_path, 
+  if (RegQueryValueEx(hkey, L"ExePath", NULL, NULL, (LPBYTE)idm_exe_path,
                       &buffer_len)) {
     RegCloseKey(hkey);
     return false;
@@ -75,7 +77,7 @@ bool InternetDownloadManager::Download(const NPVariant *args,
 
   wstring params;
   int len = NPVARIANT_TO_STRING(args[0]).UTF8Length + 1;
-  if (!MultiByteToWideChar(CP_UTF8, 0, 
+  if (!MultiByteToWideChar(CP_UTF8, 0,
                            NPVARIANT_TO_STRING(args[0]).UTF8Characters,
                            -1, link, len)) {
     return true;
@@ -85,8 +87,8 @@ bool InternetDownloadManager::Download(const NPVariant *args,
     delete[] link;
   }
 
-  HINSTANCE ret = ShellExecuteW(NULL, L"open", idm_exe_path, params.c_str(), 
-                               NULL, SW_SHOWNORMAL);
+  HINSTANCE ret = ShellExecuteW(NULL, L"open", idm_exe_path, params.c_str(),
+                                NULL, SW_SHOWNORMAL);
   if (ret != 0)
     return true;
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "plugin_factory.h"
+
 #include "com_plugin.h"
+#include "plugin_factory.h"
 
 PluginFactory::PluginFactory(void) {
   memset(plugin_type_list_, sizeof(plugin_type_list_), 0);
@@ -9,7 +10,6 @@ PluginFactory::PluginFactory(void) {
 }
 
 PluginFactory::~PluginFactory(void) {
-
 }
 
 PluginBase* PluginFactory::NewPlugin(NPMIMEType pluginType) {

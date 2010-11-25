@@ -7,10 +7,9 @@ public:
   ScriptObjectFactory(void);
   ~ScriptObjectFactory(void);
 
-  static ScriptObjectBase* CreateObject(NPP npp, 
+  static ScriptObjectBase* CreateObject(NPP npp,
                                         NPAllocateFunctionPtr allocate);
 
-  
 private:
   static NPObject* Allocate(NPP npp, NPClass *aClass);
   static void Deallocate(NPObject *npobj);
@@ -36,5 +35,4 @@ private:
 
 private:
   static NPClass npclass_;
-
 };

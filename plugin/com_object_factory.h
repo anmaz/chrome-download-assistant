@@ -1,4 +1,5 @@
 #pragma once
+
 #include "script_object_base.h"
 
 class ComObjectFactory : public ScriptObjectBase {
@@ -21,5 +22,4 @@ public:
 
   bool CopyToClipboard(const NPVariant *args, uint32_t argCount,
                        NPVariant *result);
-
 };

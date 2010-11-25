@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "npfunctions.h"
 
 NPNetscapeFuncs* g_NpnFuncs;
@@ -24,7 +25,7 @@ NPError NP_LOADDS NPN_PostURLNotify(NPP instance, const char* url,
                                     const char* target, uint32_t len,
                                     const char* buf, NPBool file,
                                     void* notifyData) {
-  return g_NpnFuncs->posturlnotify(instance, url, target, len, buf, 
+  return g_NpnFuncs->posturlnotify(instance, url, target, len, buf,
                                    file, notifyData);
 }
 
@@ -129,7 +130,7 @@ NPError NP_LOADDS NPN_GetAuthenticationInfo(NPP instance,
                                             char **username, uint32_t *ulen,
                                             char **password,
                                             uint32_t *plen) {
-  return g_NpnFuncs->getauthenticationinfo(instance, protocol, host, port, 
+  return g_NpnFuncs->getauthenticationinfo(instance, protocol, host, port,
                                            scheme, realm, username, ulen,
                                            password, plen);
 }

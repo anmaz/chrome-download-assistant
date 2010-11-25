@@ -1,4 +1,5 @@
 #pragma once
+
 #include "plugin_base.h"
 #include "script_object_base.h"
 
@@ -16,5 +17,4 @@ public:
 
 private:
   ScriptObjectBase* scriptobject_;
-
 };

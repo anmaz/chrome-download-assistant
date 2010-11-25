@@ -1,9 +1,10 @@
 #pragma once
 
+#include <vector>
+
 #include "npapi.h"
 #include "npruntime.h"
 #include "plugin_base.h"
-#include <vector>
 
 using namespace std;
 
@@ -13,8 +14,8 @@ class ScriptObjectBase : public NPObject {
 public:
   ScriptObjectBase(void);
   virtual ~ScriptObjectBase(void);
-  
-  typedef bool (ScriptObjectBase::*InvokePtr)(const NPVariant *args, 
+
+  typedef bool (ScriptObjectBase::*InvokePtr)(const NPVariant *args,
                                               uint32_t argCount,
                                               NPVariant *result);
 
@@ -31,7 +32,7 @@ public:
   virtual void Deallocate() = 0;
   virtual void Invalidate() = 0;
   virtual bool HasMethod(NPIdentifier name);
-  virtual bool Invoke(NPIdentifier name, const NPVariant *args, 
+  virtual bool Invoke(NPIdentifier name, const NPVariant *args,
                       uint32_t argCount, NPVariant *result);
   virtual bool InvokeDefault(const NPVariant *args, uint32_t argCount,
                              NPVariant *result);
@@ -45,7 +46,7 @@ public:
 
   void AddProperty(Property_Item& item);
   void AddFunction(Function_Item& item);
-  
+
   void SetPlugin(PluginBase* p);
 
 protected:
@@ -54,10 +55,8 @@ protected:
 private:
   vector<Function_Item> function_list_;
   vector<Property_Item> property_list_;
-
 };
 
 #define ON_INVOKEHELPER(_funPtr) \
   static_cast<bool (ScriptObjectBase::*)(const NPVariant *,uint32_t , \
                                          NPVariant *)>(_funPtr)
-

@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "Log.h"
+
+#include "log.h"
 
 Log::Log(void) {
   file_ = NULL;

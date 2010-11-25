@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "script_object_base.h"
 
 ScriptObjectBase::ScriptObjectBase(void) {
@@ -26,7 +27,7 @@ bool ScriptObjectBase::HasMethod(NPIdentifier name) {
   return bRet;
 }
 
-bool ScriptObjectBase::Invoke(NPIdentifier name,const NPVariant *args, 
+bool ScriptObjectBase::Invoke(NPIdentifier name,const NPVariant *args,
                               uint32_t argCount,NPVariant *result) {
   bool bRet = false;
   vector<Function_Item>::iterator iter;

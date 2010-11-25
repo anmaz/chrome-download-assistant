@@ -1,10 +1,12 @@
-#include "StdAfx.h"
+#include "stdafx.h"
+
+#include <comdef.h>
+
 #include "com_object_factory.h"
+#include "com_object_wapper.h"
+#include "internet_download_manager.h"
 #include "log.h"
 #include "script_object_factory.h"
-#include "com_object_wapper.h"
-#include <comdef.h>
-#include "Internet_download_manager.h"
 
 extern Log g_Log;
 
@@ -52,7 +54,7 @@ bool ComObjectFactory::Construct(const NPVariant *args, uint32_t argCount,
 }
 
 bool ComObjectFactory::CheckObject(const NPVariant *args, uint32_t argCount,
-                                   NPVariant *result) { 
+                                   NPVariant *result) {
   BOOLEAN_TO_NPVARIANT(false,*result);
 
   if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
@@ -123,7 +125,7 @@ bool ComObjectFactory::CreateObject(const NPVariant *args, uint32_t argCount,
       }
     }
   }
-    
+
   return true;
 }
 

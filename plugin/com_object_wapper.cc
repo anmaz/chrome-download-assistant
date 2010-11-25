@@ -1,7 +1,9 @@
-#include "StdAfx.h"
-#include "com_object_wapper.h"
-#include "Log.h"
+#include "stdafx.h"
+
 #include <comdef.h>
+
+#include "com_object_wapper.h"
+#include "log.h"
 
 extern Log g_Log;
 
@@ -39,7 +41,7 @@ bool ComObjectWapper::HasMethod(NPIdentifier name) {
   TCHAR* p = szWName;
   MultiByteToWideChar(CP_UTF8, 0, szName, -1, szWName, 256);
   DISPID dispid;
-  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1, 
+  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr))
     bRet = true;
@@ -48,7 +50,7 @@ bool ComObjectWapper::HasMethod(NPIdentifier name) {
   return bRet;
 }
 
-bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args, 
+bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
                              uint32_t argCount, NPVariant *result) {
   bool bRet = false;
   char szLog[256];
@@ -58,7 +60,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
   TCHAR* p = szWName;
   MultiByteToWideChar(CP_UTF8, 0, szName, -1, szWName, 256);
   DISPID dispid;
-  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1, 
+  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
@@ -123,7 +125,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
                     const char* array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
                     g_Log.WriteLog("array", array_item);
                     _bstr_t bstr = array_item;
-                    MultiByteToWideChar(CP_UTF8, 0, array_item, -1, 
+                    MultiByteToWideChar(CP_UTF8, 0, array_item, -1,
                         bstr, bstr.length()+1);
                     VARIANT var_out;
                     var_out.vt = VT_BSTR;
@@ -146,11 +148,11 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
     params.rgvarg = varlist;
     g_Log.WriteLog("Invoke", "Before Invoke");
     unsigned int nErrIndex = 0;
-  
-    hr = disp_pointer_->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT, 
-                               DISPATCH_METHOD, &params, &varRet, NULL, 
+
+    hr = disp_pointer_->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT,
+                               DISPATCH_METHOD, &params, &varRet, NULL,
                                &nErrIndex);
-    sprintf_s(szLog, 
+    sprintf_s(szLog,
         "Invoke End,hr=0x%X,GetLastError=%ld,nErrIndex=%ld,varRet.Type=%ld",
         hr, GetLastError(), nErrIndex, varRet.vt);
     g_Log.WriteLog("Invoke", szLog);
@@ -222,7 +224,6 @@ bool ComObjectWapper::Enumerate(NPIdentifier **value, uint32_t *count) {
 }
 
 void ComObjectWapper::Invalidate() {
-
 }
 
 bool ComObjectWapper::Construct(const NPVariant *args, uint32_t argCount,
