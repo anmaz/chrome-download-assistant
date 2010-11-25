@@ -3,8 +3,12 @@
 #include <stdio.h>
 #include <windows.h>
 
+<<<<<<< HEAD
 class Log
 {
+=======
+class Log {
+>>>>>>> refactor
 public:
   Log(void);
   ~Log(void);

@@ -1,8 +1,15 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
+<<<<<<< HEAD
 // Used by npDownloadHelper.rc
 
 // 新对象的下一组默认值
+=======
+// Used by download_helper.rc
+//
+
+// Next default values for new objects
+>>>>>>> refactor
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS

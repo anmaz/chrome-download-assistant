@@ -1,5 +1,6 @@
 {
   "name": {"message": "下载助手（由Google提供）"},
+<<<<<<< HEAD
   "description": {"message": "使用快车、迷你快车、迅雷或迷你迅雷下载网页链接。"},
   "default_title": {"message": "下载助手"},
   "tip_nolink": {"message": "此页面没有链接可供下载。"},
@@ -11,10 +12,26 @@
   "download_all_with_flashget_or_thunder": {"message": "使用快车/迅雷下载所有链接"},
   "download_all_with_flashget": {"message": "使用快车下载所有链接"},
   "download_all_with_thunder": {"message": "使用迅雷下载所有链接"},
+=======
+  "default_title": {"message": "下载助手"},
+  "description": {"message": "使用快车、迷你快车、迅雷或迷你迅雷下载网页链接。"},
+  "download_all_with_flashget": {"message": "使用快车下载所有链接"},
+  "download_all_with_mini_flashget": {"message": "使用迷你快车下载所有链接"},
+  "download_all_with_thunder": {"message": "使用迅雷下载所有链接"},
+  "download_all_with_qq_whirlwind": {"message": "使用QQ旋风下载所有链接"},
+  "download_all_with_orbit": {"message": "使用Orbit下载所有链接"},
+>>>>>>> refactor
   "menu_flashget": {"message": "使用快车下载链接"},
   "menu_mini_flashget": {"message": "使用迷你快车下载链接"},
   "menu_thunder": {"message": "使用迅雷下载链接"},
   "menu_mini_thunder": {"message": "使用迷你迅雷下载链接"},
+<<<<<<< HEAD
+=======
+  "menu_qq_whirlwind": {"message": "使用QQ旋风下载链接"},
+  "menu_emule": {"message": "使用电驴下载链接"},
+  "menu_orbit": {"message": "使用Orbit下载链接"},
+  "menu_idm": {"message": "使用IDM下载链接"},
+>>>>>>> refactor
   "menu_chrome": {"message": "使用Chrome下载链接"},
   "menu_copy_link": {"message": "复制链接地址"},
   "menu_disable": {"message": "禁用右键下载菜单"},
@@ -25,7 +42,23 @@
   "mini_flashget": {"message": "迷你快车"},
   "thunder": {"message": "迅雷"},
   "mini_thunder": {"message": "迷你迅雷"},
+<<<<<<< HEAD
   "chrome_downloader": {"message": "Chrome内置下载器"},
   "disable": {"message": "禁用右键下载菜单，使用Chrome默认右键菜单"},
   "save_and_close": {"message": "保存并关闭"}
 }
+=======
+  "qq_whirlwind": {"message": "QQ旋风"},
+  "emule": {"message": "电驴"},
+  "orbit": {"message": "Orbit"},
+  "idm": {"message": "Internet Download Manager"},
+  "chrome_downloader": {"message": "Chrome内置下载器"},
+  "disable": {"message": "禁用右键下载菜单，使用Chrome默认右键菜单"},
+  "tip_no_link": {"message": "此页面没有链接可供下载。"},
+  "tip_special": {"message": "此页面是特殊页面，无法使用下载助手。"},
+  "tip_no_downloader": {"message": "您未安装任何下载器。要使用下载全部链接功能，请安装快车或者迅雷。"},
+  "tip_no_downloader1": {"message": "您只安装了迷你迅雷。要使用下载全部链接功能，请安装快车或者迅雷。"},
+  "download_all": {"message": "下载所有链接"},
+  "save_and_close": {"message": "保存并关闭"}
+}
+>>>>>>> refactor

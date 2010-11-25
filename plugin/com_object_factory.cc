@@ -4,9 +4,13 @@
 #include "script_object_factory.h"
 #include "com_object_wapper.h"
 #include <comdef.h>
+<<<<<<< HEAD
 #include "flashget_script_object.h"
 #include "flashget.h"
 #include "miniflashget_script_object.h"
+=======
+#include "Internet_download_manager.h"
+>>>>>>> refactor
 
 extern Log g_Log;
 
@@ -19,7 +23,11 @@ ComObjectFactory::~ComObjectFactory(void) {
 NPObject* ComObjectFactory::Allocate(NPP npp, NPClass *aClass) {
   ComObjectFactory* factory = new ComObjectFactory;
   char logs[256];
+<<<<<<< HEAD
   sprintf_s(logs, "CComObjectFactory this=%ld", factory);
+=======
+  sprintf(logs, "ComObjectFactory this=%ld", factory);
+>>>>>>> refactor
   g_Log.WriteLog("Allocate", logs);
   if (factory != NULL) {
     factory->SetPlugin((PluginBase*)npp->pdata);
@@ -39,7 +47,11 @@ NPObject* ComObjectFactory::Allocate(NPP npp, NPClass *aClass) {
 
 void ComObjectFactory::Deallocate() {
   char logs[256];
+<<<<<<< HEAD
   sprintf_s(logs, "CComObjectFactory this=%ld", this);
+=======
+  sprintf(logs, "ComObjectFactory this=%ld", this);
+>>>>>>> refactor
   g_Log.WriteLog("Deallocate", logs);
   delete this;
 }
@@ -61,11 +73,16 @@ bool ComObjectFactory::CheckObject(const NPVariant *args, uint32_t argCount,
     const char* prog_id = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
     g_Log.WriteLog("ProgID", prog_id);
 
+<<<<<<< HEAD
     if (stricmp(prog_id, "FlashGet") == 0){
       FlashgetSupport::IsEnabled(NULL, args, argCount, result);
       return true;
     } else if (stricmp(prog_id,"MiniFlashGet") == 0) {
       MiniflashgetScriptObject::CheckObject(args, argCount, result);
+=======
+    if (stricmp(prog_id, "DownlWithIDM.LinkProcessor") == 0) {
+      BOOLEAN_TO_NPVARIANT(InternetDownloadManager::CheckObject(), *result);
+>>>>>>> refactor
       return true;
     }
 
@@ -93,6 +110,7 @@ bool ComObjectFactory::CreateObject(const NPVariant *args, uint32_t argCount,
 
   if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
     const char* pProgID = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+<<<<<<< HEAD
     if (stricmp(pProgID, "FlashGet") == 0){
       ScriptObjectBase* pObject = (ScriptObjectBase*)ScriptObjectFactory::
           CreateObject(plugin_->get_npp(), FlashGetScriptObject::Allocate);
@@ -101,11 +119,21 @@ bool ComObjectFactory::CreateObject(const NPVariant *args, uint32_t argCount,
     } else if (stricmp(pProgID,"MiniFlashGet") == 0) {
       ScriptObjectBase* pObject = (ScriptObjectBase*)ScriptObjectFactory::
           CreateObject(plugin_->get_npp(), MiniflashgetScriptObject::Allocate);
+=======
+
+    g_Log.WriteLog("ProgID", pProgID);
+    if (stricmp(pProgID, "DownlWithIDM.LinkProcessor") == 0) {
+      ScriptObjectBase* pObject = (ScriptObjectBase*)ScriptObjectFactory::
+          CreateObject(plugin_->get_npp(), InternetDownloadManager::Allocate);
+>>>>>>> refactor
       OBJECT_TO_NPVARIANT(pObject, *result);
       return true;
     }
 
+<<<<<<< HEAD
     g_Log.WriteLog("ProgID", pProgID);
+=======
+>>>>>>> refactor
     TCHAR progID[256];
     MultiByteToWideChar(CP_UTF8, 0, pProgID, -1, progID, 256);
     IDispatch* pInterface;
@@ -142,7 +170,11 @@ bool ComObjectFactory::CopyToClipboard(const NPVariant *args,
 
   if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
     const char* data= NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+<<<<<<< HEAD
     int nLen = NPVARIANT_TO_STRING(args[0]).UTF8Length+1;
+=======
+    int nLen = NPVARIANT_TO_STRING(args[0]).UTF8Length + 1;
+>>>>>>> refactor
     g_Log.WriteLog("data", data);
     if (OpenClipboard(plugin_->get_hwnd()))
     {

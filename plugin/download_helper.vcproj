@@ -43,10 +43,17 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+<<<<<<< HEAD
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;NPDOWNLOADHELPER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="0"
+=======
+				PreprocessorDefinitions="WIN32;_DEBUG;_USRDLL;_WINDOWS;NPDOWNLOADHELPER_EXPORTS"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+>>>>>>> refactor
 				UsePrecompiledHeader="1"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -119,7 +126,11 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
+<<<<<<< HEAD
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;NPDOWNLOADHELPER_EXPORTS"
+=======
+				PreprocessorDefinitions="WIN32;NDEBUG;_USRDLL;_WINDOWS;NPDOWNLOADHELPER_EXPORTS"
+>>>>>>> refactor
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -137,6 +148,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+<<<<<<< HEAD
+=======
+				OutputFile="$(OutDir)\$(ProjectName).dll"
+>>>>>>> refactor
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile="download_helper.def"
@@ -198,11 +213,15 @@
 				>
 			</File>
 			<File
+<<<<<<< HEAD
 				RelativePath=".\flashget.cc"
 				>
 			</File>
 			<File
 				RelativePath=".\flashget_script_object.cc"
+=======
+				RelativePath=".\Internet_download_manager.cc"
+>>>>>>> refactor
 				>
 			</File>
 			<File
@@ -210,10 +229,13 @@
 				>
 			</File>
 			<File
+<<<<<<< HEAD
 				RelativePath=".\miniflashget_script_object.cc"
 				>
 			</File>
 			<File
+=======
+>>>>>>> refactor
 				RelativePath=".\npn_entry.cc"
 				>
 			</File>
@@ -260,11 +282,15 @@
 				>
 			</File>
 			<File
+<<<<<<< HEAD
 				RelativePath=".\flashget.h"
 				>
 			</File>
 			<File
 				RelativePath=".\flashget_script_object.h"
+=======
+				RelativePath=".\Internet_download_manager.h"
+>>>>>>> refactor
 				>
 			</File>
 			<File
@@ -272,10 +298,13 @@
 				>
 			</File>
 			<File
+<<<<<<< HEAD
 				RelativePath=".\miniflashget_script_object.h"
 				>
 			</File>
 			<File
+=======
+>>>>>>> refactor
 				RelativePath=".\plugin_base.h"
 				>
 			</File>

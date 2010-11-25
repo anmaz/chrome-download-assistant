@@ -2,8 +2,12 @@
 
 #include "npapi.h"
 
+<<<<<<< HEAD
 class PluginBase
 {
+=======
+class PluginBase {
+>>>>>>> refactor
 public:
   PluginBase(void);
   virtual ~PluginBase(void);

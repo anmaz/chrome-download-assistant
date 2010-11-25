@@ -3,6 +3,7 @@
    "version": "2.0.0",
    "description": "__MSG_description__",
    "background_page": "background.html",
+<<<<<<< HEAD
    "browser_action": {
       "default_icon": "icon_19.png",
       "default_title": "__MSG_default_title__"
@@ -15,11 +16,18 @@
       "js": [ "npdownload.js" ],
       "css": [ "style.css" ],
       "matches": [ "http://*/*", "https://*/*", "ftp://*/*" ],
+=======
+   "content_scripts": [{
+      "js": [ "npdownload.js" ],
+      "css": [ "style.css" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*"],
+>>>>>>> refactor
       "run_at": "document_end",
       "all_frames": true
    } ],
    "default_locale": "en",
    "icons": {
+<<<<<<< HEAD
       "16": "icon_16.png",
       "19": "icon_19.png",
       "32": "icon_32.png",
@@ -28,6 +36,16 @@
    },
    "options_page": "options.html",
    "permissions": [ "tabs", "http://*/", "https://*/" ],
+=======
+      "16": "images/icon_16.png",
+      "19": "images/icon_19.png",
+      "32": "images/icon_32.png",
+      "48": "images/icon_48.png",
+      "128": "images/icon_128.png"
+   },
+   "options_page": "options.html",
+   "permissions": [ "tabs", "http://*/", "https://*/", "contextMenus" ],
+>>>>>>> refactor
    "plugins": [ {
       "path": "plugin/download_helper.dll"
    } ]

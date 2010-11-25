@@ -2,8 +2,12 @@
 
 #include "script_object_base.h"
 
+<<<<<<< HEAD
 class ScriptObjectFactory
 {
+=======
+class ScriptObjectFactory {
+>>>>>>> refactor
 public:
   ScriptObjectFactory(void);
   ~ScriptObjectFactory(void);

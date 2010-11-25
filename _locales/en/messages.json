@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": {"message": "Download Helper (by Google)"},
   "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder and Mini Thunder."},
@@ -29,3 +30,45 @@
   "disable": {"message": "Disable right-click download menu and use default Chrome context menu"},
   "save_and_close": {"message": "Save & Close"}
 }
+=======
+{
+  "name": {"message": "Download Helper (by Google)"},
+  "default_title": {"message": "Download Helper"},
+  "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder and Mini Thunder."},
+  "download_all_with_flashget": {"message": "Download all links with FlashGet"},
+  "download_all_with_mini_flashget": {"message": "Download all links with FlashGet Mini"},
+  "download_all_with_thunder": {"message": "Download all links with Thunder"},
+  "download_all_with_qq_whirlwind": {"message": "Download all links with QQ Whirlwind"},
+  "download_all_with_orbit": {"message": "Download all links with Orbit"},
+  "menu_flashget": {"message": "Download link with FlashGet"},
+  "menu_mini_flashget": {"message": "Download link with FlashGet Mini"},
+  "menu_thunder": {"message": "Download link with Thunder"},
+  "menu_mini_thunder": {"message": "Download link with Mini Thunder"},
+  "menu_qq_whirlwind": {"message": "Download link with QQ Whirlwind"},
+  "menu_emule": {"message": "Download link with eMule"},
+  "menu_orbit": {"message": "Download link with Orbit"},
+  "menu_idm": {"message": "Download link with IDM"},
+  "menu_chrome": {"message": "Download link with Chrome"},
+  "menu_copy_link": {"message": "Copy link address"},
+  "menu_disable": {"message": "Disable download menu"},
+  "option": {"message": "Options"},
+  "page_title": {"message": "Download Helper Options"},
+  "downloader": {"message": "Select default downloader:"},
+  "flashget": {"message": "FlashGet"},
+  "mini_flashget": {"message": "FlashGet Mini"},
+  "thunder": {"message": "Thunder"},
+  "mini_thunder": {"message": "Mini Thunder"},
+  "qq_whirlwind": {"message": "QQ Whirlwind"},
+  "emule": {"message": "eMule"},
+  "orbit": {"message": "Orbit"},
+  "idm": {"message": "Internet Download Manager"},
+  "chrome_downloader": {"message": "Chrome"},
+  "disable": {"message": "Disable right-click download menu and use default Chrome context menu"},
+  "tip_no_link": {"message": "There are no links on this page"},
+  "tip_special": {"message": "This is a special page. Unable to use Download Helper on this page."},
+  "tip_no_downloader": {"message": "No downloaders detected. To enable Download All feature, please install FlashGet, FlashGet Mini or Thunder."},
+  "tip_no_downloader1": {"message": "Mini Thunder detected. To enable Download All feature, please install FlashGet, FlashGet Mini or Thunder."},
+  "download_all": {"message": "Download all Links"},
+  "save_and_close": {"message": "Save & Close"}
+}
+>>>>>>> refactor

@@ -1,8 +1,12 @@
 #pragma once
 #include "script_object_base.h"
 
+<<<<<<< HEAD
 class ComObjectWapper : public ScriptObjectBase
 {
+=======
+class ComObjectWapper : public ScriptObjectBase {
+>>>>>>> refactor
 public:
   ComObjectWapper(void);
   virtual ~ComObjectWapper(void);
