@@ -9,11 +9,11 @@ var npDownload = {
     var link_ = document.links;
     var setLinksToArray = function(links, array) {
       for (var i = 0; i < links.length; i++) {
-      var url = links[i].src||links[i].href;
-      var text = npDownload.trim(links[i].alt || links[i].innerText ||
-          links[i].textContent) || " ";
-      array.push({url: url, text: text});
-  }
+        var url = links[i].src||links[i].href;
+        var text = npDownload.trim(links[i].alt || links[i].innerText ||
+            links[i].textContent) || " ";
+        array.push({url: url, text: text});
+      }
     }
     setLinksToArray(link_, ret_);
 

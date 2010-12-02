@@ -22,19 +22,19 @@
   border:0px;
 }
 .dh-menu-item a {
-  color:#333;
+  color:#333333;
 }
 .dh-menu-item-disable {
   display:none;
 }
 
 .dh-menu-item-disable a {
-  color:#aaa;
+  color:#aaaaaa;
 }
 .dh-menu-item a:hover, .dh-menu-item-disable a:hover {
-  color:#333;
+  color:#333333;
   background:#e0edfe;
-  line-height:26px;
+  line-height: 26px;
   border:0px;
 }
 
@@ -48,6 +48,125 @@
 
 .dh-menu-line {
   background:#cccccc;
-  height:1px;
-  margin:5px 0;
+  height: 1px;
+  margin: 5px 0;
 }
+
+.dh-nav-bar {
+  width: 199px;
+  border-right: 1px solid #ffffff;
+  height: 100%;
+  overflow: auto;
+  float: left;
+}
+
+.dh-nav-bar ul {
+  margin: 10px 10px 0 10px;
+  padding: 5px;
+  list-style: none;
+}
+
+.dh-nav-bar li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  line-height: 25px;
+  color: #ffffff;
+  font-size: 13px;
+  text-indent: 1em;
+}
+
+.dh-nav-bar li.space {
+  height: 20px;
+}
+
+.dh-nav-bar li a {
+  color: #78BEF9;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dh-nav-bar li a:hover {
+  text-decoration: underline;
+}
+
+.dh-nav-bar li a.marked{
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: text;
+}
+
+.dh-nav-bar li a:hover.marked {
+  text-decoration: none;
+}
+
+
+.dh-image-frame {
+  margin-left: 200px;
+  height: 100%;
+  overflow: auto;
+}
+
+.dh-preview-window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999999;
+}
+.db-image-box {
+  font-family: arial, sans-serif;
+  opacity: 1;
+  color: #ffffff;
+  font-size: 12px;
+  text-align: center;
+  float: left;
+  margin: 10px 0 10px 10px;
+}
+
+.db-image-box img {
+  outline: 0;
+}
+
+.dh-image-frame ul {
+  margin: 20px 0 0 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.dh-image-frame ul li {
+  font-family: arial, sans-serif;
+  list-style: none;
+  margin: 0 20px 20px 0;
+  padding: 0;
+  float: left;
+  color: #ffffff;
+  font-size: 12px;
+  text-align: center;
+  height: 120px;
+}
+
+.dh-image-frame img:hover, .dh-selected {
+  -webkit-box-shadow: #ffde0b 0 0 7px 6px;
+}
+
+#dh-select-frame {
+  position: absolute;
+  border: 1px dotted #cccccc;
+  background: #ffffff;
+  opacity: 0.5;
+}
+
+.dh-download-btn {
+  margin-left: 20px;
+}
+
+.dh-btn-close {
+  position: fixed;
+  right: 20px;
+  top: 5px;
+  z-index: 1000000;
+  cursor: pointer;
+}
+
+

@@ -1,7 +1,7 @@
 {
   "name": {"message": "下载助手（由Google提供）"},
   "default_title": {"message": "下载助手"},
-  "description": {"message": "使用快车、迷你快车、迅雷、迷你迅雷、QQ旋风、电驴、Orbit或Internet Download Manager下载网页链接。"},
+  "description": {"message": "使用快车、迷你快车、迅雷或迷你迅雷下载网页链接。"},
   "download_all_with_flashget": {"message": "使用快车下载所有链接"},
   "download_all_with_mini_flashget": {"message": "使用迷你快车下载所有链接"},
   "download_all_with_thunder": {"message": "使用迅雷下载所有链接"},
@@ -36,5 +36,15 @@
   "tip_no_downloader": {"message": "您未安装任何下载器。要使用下载全部链接功能，请安装快车或者迅雷。"},
   "tip_no_downloader1": {"message": "您只安装了迷你迅雷。要使用下载全部链接功能，请安装快车或者迅雷。"},
   "download_all": {"message": "下载所有链接"},
-  "save_and_close": {"message": "保存并关闭"}
-}
+  "save_and_close": {"message": "保存并关闭"},
+  "menu_sort_size_desc": {"message": "按尺寸大到小排列"},
+  "menu_sort_size_asc": {"message": "按尺寸小到大排列"},
+  "menu_screening_any": {"message": "任何类型"},
+  "menu_screening_jpg": {"message": "JPG格式"},
+  "menu_screening_png": {"message": "PNG格式"},
+  "menu_screening_gif": {"message": "GIF格式"},
+  "menu_screening_other": {"message": "其它格式"},
+  "menu_open_image_preview": {"message": "打开图片预览"},
+  "btn_download_select": {"message": "下载选中"},
+  "btn_download_all": {"message": "下载全部"}
+}                                            

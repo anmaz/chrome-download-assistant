@@ -1,7 +1,7 @@
 {
   "name": {"message": "Download Helper (by Google)"},
   "default_title": {"message": "Download Helper"},
-  "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder, Mini Thunder, QQ Whirlwind, eMule, Orbit and Internet Download Manager."},
+  "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder and Mini Thunder."},
   "download_all_with_flashget": {"message": "Download all links with FlashGet"},
   "download_all_with_mini_flashget": {"message": "Download all links with FlashGet Mini"},
   "download_all_with_thunder": {"message": "Download all links with Thunder"},
@@ -36,5 +36,15 @@
   "tip_no_downloader": {"message": "No downloaders detected. To enable Download All feature, please install FlashGet, FlashGet Mini or Thunder."},
   "tip_no_downloader1": {"message": "Mini Thunder detected. To enable Download All feature, please install FlashGet, FlashGet Mini or Thunder."},
   "download_all": {"message": "Download all Links"},
-  "save_and_close": {"message": "Save & Close"}
+  "save_and_close": {"message": "Save & Close"},
+  "menu_sort_size_desc": {"message": "desc"},
+  "menu_sort_size_asc": {"message": "asc"},
+  "menu_screening_any": {"message": "Any type"},
+  "menu_screening_jpg": {"message": "JPG"},
+  "menu_screening_png": {"message": "PNG"},
+  "menu_screening_gif": {"message": "GIF"},
+  "menu_screening_other": {"message": "OTHER"},
+  "menu_open_image_preview": {"message": "Open image preview"},
+  "btn_download_select": {"message": "Download selected"},
+  "btn_download_all": {"message": "Download all"}
 }

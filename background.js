@@ -57,6 +57,7 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
 if (useContextMenuAPI) {
  createContextMenu(plugin);
 }
+imagePreviewMenu();
 
 function createContextMenu(plugin) {
   var enableDownloaders = downloaderManager.getEnableDownloader(plugin);
@@ -100,3 +101,11 @@ function contextMenuDownloadAll(title, downloader) {
   }});
 }
 
+function imagePreviewMenu() {
+  var title = chrome.i18n.getMessage('menu_open_image_preview');
+  chrome.contextMenus.create({title: title, contexts: ['all'],
+      onclick: function(info, tab){
+    chrome.tabs.executeScript(tab.id, {code: 'imagePreview.show();'});  
+   }
+  });
+}
