@@ -27,5 +27,8 @@ public:
   friend class ComObjectFactory;
 
 private:
+  bool FindFunctionByInvokeKind(const char* name, int invokekind);
+
+private:
   IDispatch* disp_pointer_;
 };

@@ -207,6 +207,36 @@ IDM.prototype.download = function() {
   this.idm.Download(linkObj.url);
 }
 
+function FDM(link, plugin, progId, pageUrl) {
+  this.pageUrl = pageUrl;
+  FDM.superClass.constructor.apply(this, arguments);
+}
+extend(FDM, Downloader);
+FDM.prototype.download = function() {
+  var linkObj = FDM.superClass.download.call(this);
+  this.progId = "WG.WGUrlReceiver";
+  this.fdm = this.createNpObjectInstance();
+  this.fdm.Url = linkObj.url;
+  this.fdm.Comment = linkObj.text;
+  this.fdm.Referer = linkObj.pageUrl;
+  this.fdm.Cookies = "";
+  this.fdm.AddDownload();
+}
+
+FDM.prototype.downloadAll = function() {
+  var links = FDM.superClass.downloadAll.call(this);
+  this.progId = "WG.WGUrlListReceiver";
+  this.fdm = this.createNpObjectInstance();
+  this.fdm.Referer = this.pageUrl;
+  this.fdm.Cookies = "";
+  for (var i = 0; i < links.length; i++) {
+    this.fdm.Url = links[i].url;
+    this.fdm.Comment = links[i].text;
+    this.fdm.AddUrlToList();
+  }
+  this.fdm.ShowAddUrlListDialog();
+}
+
 var downloaderManager = {}
 
 downloaderManager.supportDownloader = [
@@ -218,6 +248,7 @@ downloaderManager.supportDownloader = [
   {name: 'emule', showName: 'menu_emule', showName2:'download_all_with_emule', progId: 'IE2EM.IE2EMUrlTaker', privateLink: 'ed2k://', supportDownloadAll: false, image: 'images/icon_emule.png'},
   {name: 'orbit', showName: 'menu_orbit', showName2:'download_all_with_orbit', progId: 'Orbitmxt.Orbit', privateLink: '', supportDownloadAll: true, image: 'images/icon_orbit.png'},
   {name: 'idm', showName: 'menu_idm', showName2: 'download_all_with_idm', progId: 'DownlWithIDM.LinkProcessor', privateLink: '', supportDownloadAll: false, image: 'images/icon_idm.png'},
+  {name: 'fdm', showName: 'menu_fdm', showName2: 'download_all_with_fdm', progId: 'WG.WGUrlReceiver', privateLink: '', supportDownloadAll: true, image: 'images/icon_fdm.png'},
   {name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true, supportDownloadAll: false, image: 'images/icon_chrome.png'}
 ]
 
@@ -247,6 +278,9 @@ downloaderManager.downloader = function(mode, link, plugin, pageUrl) {
       break;
     case 'idm':
       downloader = new IDM(link, plugin, 'DownlWithIDM.LinkProcessor', pageUrl);
+      break;
+    case 'fdm':
+      downloader = new FDM(link, plugin, 'WG.WGUrlReceiver', pageUrl);
       break;
   }
   return downloader;

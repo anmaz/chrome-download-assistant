@@ -20,6 +20,7 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
     case 'emule':
     case 'orbit':
     case 'idm':
+    case 'fdm':
       downloaderManager.downloader(request.msg, request.link, plugin, request.pageUrl).download();
       break;
     case 'copyLink':

@@ -199,7 +199,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Internet_download_manager.cc"
+				RelativePath=".\internet_download_manager.cc"
 				>
 			</File>
 			<File
@@ -253,7 +253,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Internet_download_manager.h"
+				RelativePath=".\internet_download_manager.h"
 				>
 			</File>
 			<File
