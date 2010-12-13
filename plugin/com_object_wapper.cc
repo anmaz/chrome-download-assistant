@@ -108,8 +108,9 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
             if (id) {
               NPVariant ret;
               if (NPN_GetProperty(plugin_->get_npp(), pObject, id, &ret) &&
-                  NPVARIANT_IS_INT32(ret) && NPVARIANT_TO_INT32(ret) > 0) {
-                int array_len = NPVARIANT_TO_INT32(ret);
+                  (NPVARIANT_IS_INT32(ret) || NPVARIANT_IS_DOUBLE(ret))) {
+                int array_len = NPVARIANT_IS_INT32(ret) ? 
+                    NPVARIANT_TO_INT32(ret) : NPVARIANT_TO_DOUBLE(ret);
                 sprintf(szLog, "array_len=%d", array_len);
                 g_Log.WriteLog("Array", szLog);
                 SAFEARRAYBOUND rgsabound[1];
