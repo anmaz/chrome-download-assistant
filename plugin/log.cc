@@ -1,4 +1,10 @@
+#ifdef _WINDOWS
 #include "stdafx.h"
+#elif defined linux
+#include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
+#endif
 
 #include "log.h"
 
@@ -15,11 +21,20 @@ bool Log::OpenLog(const char* header) {
   if (file_ != NULL)
     return false;
 
+#ifdef _WINDOWS
   char filename[MAX_PATH];
   GetLocalTime(&time_);
   sprintf_s(filename, "C:\\Log\\%s_%d%02d%02d_%d.log",
             header, time_.wYear, time_.wMonth, time_.wDay,
             GetCurrentProcessId());
+#elif defined linux
+  char filename[260];
+  time_t nowtime = time(NULL);
+  struct tm* time_ = localtime(&nowtime);
+  sprintf(filename, "/log/%s_%d%02d%02d_%d.log",
+          header, time_->tm_year+1900, time_->tm_mon, time_->tm_mday,
+          getpid());
+#endif
   file_ = fopen(filename, "a");
   if (file_ == NULL)
     return false;
@@ -32,10 +47,19 @@ bool Log::WriteLog(const char* title, const char* contents) {
     return false;
   }
 
+#ifdef _WINDOWS
   GetLocalTime(&time_);
   if (fprintf(file_, "[%02d:%02d:%02d %03d] [%s] %s\n",
               time_.wHour, time_.wMinute, time_.wSecond, time_.wMilliseconds,
               title, contents) > 0) {
+#elif defined linux
+  timeval nowtime;
+  gettimeofday(&nowtime, NULL);
+  struct tm* time_ = localtime(&nowtime.tv_sec);
+  if (fprintf(file_, "[%02d:%02d:%02d %ld] [%s] %s\n",
+              time_->tm_hour, time_->tm_min, time_->tm_sec, nowtime.tv_usec,
+              title, contents) > 0) {
+#endif
     fflush(file_);
     return true;
   } else

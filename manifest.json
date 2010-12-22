@@ -22,5 +22,7 @@
    "permissions": [ "tabs", "http://*/", "https://*/", "contextMenus" ],
    "plugins": [ {
       "path": "plugin/download_helper.dll"
+   }, {
+    "path": "plugin/download_helper.so"
    } ]
 }

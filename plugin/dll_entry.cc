@@ -1,13 +1,27 @@
+#ifdef _WINDOWS
 #include "stdafx.h"
+#endif
 
-#include "npfunctions.h"
+#ifdef linux
+#include <pthread.h>
+#include <unistd.h>
+#include <wait.h>
+#include <errno.h>
+#endif
+
 #include "log.h"
+#include "npfunctions.h"
 
+#ifdef _WINDOWS
 HMODULE g_hMod;
+#elif defined linux
+pthread_t wait_process_tid = 0;
+#endif
 Log g_Log;
 
 extern NPNetscapeFuncs* g_NpnFuncs;
 
+#ifdef _WINDOWS
 BOOL OSCALL DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
   g_hMod = hModule;
   switch(reason) {
@@ -25,6 +39,19 @@ BOOL OSCALL DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
   }
   return TRUE;
 }
+#endif
+
+#ifdef linux
+void* WaitChildProcess(void* param) {
+  while(true) {
+    int ret_val = 0;
+    pid_t pid = wait(&ret_val);
+    if (pid == -1) {
+      sleep(1);
+    }
+  }
+}
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,6 +84,10 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 #else
                ) {
 #endif
+                 //g_Log.OpenLog("NPAPI");
+#ifdef linux
+                 pthread_create(&wait_process_tid, NULL, WaitChildProcess, 0);
+#endif
                  if(npnf == NULL) {
                    return NPERR_INVALID_FUNCTABLE_ERROR;
                  }
@@ -71,11 +102,15 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 }
 
 NPError  OSCALL NP_Shutdown() {
+  if (wait_process_tid != 0) {
+    pthread_cancel(wait_process_tid);
+  }
   return NPERR_NO_ERROR;
 }
 
+char MIMEType[] = "application/x-npdownload::Download Helper";
 char* NP_GetMIMEDescription(void) {
-  return "";
+  return MIMEType;
 }
 
 // Needs to be present for WebKit based browsers.

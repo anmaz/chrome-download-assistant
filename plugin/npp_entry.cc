@@ -1,4 +1,6 @@
+#ifdef _WINDOWS
 #include "stdafx.h"
+#endif
 
 #include "log.h"
 #include "npfunctions.h"
@@ -88,8 +90,18 @@ void    NP_LOADDS NPP_URLNotify(NPP instance, const char* url,
 }
 
 NPError NP_LOADDS NPP_GetValue(NPP instance, NPPVariable variable, void *value) {
-  PluginBase* pPlugin = (PluginBase*)instance->pdata;
-  return pPlugin->GetValue(variable, value);
+  if (instance == NULL) {
+    if (variable == NPPVpluginNameString)
+      *((const char **)value) = "Download Helper";
+    else if (variable == NPPVpluginDescriptionString)
+      *((const char **)value) = "Download Helper Plugin";
+    else
+      return NPERR_GENERIC_ERROR;
+  } else {
+    PluginBase* pPlugin = (PluginBase*)instance->pdata;
+    if (pPlugin != NULL)
+      return pPlugin->GetValue(variable, value);
+  }
 }
 
 NPError NP_LOADDS NPP_SetValue(NPP instance, NPNVariable variable, void *value) {

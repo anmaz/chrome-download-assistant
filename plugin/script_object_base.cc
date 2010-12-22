@@ -1,4 +1,8 @@
+#ifdef _WINDOWS
 #include "stdafx.h"
+#elif defined linux
+#include <string.h>
+#endif
 
 #include "script_object_base.h"
 

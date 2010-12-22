@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUGIN_FACTORY_H_
+#define PLUGIN_FACTORY_H_
 
 #include "plugin_base.h"
 
@@ -20,3 +21,5 @@ private:
 
   Plugin_Type_Item plugin_type_list_[MAX_PLUGIN_TYPE_COUNT];
 };
+
+#endif

@@ -1,6 +1,11 @@
-#pragma once
+#ifndef PLUGIN_BASE_H_
+#define PLUGIN_BASE_H_
 
 #include "npapi.h"
+
+#ifdef linux
+#include <X11/X.h>
+#endif
 
 class PluginBase {
 public:
@@ -27,10 +32,21 @@ public:
   NPP get_npp() const { return npp_; }
   void set_npp(NPP npp) { npp_ = npp; }
 
+#ifdef _WINDOWS
   HWND get_hwnd() const { return hwnd_; }
   void set_hwnd(HWND hwnd) { hwnd_ = hwnd; }
-
+#elif defined linux
+  Window get_window_id() const { return wid_; }
+  void set_window_id(Window wid) { wid_ = wid; }
+#endif
+  
 private:
   NPP npp_;
+#ifdef _WINDOWS
   HWND hwnd_;
+#elif defined linux
+  Window wid_;
+#endif
 };
+
+#endif

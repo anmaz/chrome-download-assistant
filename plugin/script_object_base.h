@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCRIPT_OBJECT_BASE_H_
+#define SCRIPT_OBJECT_BASE_H_
 
 #include <vector>
 
@@ -60,3 +61,5 @@ private:
 #define ON_INVOKEHELPER(_funPtr) \
   static_cast<bool (ScriptObjectBase::*)(const NPVariant *,uint32_t , \
                                          NPVariant *)>(_funPtr)
+
+#endif

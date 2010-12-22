@@ -21,6 +21,9 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
     case 'orbit':
     case 'idm':
     case 'fdm':
+    case 'flashget_linux':
+    case 'jdownloader_linux':
+    case 'gwget_linux':
       downloaderManager.downloader(request.msg, request.link, plugin, request.pageUrl).download();
       break;
     case 'copyLink':

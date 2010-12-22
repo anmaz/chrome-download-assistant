@@ -1,4 +1,6 @@
+#ifdef _WINDOWS
 #include "stdafx.h"
+#endif
 
 #include "npfunctions.h"
 
