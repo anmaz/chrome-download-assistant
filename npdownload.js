@@ -34,7 +34,8 @@ var npDownload = {
   },
 
   trim: function(str) {
-    return str.replace(/(^\s*)|(\s*$)/g, '').replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/"/g,'\\\"');
+    return str.replace(/(^\s*)|(\s*$)/g, '').replace(/\n/g, ' ').
+        replace(/\r/g, ' ').replace(/"/g,'\\\"');
   },
 
   overwritePageLinks: function() {
@@ -85,7 +86,7 @@ var npDownload = {
   },
 
   onRequest: function() {
-    chrome.extension.onRequest.addListener( function(request, sender, response) {
+    chrome.extension.onRequest.addListener(function(request, sender, response) {
       if (request.msg == 'init_check') {
         npDownload.contextMenu = eval(request.contextMenu);
         npDownload.defaultDownloader = request.defaultDownloader;

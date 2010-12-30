@@ -79,14 +79,14 @@
   </div>
   <h4 id="downloader"></h4>
   <div id="downloaderOption">
-    
   </div>
   <div id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu"> <span id="disableMenu"></span></label></div>
   <div class="closeBtn"><button id="saveAndClose" onclick="saveAndClose()"></button></div>
   </div>
   <div id="footer">&copy;2010 Google</div>
   <script>
-    var defaultDownloader = localStorage['defaultDownloader'] || 'chrome_downloader';
+    var defaultDownloader =
+        localStorage['defaultDownloader'] || 'chrome_downloader';
     var checkboxContextMenu = document.getElementById("checkboxContextMenu");
     bg = chrome.extension.getBackgroundPage();
     function init() {
@@ -94,20 +94,18 @@
       i18nReplace('downloader', 'downloader');
       i18nReplace('disableMenu', 'menu_disable');
       i18nReplace('saveAndClose', 'save_and_close');
+      bg.updateDownloaders();
+      createDownloaderOption(document.getElementById('downloaderOption'));
       if (bg.useContextMenuAPI) {
         document.getElementById('contextMenuItem').style.display = 'none';
-      }
-      createDownloaderOption(document.getElementById('downloaderOption'));
-      if (!eval(localStorage['contextMenu'])) {
+      } else if (!eval(localStorage['contextMenu'])) {
         checkboxContextMenu.checked = true;
       }
-
     }
 
     function createDownloaderOption(element) {
-
       var plugin = bg.plugin;
-      var enableOptions = bg.downloaderManager.getEnableDownloader(plugin);
+      var enableOptions = bg.enableDownloaders;
       for (var i = 0; i < enableOptions.length; i++) {
         var item = enableOptions[i];
         var imageUrl = chrome.extension.getURL(item.image);
@@ -139,7 +137,8 @@
 
     function saveAndClose() {
       localStorage['defaultDownloader'] = defaultDownloader;
-      localStorage['contextMenu'] = (checkboxContextMenu.checked ? 'false' : 'true');
+      localStorage['contextMenu'] =
+          (checkboxContextMenu.checked ? 'false' : 'true');
       chrome.tabs.getSelected(null, function(tab) {
         chrome.tabs.remove(tab.id);
       });
