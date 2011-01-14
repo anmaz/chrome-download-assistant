@@ -249,6 +249,9 @@ downloaderManager.supportDownloader = [
   {name: 'orbit', showName: 'menu_orbit', showName2:'download_all_with_orbit', progId: 'Orbitmxt.Orbit', privateLink: '', supportDownloadAll: true, image: 'images/icon_orbit.png'},
   {name: 'idm', showName: 'menu_idm', showName2: 'download_all_with_idm', progId: 'DownlWithIDM.LinkProcessor', privateLink: '', supportDownloadAll: false, image: 'images/icon_idm.png'},
   {name: 'fdm', showName: 'menu_fdm', showName2: 'download_all_with_fdm', progId: 'WG.WGUrlReceiver', privateLink: '', supportDownloadAll: true, image: 'images/icon_fdm.png'},
+  {name: 'flashget_linux', showName: 'menu_flashget', showName2: 'download_all_with_flashget', progId: 'flashget', privateLink: '', supportDownloadAll: false, image: 'images/icon_flashget_linux.png'},
+  {name: 'jdownloader_linux', showName: 'menu_jdownloader', showName2: 'download_all_with_jdownloader', progId: 'jdownloader', privateLink: '', supportDownloadAll: false, image: 'images/icon_jdownloader.png'},
+  {name: 'gwget_linux', showName: 'menu_gwget', showName2: 'download_all_with_gwget', progId: 'gwget', privateLink: '', supportDownloadAll: false, image: 'images/icon_gwget.png'},
   {name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true, supportDownloadAll: false, image: 'images/icon_chrome.png'}
 ]
 

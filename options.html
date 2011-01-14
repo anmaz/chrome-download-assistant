@@ -258,8 +258,8 @@ function $(id) {
 var defaultDownloader = localStorage['defaultDownloader'] 
     || 'chrome_downloader';
 var checkboxContextMenu = $('checkboxContextMenu');
-bg = chrome.extension.getBackgroundPage();
-
+var bg = chrome.extension.getBackgroundPage();
+var plugin = bg.plugin;
 function init() {
   i18nReplace('pageTitle', 'page_title');
   i18nReplace('downloader', 'downloader');
@@ -270,7 +270,6 @@ function init() {
     $('contextMenuItem').style.display = 'none';
   } 
   var enableOptions ='';
-  var plugin = bg.plugin;
   if (linuxoptions.isWindowsPlatform()) {
     enableOptions = bg.downloaderManager.getEnableDownloader(plugin);
   } else {
@@ -431,15 +430,15 @@ var linuxoptions = {
     
     $('settingParameter').addEventListener('focus', function() {
       if (this.value ==  chrome.i18n.getMessage('setting_parameter')) {
-      this.value = '';
-      this.style.color = '#000000';
+        this.value = '';
+        this.style.color = '#000000';
       }
     });
     
     $('settingParameter').addEventListener('blur', function() {
       if (this.value == '') {
-      this.value = chrome.i18n.getMessage('setting_parameter');
-      this.style.color =  '#a5a5a5';
+        this.value = chrome.i18n.getMessage('setting_parameter');
+        this.style.color =  '#a5a5a5';
       }
     });
     
@@ -599,7 +598,7 @@ var linuxoptions = {
   },
 
   getEnableDownloader: function() {
-    var enableDownloaderArr = [];
+    var enableDownloaderArr =  bg.downloaderManager.getEnableDownloader(plugin);
     for(var i = 0; i < linuxoptions.rowCounts; ++i) {
       var downloaderConfigureArr  = localStorage['downloaderConfigure' + i].split(',');
       enableDownloaderArr[enableDownloaderArr.length] = 
