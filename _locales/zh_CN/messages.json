@@ -44,5 +44,19 @@
   "tip_no_downloader": {"message": "您未安装任何下载器。要使用下载全部链接功能，请安装快车或者迅雷。"},
   "tip_no_downloader1": {"message": "您只安装了迷你迅雷。要使用下载全部链接功能，请安装快车或者迅雷。"},
   "download_all": {"message": "下载所有链接"},
-  "save_and_close": {"message": "保存并关闭"}
+  "save_and_close": {"message": "保存并关闭"},
+  "downloader_setting": {"message": "下载器设置："},
+  "downloader_icon": {"message": "图标"},
+  "downloader_name": {"message": "名称"},
+  "downloader_parameter": {"message": "命令行"},
+  "add_downloader": {"message": "添加下载器"},
+  "url_address": {"message": "下载器图标"},
+  "add_url_ok_btn": {"message": "确定"},
+  "add_url_cancel_btn": {"message": "取消"},
+  "delete": {"message": "删除"},
+  "modify": {"message": "修改"},
+  "bottom_line": {"message": "注释：参数里需要一些$URL之类的符号"},
+  "setting_name": {"message": "请输入下载器名称"},
+  "setting_parameter": {"message": "请输入下载器命令行"},
+  "icon_url": {"message": "请输入URL地址"}
 }

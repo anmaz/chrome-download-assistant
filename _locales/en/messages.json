@@ -44,5 +44,19 @@
   "tip_no_downloader": {"message": "No downloaders detected. To enable Download All feature, please install FlashGet, FlashGet Mini or Thunder."},
   "tip_no_downloader1": {"message": "Mini Thunder detected. To enable Download All feature, please install FlashGet, FlashGet Mini or Thunder."},
   "download_all": {"message": "Download all Links"},
-  "save_and_close": {"message": "Save & Close"}
+  "save_and_close": {"message": "Save & Close"},
+    "downloader_setting": {"message": "Download settings:"},
+  "downloader_icon": {"message": "Icon"},
+  "downloader_name": {"message": "Name"},
+  "downloader_parameter": {"message": "Command line"},
+  "add_downloader": {"message": "Add Downloader"},
+  "url_address": {"message": "Download icon"},
+  "add_url_ok_btn": {"message": "OK"},
+  "add_url_cancel_btn": {"message": "Cancel"},
+  "delete": {"message": "Delete"},
+  "modify": {"message": "Modify"},
+  "bottom_line": {"message": "Note: Parameters in require some sort of sign $ URL"},
+  "setting_name": {"message": "Please enter a name forDownloader"},
+  "setting_parameter": {"message": "Please enter a command line for downloader"},
+  "icon_url": {"message": "Please enter the URL address"}
 }

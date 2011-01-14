@@ -237,18 +237,6 @@ FDM.prototype.downloadAll = function() {
   this.fdm.ShowAddUrlListDialog();
 }
 
-function Linux_Downloader(link, plugin, progId, pageUrl) {
-  this.pageUrl = pageUrl;
-  FDM.superClass.constructor.apply(this, arguments);
-  this.downloader = this.createNpObjectInstance();
-}
-
-extend(Linux_Downloader, Downloader);
-Linux_Downloader.prototype.download = function() {
-  var linkObj = Linux_Downloader.superClass.download.call(this);
-  this.downloader.Download(linkObj.url);
-}
-
 var downloaderManager = {}
 
 downloaderManager.supportDownloader = [
@@ -261,9 +249,6 @@ downloaderManager.supportDownloader = [
   {name: 'orbit', showName: 'menu_orbit', showName2:'download_all_with_orbit', progId: 'Orbitmxt.Orbit', privateLink: '', supportDownloadAll: true, image: 'images/icon_orbit.png'},
   {name: 'idm', showName: 'menu_idm', showName2: 'download_all_with_idm', progId: 'DownlWithIDM.LinkProcessor', privateLink: '', supportDownloadAll: false, image: 'images/icon_idm.png'},
   {name: 'fdm', showName: 'menu_fdm', showName2: 'download_all_with_fdm', progId: 'WG.WGUrlReceiver', privateLink: '', supportDownloadAll: true, image: 'images/icon_fdm.png'},
-  {name: 'flashget_linux', showName: 'menu_flashget', showName2: 'download_all_with_flashget', progId: 'flashget', privateLink: '', supportDownloadAll: false, image: 'images/icon_flashget_linux.png'},
-  {name: 'jdownloader_linux', showName: 'menu_jdownloader', showName2: 'download_all_with_jdownloader', progId: 'jdownloader', privateLink: '', supportDownloadAll: false, image: 'images/icon_jdownloader.png'},
-  {name: 'gwget_linux', showName: 'menu_gwget', showName2: 'download_all_with_gwget', progId: 'gwget', privateLink: '', supportDownloadAll: false, image: 'images/icon_gwget.png'},
   {name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true, supportDownloadAll: false, image: 'images/icon_chrome.png'}
 ]
 
@@ -297,15 +282,6 @@ downloaderManager.downloader = function(mode, link, plugin, pageUrl) {
     case 'fdm':
       downloader = new FDM(link, plugin, 'WG.WGUrlReceiver', pageUrl);
       break;
-    case 'flashget_linux':
-      downloader = new Linux_Downloader(link, plugin, 'flashget', pageUrl);
-      break;
-    case 'jdownloader_linux':
-      downloader = new Linux_Downloader(link, plugin, 'jdownloader', pageUrl);
-      break;
-    case 'gwget_linux':
-      downloader = new Linux_Downloader(link, plugin, 'gwget', pageUrl);
-      break;
   }
   return downloader;
 }
@@ -327,4 +303,10 @@ downloaderManager.getEnableDownloader = function(plugin) {
 
 downloaderManager.copyLinkToClipboard = function(plugin, url) {
   plugin.CopyToClipboard(url);
+}
+
+downloaderManager.linuxDownload = function(downloaderConfigureArr, link, plugin, pageUrl) {
+  var progId = downloaderConfigureArr[2].split(' ')[0];
+  var downloader = plugin.CreateObject(progId);
+  downloader.Download(link.url);
 }

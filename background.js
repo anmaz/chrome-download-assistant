@@ -21,9 +21,6 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
     case 'orbit':
     case 'idm':
     case 'fdm':
-    case 'flashget_linux':
-    case 'jdownloader_linux':
-    case 'gwget_linux':
       downloaderManager.downloader(request.msg, request.link, plugin, request.pageUrl).download();
       break;
     case 'copyLink':
@@ -75,6 +72,25 @@ function createContextMenu(plugin) {
         contextMenuDownloadAll(title, name);
       }
     }
+  }
+}
+
+if (!(navigator.userAgent.toLowerCase().indexOf('windows') > -1)) {
+  linuxCreateContextMenu();
+}
+
+function linuxCreateContextMenu() {
+  var rowCounts = localStorage['rowCounts'];
+  for(var i = 0; i < rowCounts; ++i) {
+    var downloaderConfigureArr  = localStorage['downloaderConfigure' + i].split(',');
+    chrome.contextMenus.create({title: downloaderConfigureArr[1], contexts: ['link'],
+      onclick: function(info, tab) {
+      var link = {};
+      link.url = info.linkUrl;
+      link.text = info.selectionText || '';
+      link.pageUrl = info.pageUrl ;
+      downloaderManager.linuxDownload(downloaderConfigureArr, link, plugin, info.pageUrl);
+    }}, function() {});
   }
 }
 
