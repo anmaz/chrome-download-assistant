@@ -64,9 +64,6 @@
   #contextMenuItem {
     margin-left: 32px;
   }
-  .closeBtn {
-    float: right;
-  }
   #footer {
     text-align: center;
     font-size: 13px;
@@ -246,7 +243,7 @@
   <div class="bottom"><div><button  id="addURLOkBtn"></button>
   <button id="addURLCancelBtn"></button></div></div>
   </div>
-  <div class="closeBtn"><button id="saveAndClose" onclick="saveAndClose()">
+  <div id="closeBtn"><button id="saveAndClose" onclick="saveAndClose()">
   </button></div>
   </div>
   <h4 id="bottomLine" ></h4>
@@ -413,7 +410,9 @@ var linuxoptions = {
       linuxoptions.insertOneRowInTable(linuxoptions.rowCounts, imgsrc, 
           downloaderName , dowloaderParameter );
       ++linuxoptions.rowCounts;
-      linuxoptions.temporaryStorage(imgsrc, downloaderName, dowloaderParameter);
+      linuxoptions.temporaryStorage(imgsrc, downloaderName,
+          dowloaderParameter);
+      linuxoptions.emptyAlreadAddDownloaderSettingData();
     }, false);
     
     $('settingName').addEventListener('focus', function() {
@@ -547,6 +546,7 @@ var linuxoptions = {
     $('downloaderSettingTitle').style.display = 'block';
     $('downloaderContainer').style.display = 'block';
     $('bottomLine').style.display = 'block';
+    $('closeBtn').style.cssFloat = 'right';
   },
 
   closeAddURLDialog: function() {
@@ -561,8 +561,10 @@ var linuxoptions = {
   savaDownloader: function() {
     var counts =  localStorage['rowCounts'] ? localStorage['rowCounts'] : 0;
     for(var i = 0; i<linuxoptions.strorageTempArr.length; ++i) {
-      localStorage['downloaderConfigure' + counts] = [linuxoptions.strorageTempArr[i][0],
-          linuxoptions.strorageTempArr[i][1], linuxoptions.strorageTempArr[i][2]];
+      localStorage['downloaderConfigure' + counts] = 
+          [linuxoptions.strorageTempArr[i][0],
+              linuxoptions.strorageTempArr[i][1], 
+              linuxoptions.strorageTempArr[i][2]];
       ++counts;
     }
     localStorage['rowCounts'] = linuxoptions.rowCounts;
@@ -570,7 +572,8 @@ var linuxoptions = {
 
   deleteDownLoaderStorage: function() {
     for(var i =0; i < linuxoptions.deleteRowCounts.length; ++i) {
-      localStorage.removeItem('downloaderConfigure' + linuxoptions.deleteRowCounts[i]);
+      localStorage.removeItem('downloaderConfigure' + 
+          linuxoptions.deleteRowCounts[i]);
     }
   },
 
@@ -599,10 +602,17 @@ var linuxoptions = {
     var enableDownloaderArr = [];
     for(var i = 0; i < linuxoptions.rowCounts; ++i) {
       var downloaderConfigureArr  = localStorage['downloaderConfigure' + i].split(',');
-      enableDownloaderArr[enableDownloaderArr.length] = {'image' : downloaderConfigureArr[0], 
+      enableDownloaderArr[enableDownloaderArr.length] = 
+          {'image' : downloaderConfigureArr[0], 
           'name' : downloaderConfigureArr[1], 'parameter': downloaderConfigureArr[2]}
     }
     return enableDownloaderArr;
+  },
+  
+  emptyAlreadAddDownloaderSettingData: function() {
+    $('settingImg').src = 'images/icon-nomal.png';
+    $('settingName').value = '';
+    $('settingParameter').value = '';
   },
 
   isWindowsPlatform: function() {
