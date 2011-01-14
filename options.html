@@ -55,7 +55,7 @@
   }
   #downloaderOPtion div{
     line-height: 28px;
-    margin-left: 15px;
+    margin-left: 8px;
     margin-bottom: 5px;
   }
   #downloaderOPtion input {
@@ -85,27 +85,27 @@
     color: #5e769c;
   }
   .th0 {
-    width: 100px;
+    width: 70px;
     height: auto;
   }
   .th1 {
-    width: 100px;
+    width: 130px;
     height: auto;
   }
   .th1  div {
     float: left;
-    padding-left: 10px;
+    padding-left: 5px;
   }
   .th2 {
-    width: 306px;
+    width: 285px;
     height: auto;
   }
   .th2 div {
     float: left;
-    padding-left: 20px;
+    padding-left: 15px;
   }
   .th3 {
-    width: 100px;
+    width: 105px;
     height: auto;
   }
   #downloaderSetting {
@@ -113,18 +113,17 @@
   }
   .itemImg {
    float: right; 
-   margin-right: 31px;
    cursor: pointer;
    width: 30px;
    height: 30px;
   }
   .itemName {
-    width: 85px;
+    width: 122px;
     float: left;
     margin-left: 15px;
   }
   .itemParameter {
-    width: 278px;
+    width: 265px;
     float: left;
     margin-left: 20px;
   }
@@ -226,7 +225,8 @@
   <div>
     <table>
        <tr>
-        <td class="th0"><img id="settingImg" class="itemImg" src="images/icon-nomal.png"></td>
+        <td class="th0"><img id="settingImg" class="itemImg" style="padding-right:3px" 
+            src="images/icon-nomal.png"></td>
         <td class="th1"><input id="settingName" class="itemName"  type="text"></td>
         <td class="th2"><input id="settingParameter" class="itemParameter" type="text"></td>
         <td class="th3"><button id="addDownloader"></button></td>
@@ -517,7 +517,7 @@ var linuxoptions = {
     var  aDelete = document.createElement('A');
     aDelete.innerText =  chrome.i18n.getMessage('delete');
     aDelete.href = 'javascript:';
-    aDelete.style.paddingLeft = '10px'; 
+    aDelete.style.paddingLeft = '5px'; 
     aDelete.onclick = linuxoptions.deleteDownloader;
     
     cell.appendChild(aModify);
