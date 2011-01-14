@@ -75,33 +75,34 @@ function createContextMenu(plugin) {
   }
 }
 
-if (!(navigator.userAgent.toLowerCase().indexOf('windows') > -1)) {
-  linuxCreateContextMenu();
+function isWindowsPlatform() {
+  return navigator.userAgent.toLowerCase().indexOf('windows') > -1;
 }
 
-function linuxCreateContextMenu() {
+if (!isWindowsPlatform()) {
+  createLinuxContextMenu();
+}
+
+function createLinuxContextMenu() {
   var rowCounts = localStorage['rowCounts'];
-  for(var i = 0; i < rowCounts; ++i) {
+  for (var i = 0; i < rowCounts; ++i) {
     var downloaderConfigureArr  = localStorage['downloaderConfigure' + i].split(',');
-    chrome.contextMenus.create({title: downloaderConfigureArr[1], contexts: ['link'],
-      onclick: function(info, tab) {
-      var link = {};
-      link.url = info.linkUrl;
-      link.text = info.selectionText || '';
-      link.pageUrl = info.pageUrl ;
-      downloaderManager.linuxDownload(downloaderConfigureArr, link, plugin, info.pageUrl);
-    }}, function() {});
+    contextMenuDownload(downloaderConfigureArr[1], downloaderConfigureArr, plugin)
   }
 }
 
 function contextMenuDownload(title, downloader, plugin) {
   chrome.contextMenus.create({title: title, contexts: ['link'],
-      onclick: function(info, tab){
+      onclick: function(info, tab) {
     var link = {};
     link.url = info.linkUrl;
     link.text = info.selectionText || ' ';
     link.pageUrl = info.pageUrl ;
-    downloaderManager.downloader(downloader, link, plugin, info.pageUrl).download();
+    if (isWindowsPlatform()) {
+      downloaderManager.downloader(downloader, link, plugin, info.pageUrl).download();
+    } else {
+      downloaderManager.linuxDownload(downloader, link, plugin, info.pageUrl);
+    }
   }}, function() {});
 }
 
