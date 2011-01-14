@@ -309,7 +309,12 @@ downloaderManager.copyLinkToClipboard = function(plugin, url) {
 }
 
 downloaderManager.linuxDownload = function(downloaderConfigureArr, link, plugin, pageUrl) {
-  var progId = downloaderConfigureArr[2].split(' ')[0];
+  var progId = '';
+  if (downloaderConfigureArr.constructor == Array) {
+    progId = downloaderConfigureArr[2].split(' ')[0];
+  } else {
+    progId = downloaderConfigureArr;
+  }
   var downloader = plugin.CreateObject(progId);
   downloader.Download(link.url);
 }
