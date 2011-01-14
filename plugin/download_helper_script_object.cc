@@ -125,6 +125,7 @@ bool DownloadHelperScriptObject::Download(const NPVariant *args,
   
   if (fork() == 0) {
     execlp(execute_file_.c_str(), execute_file_.c_str(), parameter, 0);
+    exit(0);
   }
   
   return true;
