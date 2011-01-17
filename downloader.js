@@ -240,7 +240,7 @@ FDM.prototype.downloadAll = function() {
 var downloaderManager = {}
 
 downloaderManager.supportDownloader = [
-  {name: 'flashget', showName: 'menu_flashget', showName2:'download_all_with_flashget', progId: 'BHO.IFlashGetNetscapeEx', privateLink: 'flashget://', supportDownloadAll: true, image: 'images/icon_flashget.png'},
+  {name: 'flashget_window', showName: 'menu_flashget', showName2:'download_all_with_flashget', progId: 'BHO.IFlashGetNetscapeEx', privateLink: 'flashget://', supportDownloadAll: true, image: 'images/icon_flashget.png'},
   {name: 'mini_flashget', showName: 'menu_mini_flashget', showName2:'download_all_with_mini_flashget', progId: 'BHO.IFlashGetNetscape', privateLink: 'flashget://', supportDownloadAll: true, image: 'images/icon_flashget.png'},
   {name: 'thunder', showName: 'menu_thunder', showName2:'download_all_with_thunder', progId: 'ThunderAgent.Agent.1', privateLink: 'thunder://', supportDownloadAll: true, image: 'images/icon_thunder.png'},
   {name: 'mini_thunder', showName: 'menu_mini_thunder', showName2:'download_all_with_mini_thunder', progId: 'ToolbarThunder.DownloadAgent.1', privateLink: 'thunder://', supportDownloadAll: false, image: 'images/icon_thunder.png'},
@@ -249,9 +249,9 @@ downloaderManager.supportDownloader = [
   {name: 'orbit', showName: 'menu_orbit', showName2:'download_all_with_orbit', progId: 'Orbitmxt.Orbit', privateLink: '', supportDownloadAll: true, image: 'images/icon_orbit.png'},
   {name: 'idm', showName: 'menu_idm', showName2: 'download_all_with_idm', progId: 'DownlWithIDM.LinkProcessor', privateLink: '', supportDownloadAll: false, image: 'images/icon_idm.png'},
   {name: 'fdm', showName: 'menu_fdm', showName2: 'download_all_with_fdm', progId: 'WG.WGUrlReceiver', privateLink: '', supportDownloadAll: true, image: 'images/icon_fdm.png'},
-  {name: 'flashget_linux', showName: 'menu_flashget', showName2: 'download_all_with_flashget', progId: 'flashget', privateLink: '', supportDownloadAll: false, image: 'images/icon_flashget_linux.png'},
-  {name: 'jdownloader_linux', showName: 'menu_jdownloader', showName2: 'download_all_with_jdownloader', progId: 'jdownloader', privateLink: '', supportDownloadAll: false, image: 'images/icon_jdownloader.png'},
-  {name: 'gwget_linux', showName: 'menu_gwget', showName2: 'download_all_with_gwget', progId: 'gwget', privateLink: '', supportDownloadAll: false, image: 'images/icon_gwget.png'},
+  {name: 'flashget', showName: 'menu_flashget', showName2: 'download_all_with_flashget', progId: 'flashget', privateLink: '', supportDownloadAll: false, image: 'images/icon_flashget_linux.png'},
+  {name: 'jdownloader', showName: 'menu_jdownloader', showName2: 'download_all_with_jdownloader', progId: 'jdownloader', privateLink: '', supportDownloadAll: false, image: 'images/icon_jdownloader.png'},
+  {name: 'gwget', showName: 'menu_gwget', showName2: 'download_all_with_gwget', progId: 'gwget', privateLink: '', supportDownloadAll: false, image: 'images/icon_gwget.png'},
   {name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true, supportDownloadAll: false, image: 'images/icon_chrome.png'}
 ]
 
@@ -264,7 +264,7 @@ downloaderManager.downloader = function(mode, link, plugin, pageUrl) {
     case 'mini_thunder':
       downloader = new MiniThunder(link, plugin, 'ToolbarThunder.DownloadAgent.1');
       break;
-    case 'flashget':
+    case 'flashget_window':
       downloader = new Flashget(link, plugin, 'BHO.IFlashGetNetscapeEx', pageUrl);
       break;
     case 'mini_flashget':
@@ -293,7 +293,7 @@ downloaderManager.getEnableDownloader = function(plugin) {
   var enableDownloader = [];
   for (var i = 0; i < downloaderManager.supportDownloader.length; i++) {
     var downloader = downloaderManager.supportDownloader[i];
-    if (downloader.name == 'flashget' && !plugin.CheckObject(downloader.progId)) {
+    if (downloader.name == 'flashget_window' && !plugin.CheckObject(downloader.progId)) {
       if (plugin.CheckObject('JetCar.Netscape'))
         enableDownloader.push(downloader);
     }

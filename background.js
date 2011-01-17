@@ -14,7 +14,7 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
       break;
     case 'thunder':
     case 'mini_thunder':
-    case 'flashget':
+    case 'flashget_window':
     case 'mini_flashget':
     case 'qq_whirlwind':
     case 'emule':

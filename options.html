@@ -22,6 +22,9 @@
     padding-top:70px;
     background:url(images/icon_48.png) no-repeat 1px 62px;
   }
+  a {
+    color: #1C7EC5;
+  }
   #downloader {
     border-bottom: 2px dotted #c3c3c3;
   }
@@ -89,6 +92,10 @@
     width: 130px;
     height: auto;
   }
+  .th0 div{
+    float: right;
+    padding-right: 20px;
+  }
   .th1  div {
     float: left;
     padding-left: 5px;
@@ -104,6 +111,10 @@
   .th3 {
     width: 105px;
     height: auto;
+  }
+  .th3 .btnDiv {
+    float: right;
+    padding-right:25px;
   }
   #downloaderSetting {
     font-weight: bolder;
@@ -164,8 +175,9 @@
     width: 285px;
     margin: auto;
   }
-  .addURL-Dialog .bottom div {
+ .addURL-Dialog .bottom .btnDiv {
     float: right;
+    padding-right: 10px;
   }
   #urlAddress {
     font: 12px border ËÎÌו;
@@ -186,6 +198,36 @@
   #downloaderSettingTitle {
      margin: 20px 0 10px 0;
      display: none;
+  }
+  .button1 {
+    display:inline-block; 
+    border-width:1px 0;
+    border-color:#4F7193;
+    border-style:solid;
+    vertical-align:middle;
+    zoom:1;
+ }
+  .button2 {
+    height:22px;
+    border-width:0 1px;
+    border-color:#4F7193;
+    border-style:solid; 
+    margin:0 -1px; 
+    background:#e3e3e3;
+    position:relative;
+    _float:left;
+    }
+  .button3 {
+    line-height:10px;
+    background:#f9f9f9;
+    border-bottom:2px solid #eeeeee;
+  }
+  .button4 {
+    padding:0 8px; 
+    line-height:22px;
+    color:#000000;
+    margin-top:-12px;
+    cursor:pointer;
   }
   </style>
  </HEAD>
@@ -225,8 +267,16 @@
         <td class="th0"><img id="settingImg" class="itemImg" style="padding-right:3px" 
             src="images/icon-nomal.png"></td>
         <td class="th1"><input id="settingName" class="itemName"  type="text"></td>
-        <td class="th2"><input id="settingParameter" class="itemParameter" type="text"></td>
-        <td class="th3"><button id="addDownloader"></button></td>
+        <td class="th2"><input id="settingParameter" class="itemParameter" type="text">
+        </td>
+        <td class="th3">
+        <div class="btnDiv">
+          <div class="button1"><div class="button2">  
+            <div class="button3">&nbsp;</div>
+            <div class="button4"  id="addDownloader"></div>
+          </div></div>
+       </div>  
+        </td>
       </tr>
     </table>
   </div>
@@ -240,11 +290,23 @@
   <input type="text"  id="iconURL">
   </div>
   </div>
-  <div class="bottom"><div><button  id="addURLOkBtn"></button>
-  <button id="addURLCancelBtn"></button></div></div>
+  <div class="bottom"><div class="btnDiv">
+  <div class="button1"><div class="button2">  
+  <div class="button3">&nbsp;</div>
+  <div class="button4"  id="addURLOkBtn"></div>
+  </div></div>
+  <div class="button1"><div class="button2">  
+  <div class="button3">&nbsp;</div>
+  <div class="button4"  id="addURLCancelBtn"></div>
+  </div></div>
+    </div></div>
   </div>
-  <div id="closeBtn"><button id="saveAndClose" onclick="saveAndClose()">
-  </button></div>
+  <div id="closeBtn">
+     <div class="button1"><div class="button2">  
+  <div class="button3">&nbsp;</div>
+  <div class="button4"  id="saveAndClose"  onclick="saveAndClose()"></div>
+  </div></div>
+  </div>
   </div>
   <h4 id="bottomLine" ></h4>
 </div>
