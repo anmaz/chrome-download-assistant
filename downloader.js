@@ -310,7 +310,7 @@ downloaderManager.copyLinkToClipboard = function(plugin, url) {
 
 downloaderManager.linuxDownload = function(downloaderConfigureArr, link, plugin, pageUrl) {
   var progId = '';
-  if (downloaderConfigureArr.constructor == Array) {
+  if (downloaderConfigureArr instanceof Array) {
     progId = downloaderConfigureArr[2].split(' ')[0];
   } else {
     progId = downloaderConfigureArr;
