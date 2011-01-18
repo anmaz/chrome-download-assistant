@@ -1,30 +1,23 @@
-#ifdef _WINDOWS
 #include "stdafx.h"
-#elif defined linux
-#include <string.h>
-#endif
 
 #include "download_helper_plugin.h"
 #include "plugin_factory.h"
 
 PluginFactory::PluginFactory(void) {
-  memset(plugin_type_list_, 0, sizeof(plugin_type_list_));
-  strcpy(plugin_type_list_[0].mime_type, "application/x-npdownload");
-  plugin_type_list_[0].constructor = &DownloadHelperPlugin::CreateObject;
+  Plugin_Type_Item item;
+  item.mime_type = "application/x-npdownload";
+  item.constructor = &DownloadHelperPlugin::CreateObject;
+  plugin_type_map_.insert(PluginTypeMap::value_type(item.mime_type, item));
 }
 
 PluginFactory::~PluginFactory(void) {
 }
 
 PluginBase* PluginFactory::NewPlugin(NPMIMEType pluginType) {
-  PluginBase* pPlugin = NULL;
-  for(int i = 0; i < MAX_PLUGIN_TYPE_COUNT; i++) {
-    if (plugin_type_list_[i].mime_type == NULL)
-      break;
-    else if (strcmp(pluginType, plugin_type_list_[i].mime_type) == 0) {
-      pPlugin = (*plugin_type_list_[i].constructor)();
-      break;
-    }
-  }
-  return pPlugin;
+  PluginBase* plugin = NULL;
+  PluginTypeMap::iterator iter = plugin_type_map_.find(pluginType);
+  if (iter != plugin_type_map_.end())
+    plugin = iter->second.constructor();
+
+  return plugin;
 }

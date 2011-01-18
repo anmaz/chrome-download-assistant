@@ -1,6 +1,4 @@
-#ifdef _WINDOWS
 #include "stdafx.h"
-#endif
 
 #include "script_object_factory.h"
 

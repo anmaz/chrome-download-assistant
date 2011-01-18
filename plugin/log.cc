@@ -1,6 +1,6 @@
-#ifdef _WINDOWS
 #include "stdafx.h"
-#elif defined linux
+
+#ifdef OS_LINUX
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
@@ -21,13 +21,13 @@ bool Log::OpenLog(const char* header) {
   if (file_ != NULL)
     return false;
 
-#ifdef _WINDOWS
+#ifdef OS_WIN
   char filename[MAX_PATH];
   GetLocalTime(&time_);
   sprintf_s(filename, "C:\\Log\\%s_%d%02d%02d_%d.log",
             header, time_.wYear, time_.wMonth, time_.wDay,
             GetCurrentProcessId());
-#elif defined linux
+#elif defined OS_LINUX
   char filename[260];
   time_t nowtime = time(NULL);
   struct tm* time_ = localtime(&nowtime);
@@ -47,12 +47,12 @@ bool Log::WriteLog(const char* title, const char* contents) {
     return false;
   }
 
-#ifdef _WINDOWS
+#ifdef OS_WIN
   GetLocalTime(&time_);
   if (fprintf(file_, "[%02d:%02d:%02d %03d] [%s] %s\n",
               time_.wHour, time_.wMinute, time_.wSecond, time_.wMilliseconds,
               title, contents) > 0) {
-#elif defined linux
+#elif defined OS_LINUX
   timeval nowtime;
   gettimeofday(&nowtime, NULL);
   struct tm* time_ = localtime(&nowtime.tv_sec);

@@ -1,7 +1,8 @@
 #ifndef SCRIPT_OBJECT_BASE_H_
 #define SCRIPT_OBJECT_BASE_H_
 
-#include <vector>
+#include <map>
+#include <string>
 
 #include "npapi.h"
 #include "npruntime.h"
@@ -9,24 +10,22 @@
 
 using namespace std;
 
-#define FUNCTION_NAME_LEN 64
-
 class ScriptObjectBase : public NPObject {
 public:
-  ScriptObjectBase(void);
-  virtual ~ScriptObjectBase(void);
+  ScriptObjectBase(void) {}
+  virtual ~ScriptObjectBase(void) {}
 
   typedef bool (ScriptObjectBase::*InvokePtr)(const NPVariant *args,
                                               uint32_t argCount,
                                               NPVariant *result);
 
   struct Function_Item {
-    char function_name[FUNCTION_NAME_LEN];
+    string function_name;
     InvokePtr function_pointer;
   };
 
   struct Property_Item {
-    char property_name[FUNCTION_NAME_LEN];
+    string property_name;
     NPVariant value;
   };
 
@@ -54,8 +53,10 @@ protected:
   PluginBase* plugin_;
 
 private:
-  vector<Function_Item> function_list_;
-  vector<Property_Item> property_list_;
+  typedef map<string, Function_Item> FunctionMap;
+  typedef map<string, Property_Item> PropertyMap;
+  FunctionMap function_map_;
+  PropertyMap property_map_;
 };
 
 #define ON_INVOKEHELPER(_funPtr) \

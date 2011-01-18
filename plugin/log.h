@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#ifdef _WINDOWS
+#ifdef OS_WIN
 #include <windows.h>
 #endif
 
@@ -18,7 +18,7 @@ public:
 
 private:
   FILE* file_;
-#ifdef _WINDOWS
+#ifdef OS_WIN
   SYSTEMTIME time_;
 #endif
 };

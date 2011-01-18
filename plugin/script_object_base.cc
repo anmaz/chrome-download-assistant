@@ -1,50 +1,33 @@
-#ifdef _WINDOWS
 #include "stdafx.h"
-#elif defined linux
-#include <string.h>
-#endif
-
 #include "script_object_base.h"
-
-ScriptObjectBase::ScriptObjectBase(void) {
-}
-
-ScriptObjectBase::~ScriptObjectBase(void) {
-}
 
 void ScriptObjectBase::SetPlugin(PluginBase* p) {
   plugin_ = p;
 }
 
 bool ScriptObjectBase::HasMethod(NPIdentifier name) {
-  bool bRet = false;
-  vector<Function_Item>::iterator iter;
-  char* szName = NPN_UTF8FromIdentifier(name);
-  for (iter = function_list_.begin(); iter != function_list_.end(); iter++) {
-    if (strcmp((const char*)iter->function_name, szName) == 0) {
-      bRet = true;
-      break;
-    }
+  bool ret = false;
+  char* method_name = NPN_UTF8FromIdentifier(name);
+  if (method_name != NULL) {
+    FunctionMap::iterator iter = function_map_.find(method_name);
+    if (iter != function_map_.end())
+      ret = true;
+    NPN_MemFree(method_name);
   }
-  if (szName != NULL)
-    NPN_MemFree(szName);
-  return bRet;
+  return ret;
 }
 
 bool ScriptObjectBase::Invoke(NPIdentifier name,const NPVariant *args,
                               uint32_t argCount,NPVariant *result) {
-  bool bRet = false;
-  vector<Function_Item>::iterator iter;
-  char* szName = NPN_UTF8FromIdentifier(name);
-  for (iter = function_list_.begin(); iter != function_list_.end(); iter++) {
-   if (strcmp((const char*)iter->function_name, szName) == 0) {
-     bRet = (this->*(iter->function_pointer))(args, argCount, result);
-     break;
-   }
+  bool ret = false;
+  char* method_name = NPN_UTF8FromIdentifier(name);
+  if (method_name != NULL) {
+    FunctionMap::iterator iter = function_map_.find(method_name);
+    if (iter != function_map_.end())
+      ret = (this->*(iter->second.function_pointer))(args, argCount, result);
+    NPN_MemFree(method_name);
   }
-  if (szName != NULL)
-   NPN_MemFree(szName);
-  return bRet;
+  return ret;
 }
 
 bool ScriptObjectBase::InvokeDefault(const NPVariant *args,uint32_t argCount,
@@ -53,66 +36,57 @@ bool ScriptObjectBase::InvokeDefault(const NPVariant *args,uint32_t argCount,
 }
 
 bool ScriptObjectBase::HasProperty(NPIdentifier name) {
-  bool bRet = false;
-  vector<Property_Item>::iterator iter;
-  char* szName = NPN_UTF8FromIdentifier(name);
-  for (iter = property_list_.begin(); iter != property_list_.end(); iter++) {
-    if (strcmp((const char*)iter->property_name, szName) == 0) {
-      bRet = true;
-      break;
-    }
+  bool ret = false;
+  char* property_name = NPN_UTF8FromIdentifier(name);
+  if (property_name != NULL) {
+    PropertyMap::iterator iter = property_map_.find(property_name);
+    if (iter != property_map_.end())
+      ret = true;
+    NPN_MemFree(property_name);
   }
-  if (szName != NULL)
-    NPN_MemFree(szName);
-  return bRet;
+  return ret;
 }
 
 bool ScriptObjectBase::GetProperty(NPIdentifier name, NPVariant *result) {
-  bool bRet = false;
-  vector<Property_Item>::iterator iter;
-  char* szName = NPN_UTF8FromIdentifier(name);
-  for (iter = property_list_.begin(); iter != property_list_.end(); iter++) {
-    if (strcmp((const char*)iter->property_name, szName) == 0) {
-      bRet = true;
-      *result = iter->value;
-      break;
+  bool ret = false;
+  char* property_name = NPN_UTF8FromIdentifier(name);
+  if (property_name != NULL) {
+    PropertyMap::iterator iter = property_map_.find(property_name);
+    if (iter != property_map_.end()) {
+      *result = iter->second.value;
+      ret = true;
     }
+    NPN_MemFree(property_name);
   }
-  if (szName != NULL)
-    NPN_MemFree(szName);
-  return bRet;
+  return ret;
 }
 
 bool ScriptObjectBase::SetProperty(NPIdentifier name,
                                    const NPVariant *value) {
-  bool bRet = false;
-  vector<Property_Item>::iterator iter;
-  char* szName = NPN_UTF8FromIdentifier(name);
-  for (iter = property_list_.begin(); iter != property_list_.end(); iter++) {
-    if (strcmp((const char*)iter->property_name, szName) == 0) {
-      bRet = true;
-      iter->value = *value;
-      break;
+  bool ret = false;
+  char* property_name = NPN_UTF8FromIdentifier(name);
+  if (property_name != NULL) {
+    PropertyMap::iterator iter = property_map_.find(property_name);
+    if (iter != property_map_.end()) {
+      iter->second.value = *value;
+      ret = true;
     }
+    NPN_MemFree(property_name);
   }
-  if (szName != NULL)
-    NPN_MemFree(szName);
-  return bRet;
+  return ret;
 }
 bool ScriptObjectBase::RemoveProperty(NPIdentifier name) {
-  bool bRet = false;
-  vector<Property_Item>::iterator iter;
-  char* szName = NPN_UTF8FromIdentifier(name);
-  for (iter = property_list_.begin(); iter != property_list_.end(); iter++) {
-    if (strcmp((const char*)iter->property_name, szName) == 0) {
-      bRet = true;
-      property_list_.erase(iter);
-      break;
+  bool ret = false;
+  char* property_name = NPN_UTF8FromIdentifier(name);
+  if (property_name != NULL) {
+    PropertyMap::iterator iter = property_map_.find(property_name);
+    if (iter != property_map_.end()) {
+      property_map_.erase(iter);
+      ret = true;
     }
+    NPN_MemFree(property_name);
   }
-  if (szName != NULL)
-    NPN_MemFree(szName);
-  return bRet;
+  return ret;
 }
 bool ScriptObjectBase::Enumerate(NPIdentifier **value, uint32_t *count) {
 //  *count = m_PropList.size() + m_FunList.size();
@@ -120,9 +94,9 @@ bool ScriptObjectBase::Enumerate(NPIdentifier **value, uint32_t *count) {
 }
 
 void ScriptObjectBase::AddProperty(Property_Item& item) {
-  property_list_.push_back(item);
+  property_map_.insert(PropertyMap::value_type(item.property_name, item));
 }
 
 void ScriptObjectBase::AddFunction(Function_Item& item) {
-  function_list_.push_back(item);
+  function_map_.insert(FunctionMap::value_type(item.function_name, item));
 }

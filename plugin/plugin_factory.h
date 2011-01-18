@@ -1,10 +1,13 @@
 #ifndef PLUGIN_FACTORY_H_
 #define PLUGIN_FACTORY_H_
 
+#include <map>
 #include "plugin_base.h"
+#include <string>
+
+using namespace std;
 
 typedef PluginBase* (*ConstructorPtr)();
-#define MAX_PLUGIN_TYPE_COUNT 10
 
 class PluginFactory {
 public:
@@ -15,11 +18,13 @@ public:
 
 private:
   struct Plugin_Type_Item {
-    char mime_type[128];
+    string mime_type;
     ConstructorPtr constructor;
   };
 
-  Plugin_Type_Item plugin_type_list_[MAX_PLUGIN_TYPE_COUNT];
+  typedef map<string, Plugin_Type_Item> PluginTypeMap;
+
+  PluginTypeMap plugin_type_map_;
 };
 
 #endif

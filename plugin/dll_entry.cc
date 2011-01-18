@@ -1,8 +1,6 @@
-#ifdef _WINDOWS
 #include "stdafx.h"
-#endif
 
-#ifdef linux
+#ifdef OS_LINUX
 #include <pthread.h>
 #include <unistd.h>
 #include <wait.h>
@@ -12,16 +10,16 @@
 #include "log.h"
 #include "npfunctions.h"
 
-#ifdef _WINDOWS
+#ifdef OS_WIN
 HMODULE g_hMod;
-#elif defined linux
+#elif defined OS_LINUX
 pthread_t wait_process_tid = 0;
 #endif
 Log g_Log;
 
 extern NPNetscapeFuncs* g_NpnFuncs;
 
-#ifdef _WINDOWS
+#ifdef OS_WIN
 BOOL OSCALL DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
   g_hMod = hModule;
   switch(reason) {
@@ -41,7 +39,7 @@ BOOL OSCALL DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
 }
 #endif
 
-#ifdef linux
+#ifdef OS_LINUX
 void* WaitChildProcess(void* param) {
   while(true) {
     int ret_val = 0;
@@ -79,13 +77,13 @@ extern "C" {
 #endif
 
 NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
-#if !defined(_WINDOWS) && !defined(WEBKIT_DARWIN_SDK)
+#if !defined(OS_WIN) && !defined(WEBKIT_DARWIN_SDK)
                , NPPluginFuncs *nppfuncs) {
 #else
                ) {
 #endif
-                 //g_Log.OpenLog("NPAPI");
-#ifdef linux
+                 g_Log.OpenLog("NPAPI");
+#ifdef OS_LINUX
                  pthread_create(&wait_process_tid, NULL, WaitChildProcess, 0);
 #endif
                  if(npnf == NULL) {
@@ -95,7 +93,7 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
                    return NPERR_INCOMPATIBLE_VERSION_ERROR;
                  }
                  g_NpnFuncs = npnf;
-#if !defined(_WINDOWS) && !defined(WEBKIT_DARWIN_SDK)
+#if !defined(OS_WIN) && !defined(WEBKIT_DARWIN_SDK)
                  NP_GetEntryPoints(nppfuncs);
 #endif
                  return NPERR_NO_ERROR;

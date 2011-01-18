@@ -23,19 +23,19 @@ NPObject* DownloadHelperScriptObject::Allocate(NPP npp, NPClass *aClass) {
   if (pRet != NULL) {
     pRet->SetPlugin((PluginBase*)npp->pdata);
     Function_Item item;
-    strcpy(item.function_name, "CreateObject");
+    item.function_name = "CreateObject";
     item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
         CreateObject);
     pRet->AddFunction(item);
-    strcpy(item.function_name, "CheckObject");
+    item.function_name = "CheckObject";
     item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
         CheckObject);
     pRet->AddFunction(item);
-    strcpy(item.function_name, "CopyToClipboard");
+    item.function_name = "CopyToClipboard";
     item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
         CopyToClipboard);
     pRet->AddFunction(item);
-    strcpy(item.function_name, "Download");
+    item.function_name = "Download";
     item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
         Download);
     pRet->AddFunction(item);

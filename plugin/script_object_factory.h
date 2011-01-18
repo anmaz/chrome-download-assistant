@@ -2,7 +2,7 @@
 #define SCRIPT_OBJECT_FACTORY_H_
 
 #include "script_object_base.h"
-#include "script_object_base.h"
+
 class ScriptObjectFactory {
 public:
   ScriptObjectFactory(void);

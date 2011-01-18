@@ -1,14 +1,4 @@
-#ifdef _WINDOWS
-#include "stdafx.h"
-#endif
-
 #include "plugin_base.h"
-
-PluginBase::PluginBase(void) {
-}
-
-PluginBase::~PluginBase(void) {
-}
 
 NPError PluginBase::Init(NPP instance, uint16_t mode, int16_t argc,
                          char *argn[], char *argv[], NPSavedData *saved) {
@@ -21,11 +11,7 @@ NPError PluginBase::UnInit(NPSavedData** save) {
 }
 
 NPError PluginBase::SetWindow(NPWindow* window) {
-#ifdef _WINDOWS
-  hwnd_ = (HWND)window->window;
-#elif defined linux
-  wid_ = (Window)window->window;
-#endif
+  window_ = (NativeWindow)window->window;
   return NPERR_NO_ERROR;
 }
 
