@@ -33,6 +33,9 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
     case 'downloadAll':
       downloaderManager.downloader(request.downloader, request.links, plugin, request.pageUrl).downloadAll();
       break;
+    default :
+      downloaderManager.linuxDownload(request.msg, request.link, plugin, request.pageUrl);
+      break; 
   }
 });
 
