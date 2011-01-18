@@ -5,8 +5,6 @@
 #include "plugin_base.h"
 #include <string>
 
-using namespace std;
-
 typedef PluginBase* (*ConstructorPtr)();
 
 class PluginFactory {
@@ -18,11 +16,11 @@ public:
 
 private:
   struct Plugin_Type_Item {
-    string mime_type;
+    std::string mime_type;
     ConstructorPtr constructor;
   };
 
-  typedef map<string, Plugin_Type_Item> PluginTypeMap;
+  typedef std::map<std::string, Plugin_Type_Item> PluginTypeMap;
 
   PluginTypeMap plugin_type_map_;
 };

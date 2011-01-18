@@ -1,8 +1,8 @@
 #ifndef PLUGIN_BASE_H_
 #define PLUGIN_BASE_H_
 
-#include "npapi.h"
 #include "stdafx.h"
+#include "npapi.h"
 
 class PluginBase {
 public:

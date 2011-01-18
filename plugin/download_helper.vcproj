@@ -119,7 +119,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_USRDLL;_WINDOWS;NPDOWNLOADHELPER_EXPORTS"
+				PreprocessorDefinitions="OS_WIN;WIN32;NDEBUG;_USRDLL;_WINDOWS;NPDOWNLOADHELPER_EXPORTS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -187,15 +187,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\com_plugin.cc"
-				>
-			</File>
-			<File
 				RelativePath=".\dll_entry.cc"
 				>
 			</File>
 			<File
 				RelativePath=".\download_helper.def"
+				>
+			</File>
+			<File
+				RelativePath=".\download_helper_plugin.cc"
 				>
 			</File>
 			<File
@@ -249,7 +249,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\com_plugin.h"
+				RelativePath=".\download_helper_plugin.h"
 				>
 			</File>
 			<File

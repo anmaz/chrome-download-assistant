@@ -8,8 +8,6 @@
 #include "npruntime.h"
 #include "plugin_base.h"
 
-using namespace std;
-
 class ScriptObjectBase : public NPObject {
 public:
   ScriptObjectBase(void) {}
@@ -20,12 +18,12 @@ public:
                                               NPVariant *result);
 
   struct Function_Item {
-    string function_name;
+    std::string function_name;
     InvokePtr function_pointer;
   };
 
   struct Property_Item {
-    string property_name;
+    std::string property_name;
     NPVariant value;
   };
 
@@ -35,26 +33,26 @@ public:
   virtual bool Invoke(NPIdentifier name, const NPVariant *args,
                       uint32_t argCount, NPVariant *result);
   virtual bool InvokeDefault(const NPVariant *args, uint32_t argCount,
-                             NPVariant *result);
+                             NPVariant *result) { return false; }
   virtual bool HasProperty(NPIdentifier name);
   virtual bool GetProperty(NPIdentifier name, NPVariant *result);
   virtual bool SetProperty(NPIdentifier name, const NPVariant *value);
   virtual bool RemoveProperty(NPIdentifier name);
-  virtual bool Enumerate(NPIdentifier **value, uint32_t *count);
+  virtual bool Enumerate(NPIdentifier **value, uint32_t *count) { return false; }
   virtual bool Construct(const NPVariant *args, uint32_t argCount,
                          NPVariant *result) = 0;
+  virtual void InitHandler() {}
+  void set_plugin(PluginBase* plug) { plugin_ = plug; }
 
+protected:
   void AddProperty(Property_Item& item);
   void AddFunction(Function_Item& item);
 
-  void SetPlugin(PluginBase* p);
-
-protected:
   PluginBase* plugin_;
 
 private:
-  typedef map<string, Function_Item> FunctionMap;
-  typedef map<string, Property_Item> PropertyMap;
+  typedef std::map<std::string, Function_Item> FunctionMap;
+  typedef std::map<std::string, Property_Item> PropertyMap;
   FunctionMap function_map_;
   PropertyMap property_map_;
 };

@@ -1,6 +1,4 @@
-#ifdef _WINDOWS
 #include "stdafx.h"
-#endif
 
 #include "log.h"
 #include "npfunctions.h"
@@ -102,6 +100,7 @@ NPError NP_LOADDS NPP_GetValue(NPP instance, NPPVariable variable, void *value) 
     if (pPlugin != NULL)
       return pPlugin->GetValue(variable, value);
   }
+  return NPERR_NO_ERROR;
 }
 
 NPError NP_LOADDS NPP_SetValue(NPP instance, NPNVariable variable, void *value) {

@@ -82,7 +82,7 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 #else
                ) {
 #endif
-                 g_Log.OpenLog("NPAPI");
+                 //g_Log.OpenLog("NPAPI");
 #ifdef OS_LINUX
                  pthread_create(&wait_process_tid, NULL, WaitChildProcess, 0);
 #endif
@@ -100,9 +100,12 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 }
 
 NPError  OSCALL NP_Shutdown() {
+#ifdef OS_LINUX
   if (wait_process_tid != 0) {
     pthread_cancel(wait_process_tid);
   }
+#endif
+
   return NPERR_NO_ERROR;
 }
 

@@ -9,21 +9,15 @@ extern Log g_Log;
 
 TCHAR InternetDownloadManager::idm_exe_path[MAX_PATH] = L"";
 
-InternetDownloadManager::InternetDownloadManager(void) {
-}
-
-InternetDownloadManager::~InternetDownloadManager(void) {
-}
-
 NPObject* InternetDownloadManager::Allocate(NPP npp, NPClass *aClass) {
   InternetDownloadManager* pRet = new InternetDownloadManager;
   char logs[256];
   sprintf_s(logs,"InternetDownloadManager this=%ld",pRet);
   g_Log.WriteLog("Allocate",logs);
   if (pRet != NULL) {
-    pRet->SetPlugin((PluginBase*)npp->pdata);
+    pRet->set_plugin((PluginBase*)npp->pdata);
     Function_Item item;
-    strcpy_s(item.function_name,"Download");
+    item.function_name = "Download";
     item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::Download);
     pRet->AddFunction(item);
   }
@@ -35,16 +29,6 @@ void InternetDownloadManager::Deallocate() {
   sprintf_s(logs,"InternetDownloadManager this=%ld",this);
   g_Log.WriteLog("Deallocate",logs);
   delete this;
-}
-
-void InternetDownloadManager::Invalidate() {
-
-}
-
-bool InternetDownloadManager::Construct(const NPVariant *args,
-                                         uint32_t argCount,
-                                         NPVariant *result) {
-  return true;
 }
 
 bool InternetDownloadManager::CheckObject() {
@@ -75,7 +59,7 @@ bool InternetDownloadManager::Download(const NPVariant *args,
   if (!link)
     return true;
 
-  wstring params;
+  std::wstring params;
   int len = NPVARIANT_TO_STRING(args[0]).UTF8Length + 1;
   if (!MultiByteToWideChar(CP_UTF8, 0,
                            NPVARIANT_TO_STRING(args[0]).UTF8Characters,

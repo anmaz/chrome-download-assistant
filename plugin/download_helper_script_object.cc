@@ -1,7 +1,9 @@
 #include <string.h>
-#include <unistd.h>
 #include <stdlib.h>
+#ifdef OS_LINUX
+#include <unistd.h>
 #include <wait.h>
+#endif
 
 #include "download_helper_script_object.h"
 #include "script_object_factory.h"
@@ -17,9 +19,9 @@ DownloadHelperScriptObject::~DownloadHelperScriptObject() {
 
 NPObject* DownloadHelperScriptObject::Allocate(NPP npp, NPClass *aClass) {
   DownloadHelperScriptObject* pRet = new DownloadHelperScriptObject;
-//  char logs[256];
-//  sprintf(logs, "DownloadHelperScriptObject this=%ld", pRet);
-//  g_Log.WriteLog("Allocate",logs);
+  char logs[256];
+  sprintf(logs, "DownloadHelperScriptObject this=%ld", pRet);
+  g_Log.WriteLog("Allocate",logs);
   if (pRet != NULL) {
     pRet->SetPlugin((PluginBase*)npp->pdata);
     Function_Item item;
@@ -44,9 +46,9 @@ NPObject* DownloadHelperScriptObject::Allocate(NPP npp, NPClass *aClass) {
 }
 
 void DownloadHelperScriptObject::Deallocate() {
-//  char logs[256];
-//  sprintf(logs, "DownloadHelperScriptObject this=%ld", this);
-//  g_Log.WriteLog("Deallocate",logs);
+  char logs[256];
+  sprintf(logs, "DownloadHelperScriptObject this=%ld", this);
+  g_Log.WriteLog("Deallocate",logs);
   delete this;
 }
 

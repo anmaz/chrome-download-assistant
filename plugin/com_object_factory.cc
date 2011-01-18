@@ -10,29 +10,13 @@
 
 extern Log g_Log;
 
-ComObjectFactory::ComObjectFactory(void) {
-}
-
-ComObjectFactory::~ComObjectFactory(void) {
-}
-
 NPObject* ComObjectFactory::Allocate(NPP npp, NPClass *aClass) {
   ComObjectFactory* factory = new ComObjectFactory;
   char logs[256];
   sprintf(logs, "ComObjectFactory this=%ld", factory);
   g_Log.WriteLog("Allocate", logs);
   if (factory != NULL) {
-    factory->SetPlugin((PluginBase*)npp->pdata);
-    Function_Item item;
-    strcpy_s(item.function_name, "CreateObject");
-    item.function_pointer = ON_INVOKEHELPER(&ComObjectFactory::CreateObject);
-    factory->AddFunction(item);
-    strcpy_s(item.function_name, "CheckObject");
-    item.function_pointer = ON_INVOKEHELPER(&ComObjectFactory::CheckObject);
-    factory->AddFunction(item);
-    strcpy_s(item.function_name, "CopyToClipboard");
-    item.function_pointer = ON_INVOKEHELPER(&ComObjectFactory::CopyToClipboard);
-    factory->AddFunction(item);
+    factory->set_plugin((PluginBase*)npp->pdata);
   }
   return factory;
 }
@@ -44,13 +28,17 @@ void ComObjectFactory::Deallocate() {
   delete this;
 }
 
-void ComObjectFactory::Invalidate() {
-
-}
-
-bool ComObjectFactory::Construct(const NPVariant *args, uint32_t argCount,
-                                 NPVariant *result) {
-  return true;
+void ComObjectFactory::InitHandler() {
+  Function_Item item;
+  item.function_name = "CreateObject";
+  item.function_pointer = ON_INVOKEHELPER(&ComObjectFactory::CreateObject);
+  AddFunction(item);
+  item.function_name = "CheckObject";
+  item.function_pointer = ON_INVOKEHELPER(&ComObjectFactory::CheckObject);
+  AddFunction(item);
+  item.function_name = "CopyToClipboard";
+  item.function_pointer = ON_INVOKEHELPER(&ComObjectFactory::CopyToClipboard);
+  AddFunction(item);
 }
 
 bool ComObjectFactory::CheckObject(const NPVariant *args, uint32_t argCount,
@@ -137,7 +125,7 @@ bool ComObjectFactory::CopyToClipboard(const NPVariant *args,
     const char* data= NPVARIANT_TO_STRING(args[0]).UTF8Characters;
     int nLen = NPVARIANT_TO_STRING(args[0]).UTF8Length + 1;
     g_Log.WriteLog("data", data);
-    if (OpenClipboard(plugin_->get_hwnd()))
+    if (OpenClipboard(plugin_->get_native_window()))
     {
       EmptyClipboard();
       TCHAR* pData = new TCHAR[nLen];

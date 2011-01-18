@@ -1,3 +1,5 @@
+#include "stdafx.h"
+#include "com_object_factory.h"
 #include "download_helper_plugin.h"
 #include "download_helper_script_object.h"
 #include "log.h"
@@ -25,8 +27,13 @@ NPError DownloadHelperPlugin::GetValue(NPPVariable variable, void *value) {
   switch(variable) {
     case NPPVpluginScriptableNPObject:
       if (scriptobject_ == NULL) {
+#ifdef OS_WIN
+        scriptobject_ = ScriptObjectFactory::CreateObject(
+            get_npp(), ComObjectFactory::Allocate);
+#elif defined OS_LINUX
         scriptobject_ = ScriptObjectFactory::CreateObject(
             get_npp(), DownloadHelperScriptObject::Allocate);
+#endif
         g_Log.WriteLog("GetValue","GetValue");
       }
       if (scriptobject_ != NULL) {

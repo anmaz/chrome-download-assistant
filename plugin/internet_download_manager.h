@@ -5,19 +5,18 @@
 
 #include "script_object_base.h"
 
-using namespace std;
-
 class InternetDownloadManager : public ScriptObjectBase {
-public:
-  InternetDownloadManager(void);
-  virtual ~InternetDownloadManager(void);
+private:
+  InternetDownloadManager(void) {}
+  virtual ~InternetDownloadManager(void) {}
 
+public:
   static NPObject* Allocate(NPP npp, NPClass *aClass);
 
   void Deallocate();
-  void Invalidate();
-  bool Construct(const NPVariant *args,uint32_t argCount,
-                 NPVariant *result);
+  void Invalidate() {}
+  bool Construct(const NPVariant *args, uint32_t argCount,
+                 NPVariant *result) { return true; }
 
   static bool CheckObject();
 

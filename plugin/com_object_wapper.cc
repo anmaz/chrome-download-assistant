@@ -22,7 +22,7 @@ NPObject* ComObjectWapper::Allocate(NPP npp, NPClass *aClass) {
   sprintf(logs, "ComObjectWapper this=%ld", pRet);
   g_Log.WriteLog("Allocate", logs);
   if (pRet != NULL) {
-    pRet->SetPlugin((PluginBase*)npp->pdata);
+    pRet->set_plugin((PluginBase*)npp->pdata);
   }
   return pRet;
 }
@@ -193,11 +193,6 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
   return bRet;
 }
 
-bool ComObjectWapper::InvokeDefault(const NPVariant *args, uint32_t argCount,
-                                    NPVariant *result) {
-  return false;
-}
-
 bool ComObjectWapper::HasProperty(NPIdentifier name) {
   bool has_property = ScriptObjectBase::HasProperty(name);
   bool has_method = ScriptObjectBase::HasMethod(name);
@@ -207,7 +202,7 @@ bool ComObjectWapper::HasProperty(NPIdentifier name) {
         INVOKE_PROPERTYGET | INVOKE_PROPERTYPUT);
     if (has_property) {
       Property_Item item;
-      strcpy(item.property_name, method_name);
+      item.property_name = method_name;
       VOID_TO_NPVARIANT(item.value);
       AddProperty(item);
     }
@@ -215,7 +210,7 @@ bool ComObjectWapper::HasProperty(NPIdentifier name) {
     has_method = FindFunctionByInvokeKind(method_name, INVOKE_FUNC);
     if (has_method) {
       Function_Item item;
-      strcpy(item.function_name, method_name);
+      item.function_name = method_name;
       item.function_pointer = NULL;
       AddFunction(item);
     }
@@ -353,19 +348,6 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
 bool ComObjectWapper::RemoveProperty(NPIdentifier name) {
   bool bRet = false;
   return bRet;
-}
-
-bool ComObjectWapper::Enumerate(NPIdentifier **value, uint32_t *count) {
-  //  *count = m_PropList.size() + m_FunList.size();
-  return false;
-}
-
-void ComObjectWapper::Invalidate() {
-}
-
-bool ComObjectWapper::Construct(const NPVariant *args, uint32_t argCount,
-                                NPVariant *result) {
-  return true;
 }
 
 bool ComObjectWapper::FindFunctionByInvokeKind(const char* name, 

@@ -3,16 +3,17 @@
 #include "script_object_base.h"
 
 class ComObjectFactory : public ScriptObjectBase {
-public:
-  ComObjectFactory(void);
-  ~ComObjectFactory(void);
+private:
+  ComObjectFactory(void) {}
+  ~ComObjectFactory(void) {}
 
+public:
   static NPObject* Allocate(NPP npp, NPClass *aClass); 
 
   void Deallocate();
-  void Invalidate();
+  void Invalidate() {}
   bool Construct(const NPVariant *args, uint32_t argCount,
-                 NPVariant *result);
+                 NPVariant *result) { return true; }
 
   bool CreateObject(const NPVariant *args, uint32_t argCount,
                     NPVariant *result);
@@ -22,4 +23,6 @@ public:
 
   bool CopyToClipboard(const NPVariant *args, uint32_t argCount,
                        NPVariant *result);
+
+  void InitHandler();
 };
