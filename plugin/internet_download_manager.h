@@ -3,20 +3,16 @@
 #include <map>
 #include <string>
 
-#include "script_object_base.h"
+#include "downloader_script_object.h"
 
-class InternetDownloadManager : public ScriptObjectBase {
+class InternetDownloadManager : public DownloaderScriptObject {
 private:
   InternetDownloadManager(void) {}
   virtual ~InternetDownloadManager(void) {}
 
 public:
   static NPObject* Allocate(NPP npp, NPClass *aClass);
-
   void Deallocate();
-  void Invalidate() {}
-  bool Construct(const NPVariant *args, uint32_t argCount,
-                 NPVariant *result) { return true; }
 
   static bool CheckObject();
 

@@ -3,14 +3,13 @@
 #include "download_helper_plugin.h"
 #include "plugin_factory.h"
 
-PluginFactory::PluginFactory(void) {
+PluginFactory::PluginTypeMap PluginFactory::plugin_type_map_;
+
+void PluginFactory::Init() {
   Plugin_Type_Item item;
   item.mime_type = "application/x-npdownload";
   item.constructor = &DownloadHelperPlugin::CreateObject;
   plugin_type_map_.insert(PluginTypeMap::value_type(item.mime_type, item));
-}
-
-PluginFactory::~PluginFactory(void) {
 }
 
 PluginBase* PluginFactory::NewPlugin(NPMIMEType pluginType) {

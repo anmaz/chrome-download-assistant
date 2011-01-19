@@ -42,19 +42,20 @@ public:
   virtual bool Construct(const NPVariant *args, uint32_t argCount,
                          NPVariant *result) = 0;
   virtual void InitHandler() {}
-  void set_plugin(PluginBase* plug) { plugin_ = plug; }
 
 protected:
   void AddProperty(Property_Item& item);
   void AddFunction(Function_Item& item);
-
-  PluginBase* plugin_;
+  void set_plugin(PluginBase* plug) { plugin_ = plug; }
+  PluginBase* get_plugin() { return plugin_; }
 
 private:
   typedef std::map<std::string, Function_Item> FunctionMap;
   typedef std::map<std::string, Property_Item> PropertyMap;
   FunctionMap function_map_;
   PropertyMap property_map_;
+  PluginBase* plugin_;
+
 };
 
 #define ON_INVOKEHELPER(_funPtr) \

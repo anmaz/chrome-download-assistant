@@ -107,7 +107,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
             NPIdentifier id = NPN_GetStringIdentifier("length");
             if (id) {
               NPVariant ret;
-              if (NPN_GetProperty(plugin_->get_npp(), pObject, id, &ret) &&
+              if (NPN_GetProperty(get_plugin()->get_npp(), pObject, id, &ret) &&
                   (NPVARIANT_IS_INT32(ret) || NPVARIANT_IS_DOUBLE(ret))) {
                 int array_len = NPVARIANT_IS_INT32(ret) ? 
                     NPVARIANT_TO_INT32(ret) : NPVARIANT_TO_DOUBLE(ret);
@@ -120,7 +120,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
                 if (psa) {
                   for (int index = 0; index < array_len; index++) {
                     id = NPN_GetIntIdentifier(index);
-                    NPN_GetProperty(plugin_->get_npp(), pObject, id, &ret);
+                    NPN_GetProperty(get_plugin()->get_npp(), pObject, id, &ret);
                     if (!NPVARIANT_IS_STRING(ret))
                       continue;
                     const char* array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;

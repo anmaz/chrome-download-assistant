@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "script_object_base.h"
+#include "utils.h"
 
 bool ScriptObjectBase::HasMethod(NPIdentifier name) {
   bool ret = false;
-  char* method_name = NPN_UTF8FromIdentifier(name);
-  if (method_name != NULL) {
-    FunctionMap::iterator iter = function_map_.find(method_name);
+  utils::IdentifiertoString method_name(name);
+  if (method_name.identifier_name()) {
+    FunctionMap::iterator iter = function_map_.find((const char*)method_name);
     ret = iter != function_map_.end();
-    NPN_MemFree(method_name);
   }
   return ret;
 }
@@ -15,37 +15,34 @@ bool ScriptObjectBase::HasMethod(NPIdentifier name) {
 bool ScriptObjectBase::Invoke(NPIdentifier name,const NPVariant *args,
                               uint32_t argCount,NPVariant *result) {
   bool ret = false;
-  char* method_name = NPN_UTF8FromIdentifier(name);
-  if (method_name != NULL) {
-    FunctionMap::iterator iter = function_map_.find(method_name);
+  utils::IdentifiertoString method_name(name);
+  if (method_name.identifier_name()) {
+    FunctionMap::iterator iter = function_map_.find((const char*)method_name);
     if (iter != function_map_.end())
       ret = (this->*(iter->second.function_pointer))(args, argCount, result);
-    NPN_MemFree(method_name);
   }
   return ret;
 }
 
 bool ScriptObjectBase::HasProperty(NPIdentifier name) {
   bool ret = false;
-  char* property_name = NPN_UTF8FromIdentifier(name);
-  if (property_name != NULL) {
-    PropertyMap::iterator iter = property_map_.find(property_name);
-   ret = iter != property_map_.end();
-    NPN_MemFree(property_name);
+  utils::IdentifiertoString property_name(name);
+  if (property_name.identifier_name()) {
+    PropertyMap::iterator iter = property_map_.find((const char*)property_name);
+    ret = iter != property_map_.end();
   }
   return ret;
 }
 
 bool ScriptObjectBase::GetProperty(NPIdentifier name, NPVariant *result) {
   bool ret = false;
-  char* property_name = NPN_UTF8FromIdentifier(name);
-  if (property_name != NULL) {
-    PropertyMap::iterator iter = property_map_.find(property_name);
+  utils::IdentifiertoString property_name(name);
+  if (property_name.identifier_name()) {
+    PropertyMap::iterator iter = property_map_.find((const char*)property_name);
     if (iter != property_map_.end()) {
       *result = iter->second.value;
       ret = true;
     }
-    NPN_MemFree(property_name);
   }
   return ret;
 }
@@ -53,27 +50,25 @@ bool ScriptObjectBase::GetProperty(NPIdentifier name, NPVariant *result) {
 bool ScriptObjectBase::SetProperty(NPIdentifier name,
                                    const NPVariant *value) {
   bool ret = false;
-  char* property_name = NPN_UTF8FromIdentifier(name);
-  if (property_name != NULL) {
-    PropertyMap::iterator iter = property_map_.find(property_name);
+  utils::IdentifiertoString property_name(name);
+  if (property_name.identifier_name()) {
+    PropertyMap::iterator iter = property_map_.find((const char*)property_name);
     if (iter != property_map_.end()) {
       iter->second.value = *value;
       ret = true;
     }
-    NPN_MemFree(property_name);
   }
   return ret;
 }
 bool ScriptObjectBase::RemoveProperty(NPIdentifier name) {
   bool ret = false;
-  char* property_name = NPN_UTF8FromIdentifier(name);
-  if (property_name != NULL) {
-    PropertyMap::iterator iter = property_map_.find(property_name);
+  utils::IdentifiertoString property_name(name);
+  if (property_name.identifier_name()) {
+    PropertyMap::iterator iter = property_map_.find((const char*)property_name);
     if (iter != property_map_.end()) {
       property_map_.erase(iter);
       ret = true;
     }
-    NPN_MemFree(property_name);
   }
   return ret;
 }

@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\downloader_script_object.cc"
+				>
+			</File>
+			<File
 				RelativePath=".\internet_download_manager.cc"
 				>
 			</File>
@@ -230,10 +234,6 @@
 				RelativePath=".\script_object_factory.cc"
 				>
 			</File>
-			<File
-				RelativePath=".\utils.cc"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Í·ÎÄ¼þ"
@@ -250,6 +250,10 @@
 			</File>
 			<File
 				RelativePath=".\download_helper_script_object.h"
+				>
+			</File>
+			<File
+				RelativePath=".\downloader_script_object.h"
 				>
 			</File>
 			<File

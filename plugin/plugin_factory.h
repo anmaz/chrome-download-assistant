@@ -8,13 +8,15 @@
 typedef PluginBase* (*ConstructorPtr)();
 
 class PluginFactory {
-public:
+private:
   PluginFactory(void);
   ~PluginFactory(void);
 
-  PluginBase* NewPlugin(NPMIMEType pluginType);
+public:
+  static void Init();
+  static PluginBase* NewPlugin(NPMIMEType pluginType);
 
-private:
+public:
   struct Plugin_Type_Item {
     std::string mime_type;
     ConstructorPtr constructor;
@@ -22,7 +24,8 @@ private:
 
   typedef std::map<std::string, Plugin_Type_Item> PluginTypeMap;
 
-  PluginTypeMap plugin_type_map_;
+private:
+  static PluginTypeMap plugin_type_map_;
 };
 
 #endif

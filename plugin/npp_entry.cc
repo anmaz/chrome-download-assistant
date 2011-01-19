@@ -5,7 +5,6 @@
 #include "plugin_base.h"
 #include "plugin_factory.h"
 
-PluginFactory g_PluginFactory;
 extern Log g_Log;
 
 #ifdef XP_UNIX
@@ -24,7 +23,7 @@ void NP_LOADDS NPP_Shutdown() {
 NPError NP_LOADDS NPP_New(NPMIMEType pluginType, NPP instance,
                           uint16_t mode, int16_t argc, char* argn[],
                           char* argv[], NPSavedData* saved) {
-  PluginBase* pPlugin = g_PluginFactory.NewPlugin(pluginType);
+  PluginBase* pPlugin = PluginFactory::NewPlugin(pluginType);
   if (pPlugin == NULL)
     return NPERR_OUT_OF_MEMORY_ERROR;
   else

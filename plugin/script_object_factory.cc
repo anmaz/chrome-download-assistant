@@ -2,17 +2,6 @@
 
 #include "script_object_factory.h"
 
-ScriptObjectBase* ScriptObjectFactory::CreateObject(NPP npp,
-    NPAllocateFunctionPtr allocate) {
-  npclass_.allocate = allocate;
-  ScriptObjectBase* object = (ScriptObjectBase*)NPN_CreateObject(npp, 
-                                                                 &npclass_);
-  if (object) {
-    object->InitHandler();
-  }
-  return object;
-}
-
 namespace {
 
 NPObject* Allocate(NPP npp, NPClass *aClass) {
@@ -77,8 +66,7 @@ bool Construct(NPObject *npobj, const NPVariant *args, uint32_t argCount,
   return object->Construct(args, argCount, result);
 }
 
-}
-NPClass ScriptObjectFactory::npclass_ = {
+NPClass npclass_ = {
   NP_CLASS_STRUCT_VERSION,
   Allocate,
   Deallocate,
@@ -93,3 +81,16 @@ NPClass ScriptObjectFactory::npclass_ = {
   Enumerate,
   Construct
 };
+
+}
+
+ScriptObjectBase* ScriptObjectFactory::CreateObject(NPP npp,
+    NPAllocateFunctionPtr allocate) {
+  npclass_.allocate = allocate;
+  ScriptObjectBase* object = (ScriptObjectBase*)NPN_CreateObject(npp, 
+                                                                 &npclass_);
+  if (object) {
+    object->InitHandler();
+  }
+  return object;
+}

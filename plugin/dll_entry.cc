@@ -9,6 +9,7 @@
 
 #include "log.h"
 #include "npfunctions.h"
+#include "plugin_factory.h"
 
 #ifdef OS_WIN
 HMODULE g_hMod;
@@ -82,6 +83,7 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 #else
                ) {
 #endif
+                 PluginFactory::Init();
                  //g_Log.OpenLog("NPAPI");
 #ifdef OS_LINUX
                  pthread_create(&wait_process_tid, NULL, WaitChildProcess, 0);

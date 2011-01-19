@@ -5,7 +5,7 @@
 #include "script_object_base.h"
 
 class DownloadHelperScriptObject :public ScriptObjectBase {
-private:
+protected:
   DownloadHelperScriptObject() {}
   virtual ~DownloadHelperScriptObject() {}
 
@@ -26,16 +26,7 @@ public:
   bool CopyToClipboard(const NPVariant *args, uint32_t argCount,
                        NPVariant *result);
 
-  bool Download(const NPVariant *args, uint32_t argCount,
-                NPVariant *result);
-
-  void set_execute_file(const char* name) { execute_file_ = name; }
-
   void InitHandler();
-
-private:
-  std::string execute_file_;
-
 };
 
 #endif	/* DOWNLOADHELPERSCRIPTOBJECT_H */

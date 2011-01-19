@@ -11,6 +11,7 @@
 #endif
 
 #include "download_helper_script_object.h"
+#include "downloader_script_object.h"
 #include "script_object_factory.h"
 #include "log.h"
 
@@ -48,11 +49,6 @@ void DownloadHelperScriptObject::InitHandler() {
   item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
       CopyToClipboard);
   AddFunction(item);
-  item.function_name = "Download";
-  item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
-      Download);
-  AddFunction(item);
-
 }
 
 bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
@@ -66,8 +62,8 @@ bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
 
     g_Log.WriteLog("ProgID", pProgID);
     if (stricmp(pProgID, "DownlWithIDM.LinkProcessor") == 0) {
-      ScriptObjectBase* pObject = (ScriptObjectBase*)ScriptObjectFactory::
-          CreateObject(plugin_->get_npp(), InternetDownloadManager::Allocate);
+      DownloaderScriptObject* pObject = (DownloaderScriptObject*)ScriptObjectFactory::
+          CreateObject(get_plugin()->get_npp(), InternetDownloadManager::Allocate);
       OBJECT_TO_NPVARIANT(pObject, *result);
       return true;
     }
@@ -87,7 +83,7 @@ bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
       g_Log.WriteLog("CreateObject", "CoCreateInstance");
       if (SUCCEEDED(hr)) {
         ComObjectWapper* pObject = (ComObjectWapper*)ScriptObjectFactory::
-            CreateObject(plugin_->get_npp(), ComObjectWapper::Allocate);
+            CreateObject(get_plugin()->get_npp(), ComObjectWapper::Allocate);
         OBJECT_TO_NPVARIANT(pObject, *result);
         pObject->disp_pointer_ = pInterface;
         sprintf(logs, "pInterface=0x%X,pObject=%ld", pInterface, pObject);
@@ -104,9 +100,9 @@ bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
 
     g_Log.WriteLog("ProgID", execute_file);
 
-    DownloadHelperScriptObject* pObject = (DownloadHelperScriptObject*)
-      ScriptObjectFactory::CreateObject(plugin_->get_npp(),
-      DownloadHelperScriptObject::Allocate);
+    DownloaderScriptObject* pObject = (DownloaderScriptObject*)
+        ScriptObjectFactory::CreateObject(plugin_->get_npp(),
+        DownloaderScriptObject::Allocate);
     OBJECT_TO_NPVARIANT(pObject, *result);
     if (pObject)
       pObject->set_execute_file(execute_file);
@@ -168,22 +164,5 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
 bool DownloadHelperScriptObject::CopyToClipboard(const NPVariant* args,
                                                  uint32_t argCount,
                                                  NPVariant* result) {
-  return true;
-}
-
-bool DownloadHelperScriptObject::Download(const NPVariant *args,
-                                          uint32_t argCount,
-                                          NPVariant *result) {
-#ifdef OS_LINUX
-  if (argCount != 1 || !NPVARIANT_IS_STRING(args[0]))
-    return false;
-  
-  const char* parameter = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-  
-  if (fork() == 0) {
-    execlp(execute_file_.c_str(), execute_file_.c_str(), parameter, 0);
-    exit(0);
-  }
-#endif
   return true;
 }
