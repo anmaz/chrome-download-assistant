@@ -101,7 +101,7 @@ bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
     g_Log.WriteLog("ProgID", execute_file);
 
     DownloaderScriptObject* pObject = (DownloaderScriptObject*)
-        ScriptObjectFactory::CreateObject(plugin_->get_npp(),
+        ScriptObjectFactory::CreateObject(get_plugin()->get_npp(),
         DownloaderScriptObject::Allocate);
     OBJECT_TO_NPVARIANT(pObject, *result);
     if (pObject)

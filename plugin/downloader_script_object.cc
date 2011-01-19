@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "downloader_script_object.h"
 #include "log.h"
+#include <stdlib.h>
 #ifdef OS_LINUX
 #include <unistd.h>
 #include <wait.h>
