@@ -4,19 +4,18 @@
 #include <string>
 #include "script_object_base.h"
 
-using namespace std;
-
 class DownloadHelperScriptObject :public ScriptObjectBase {
-public:
-  DownloadHelperScriptObject();
-  virtual ~DownloadHelperScriptObject();
+private:
+  DownloadHelperScriptObject() {}
+  virtual ~DownloadHelperScriptObject() {}
 
+public:
   static NPObject* Allocate(NPP npp, NPClass *aClass);
 
   void Deallocate();
-  void Invalidate();
+  void Invalidate() {}
   bool Construct(const NPVariant *args,uint32_t argCount,
-                 NPVariant *result);
+                 NPVariant *result) { return true; }
 
   bool CreateObject(const NPVariant *args, uint32_t argCount,
                     NPVariant *result);
@@ -32,8 +31,10 @@ public:
 
   void set_execute_file(const char* name) { execute_file_ = name; }
 
+  void InitHandler();
+
 private:
-  string execute_file_;
+  std::string execute_file_;
 
 };
 

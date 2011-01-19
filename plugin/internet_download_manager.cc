@@ -16,10 +16,6 @@ NPObject* InternetDownloadManager::Allocate(NPP npp, NPClass *aClass) {
   g_Log.WriteLog("Allocate",logs);
   if (pRet != NULL) {
     pRet->set_plugin((PluginBase*)npp->pdata);
-    Function_Item item;
-    item.function_name = "Download";
-    item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::Download);
-    pRet->AddFunction(item);
   }
   return pRet;
 }
@@ -29,6 +25,13 @@ void InternetDownloadManager::Deallocate() {
   sprintf_s(logs,"InternetDownloadManager this=%ld",this);
   g_Log.WriteLog("Deallocate",logs);
   delete this;
+}
+
+void InternetDownloadManager::InitHandler() {
+  Function_Item item;
+  item.function_name = "Download";
+  item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::Download);
+  AddFunction(item);
 }
 
 bool InternetDownloadManager::CheckObject() {

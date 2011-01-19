@@ -25,7 +25,7 @@ public:
   virtual bool Construct(const NPVariant *args, uint32_t argCount,
                          NPVariant *result) { return true; }
 
-  friend class ComObjectFactory;
+  friend class DownloadHelperScriptObject;
 
 private:
   bool FindFunctionByInvokeKind(const char* name, int invokekind);

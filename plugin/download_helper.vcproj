@@ -179,10 +179,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\com_object_factory.cc"
-				>
-			</File>
-			<File
 				RelativePath=".\com_object_wapper.cc"
 				>
 			</File>
@@ -196,6 +192,10 @@
 			</File>
 			<File
 				RelativePath=".\download_helper_plugin.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\download_helper_script_object.cc"
 				>
 			</File>
 			<File
@@ -241,15 +241,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\com_object_factory.h"
-				>
-			</File>
-			<File
 				RelativePath=".\com_object_wapper.h"
 				>
 			</File>
 			<File
 				RelativePath=".\download_helper_plugin.h"
+				>
+			</File>
+			<File
+				RelativePath=".\download_helper_script_object.h"
 				>
 			</File>
 			<File

@@ -1,8 +1,13 @@
+#include "stdafx.h"
 #include <string.h>
 #include <stdlib.h>
 #ifdef OS_LINUX
 #include <unistd.h>
 #include <wait.h>
+#elif defined OS_WIN
+#include <comdef.h>
+#include "com_object_wapper.h"
+#include "internet_download_manager.h"
 #endif
 
 #include "download_helper_script_object.h"
@@ -11,36 +16,13 @@
 
 extern Log g_Log;
 
-DownloadHelperScriptObject::DownloadHelperScriptObject() {
-}
-
-DownloadHelperScriptObject::~DownloadHelperScriptObject() {
-}
-
 NPObject* DownloadHelperScriptObject::Allocate(NPP npp, NPClass *aClass) {
   DownloadHelperScriptObject* pRet = new DownloadHelperScriptObject;
   char logs[256];
   sprintf(logs, "DownloadHelperScriptObject this=%ld", pRet);
   g_Log.WriteLog("Allocate",logs);
   if (pRet != NULL) {
-    pRet->SetPlugin((PluginBase*)npp->pdata);
-    Function_Item item;
-    item.function_name = "CreateObject";
-    item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
-        CreateObject);
-    pRet->AddFunction(item);
-    item.function_name = "CheckObject";
-    item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
-        CheckObject);
-    pRet->AddFunction(item);
-    item.function_name = "CopyToClipboard";
-    item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
-        CopyToClipboard);
-    pRet->AddFunction(item);
-    item.function_name = "Download";
-    item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
-        Download);
-    pRet->AddFunction(item);
+    pRet->set_plugin((PluginBase*)npp->pdata);
   }
   return pRet;
 }
@@ -52,35 +34,84 @@ void DownloadHelperScriptObject::Deallocate() {
   delete this;
 }
 
-void DownloadHelperScriptObject::Invalidate() {
+void DownloadHelperScriptObject::InitHandler() {
+  Function_Item item;
+  item.function_name = "CreateObject";
+  item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
+      CreateObject);
+  AddFunction(item);
+  item.function_name = "CheckObject";
+  item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
+      CheckObject);
+  AddFunction(item);
+  item.function_name = "CopyToClipboard";
+  item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
+      CopyToClipboard);
+  AddFunction(item);
+  item.function_name = "Download";
+  item.function_pointer = ON_INVOKEHELPER(&DownloadHelperScriptObject::
+      Download);
+  AddFunction(item);
 
-}
-
-bool DownloadHelperScriptObject::Construct(const NPVariant *args,
-                                           uint32_t argCount,
-                                           NPVariant *result) {
-  return true;
 }
 
 bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
                                               uint32_t argCount,
                                               NPVariant* result) {
   char logs[256];
-
   NULL_TO_NPVARIANT(*result);
+#ifdef OS_WIN
+  if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
+    const char* pProgID = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
 
+    g_Log.WriteLog("ProgID", pProgID);
+    if (stricmp(pProgID, "DownlWithIDM.LinkProcessor") == 0) {
+      ScriptObjectBase* pObject = (ScriptObjectBase*)ScriptObjectFactory::
+          CreateObject(plugin_->get_npp(), InternetDownloadManager::Allocate);
+      OBJECT_TO_NPVARIANT(pObject, *result);
+      return true;
+    }
+
+    TCHAR progID[256];
+    MultiByteToWideChar(CP_UTF8, 0, pProgID, -1, progID, 256);
+    IDispatch* pInterface;
+    CLSID clsid;
+    HRESULT hr = CLSIDFromProgID(progID, &clsid);
+    TCHAR* pClssID;
+    StringFromCLSID(clsid, &pClssID);
+    _bstr_t bstr(pClssID);
+    g_Log.WriteLog("CLSIDFromProgID", bstr);
+    if (SUCCEEDED(hr)) {
+      hr = CoCreateInstance(clsid, NULL, CLSCTX_SERVER, IID_IDispatch,
+          (LPVOID*)&pInterface);
+      g_Log.WriteLog("CreateObject", "CoCreateInstance");
+      if (SUCCEEDED(hr)) {
+        ComObjectWapper* pObject = (ComObjectWapper*)ScriptObjectFactory::
+            CreateObject(plugin_->get_npp(), ComObjectWapper::Allocate);
+        OBJECT_TO_NPVARIANT(pObject, *result);
+        pObject->disp_pointer_ = pInterface;
+        sprintf(logs, "pInterface=0x%X,pObject=%ld", pInterface, pObject);
+        g_Log.WriteLog("CreateObject", logs);
+      } else {
+        sprintf(logs, "GetLastError=%ld,hr=0x%X", GetLastError(), hr);
+        g_Log.WriteLog("Error", logs);
+      }
+    }
+  }
+#elif defined OS_LINUX
   if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
     const char* execute_file = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
 
     g_Log.WriteLog("ProgID", execute_file);
 
     DownloadHelperScriptObject* pObject = (DownloadHelperScriptObject*)
-        ScriptObjectFactory::CreateObject(plugin_->get_npp(),
-        DownloadHelperScriptObject::Allocate);
+      ScriptObjectFactory::CreateObject(plugin_->get_npp(),
+      DownloadHelperScriptObject::Allocate);
     OBJECT_TO_NPVARIANT(pObject, *result);
     if (pObject)
       pObject->set_execute_file(execute_file);
   }
+#endif
   
   return true;
 }
@@ -90,7 +121,29 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
                                              uint32_t argCount,
                                              NPVariant* result) {
   BOOLEAN_TO_NPVARIANT(false, *result);
-  
+#ifdef OS_WIN
+  if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
+    const char* prog_id = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+    g_Log.WriteLog("ProgID", prog_id);
+
+    if (stricmp(prog_id, "DownlWithIDM.LinkProcessor") == 0) {
+      BOOLEAN_TO_NPVARIANT(InternetDownloadManager::CheckObject(), *result);
+      return true;
+    }
+
+    TCHAR wchar_prog_id[256];
+    MultiByteToWideChar(CP_UTF8, 0, prog_id, -1, wchar_prog_id, 256);
+    CLSID clsid;
+    HRESULT hr = CLSIDFromProgID(wchar_prog_id, &clsid);
+    TCHAR* pClssID;
+    StringFromCLSID(clsid, &pClssID);
+    _bstr_t bstr(pClssID);
+    g_Log.WriteLog("CLSIDFromProgID", bstr);
+    if (SUCCEEDED(hr)) {
+      BOOLEAN_TO_NPVARIANT(true, *result);
+    }
+  }
+#elif defined OS_LINUX
   if (argCount != 1 || !NPVARIANT_IS_STRING(args[0]))
     return false;
 
@@ -108,6 +161,7 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
       BOOLEAN_TO_NPVARIANT(true, *result);
     pclose(p);
   }
+#endif
   return true;
 }
 
@@ -120,6 +174,7 @@ bool DownloadHelperScriptObject::CopyToClipboard(const NPVariant* args,
 bool DownloadHelperScriptObject::Download(const NPVariant *args,
                                           uint32_t argCount,
                                           NPVariant *result) {
+#ifdef OS_LINUX
   if (argCount != 1 || !NPVARIANT_IS_STRING(args[0]))
     return false;
   
@@ -129,6 +184,6 @@ bool DownloadHelperScriptObject::Download(const NPVariant *args,
     execlp(execute_file_.c_str(), execute_file_.c_str(), parameter, 0);
     exit(0);
   }
-  
+#endif
   return true;
 }

@@ -23,6 +23,8 @@ public:
   bool Download(const NPVariant *args, uint32_t argCount,
                 NPVariant *result);
 
+  void InitHandler();
+
 private:
   static TCHAR idm_exe_path[MAX_PATH];
 
