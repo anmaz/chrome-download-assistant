@@ -148,7 +148,7 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
     return false;
 
   const char* downloader_name = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-  string command = "which ";
+  std::string command = "which ";
   command += downloader_name;
   FILE* p = popen(command.c_str(), "r");
   if (p != NULL) {
