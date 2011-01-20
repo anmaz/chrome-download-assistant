@@ -94,7 +94,7 @@
       i18nReplace('downloader', 'downloader');
       i18nReplace('disableMenu', 'menu_disable');
       i18nReplace('saveAndClose', 'save_and_close');
-      bg.updateDownloaders();
+      bg.updateDownloadersIfNeeded();
       createDownloaderOption(document.getElementById('downloaderOption'));
       if (bg.useContextMenuAPI) {
         document.getElementById('contextMenuItem').style.display = 'none';
