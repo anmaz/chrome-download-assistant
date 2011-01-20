@@ -327,10 +327,10 @@ downloaderManager.init = function(plugin) {
   downloaderManager.downloader['idm'] = new IDM(plugin);
   downloaderManager.downloader['fdm'] = new FDM(plugin);
   for (var i = 0; i < downloaderManager.menuItems.length; i++) {
-    var item = downloaderManger.menuItems[i];
+    var item = downloaderManager.menuItems[i];
     if (item.isLinux && item.enable) {
       downloaderManager.downloader[item.name] =
-          new LinuxDownloader(plugin, item[command]);
+          new LinuxDownloader(plugin, item.command);
     }
   }
   for (var name in localStorage) {

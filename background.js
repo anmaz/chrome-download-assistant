@@ -131,3 +131,5 @@ function init() {
     createContextMenu(plugin);
   }
 }
+
+init();
