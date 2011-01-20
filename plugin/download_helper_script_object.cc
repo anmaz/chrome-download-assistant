@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include <string.h>
-#include <stdlib.h>
 #ifdef OS_LINUX
 #include <unistd.h>
 #include <wait.h>
@@ -12,8 +10,11 @@
 
 #include "download_helper_script_object.h"
 #include "downloader_script_object.h"
-#include "script_object_factory.h"
 #include "log.h"
+#include "script_object_factory.h"
+#include <stdlib.h>
+#include <string.h>
+#include "utils.h"
 
 extern Log g_Log;
 
@@ -68,8 +69,7 @@ bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
       return true;
     }
 
-    TCHAR progID[256];
-    MultiByteToWideChar(CP_UTF8, 0, pProgID, -1, progID, 256);
+    utils::Utf8ToUnicode progID(pProgID);
     IDispatch* pInterface;
     CLSID clsid;
     HRESULT hr = CLSIDFromProgID(progID, &clsid);
@@ -127,8 +127,7 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
       return true;
     }
 
-    TCHAR wchar_prog_id[256];
-    MultiByteToWideChar(CP_UTF8, 0, prog_id, -1, wchar_prog_id, 256);
+    utils::Utf8ToUnicode wchar_prog_id(prog_id);
     CLSID clsid;
     HRESULT hr = CLSIDFromProgID(wchar_prog_id, &clsid);
     TCHAR* pClssID;

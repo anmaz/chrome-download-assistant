@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include <tchar.h>
-
 #include "internet_download_manager.h"
 #include "log.h"
+#include <tchar.h>
+#include "utils.h"
 
 extern Log g_Log;
 
@@ -58,21 +58,10 @@ bool InternetDownloadManager::Download(const NPVariant *args,
 
   BOOLEAN_TO_NPVARIANT(FALSE, *result);
 
-  WCHAR* link = new WCHAR[NPVARIANT_TO_STRING(args[0]).UTF8Length + 1];
-  if (!link)
-    return true;
-
   std::wstring params;
-  int len = NPVARIANT_TO_STRING(args[0]).UTF8Length + 1;
-  if (!MultiByteToWideChar(CP_UTF8, 0,
-                           NPVARIANT_TO_STRING(args[0]).UTF8Characters,
-                           -1, link, len)) {
-    return true;
-  } else {
-    params = L"/d ";
-    params += link;
-    delete[] link;
-  }
+  utils::Utf8ToUnicode link(NPVARIANT_TO_STRING(args[0]).UTF8Characters);
+  params = L"/d ";
+  params += link;
 
   HINSTANCE ret = ShellExecuteW(NULL, L"open", idm_exe_path, params.c_str(),
                                 NULL, SW_SHOWNORMAL);

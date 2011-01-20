@@ -21,6 +21,28 @@ namespace utils {
 
     char* identifier_name_;
   };
+
+#ifdef OS_WIN
+  class Utf8ToUnicode {
+  public:
+    explicit Utf8ToUnicode(const char* utf8data)
+      : buffer_(NULL) {
+      int size = MultiByteToWideChar(CP_UTF8, 0, utf8data, -1, 0, 0);
+      if (size > 0)
+        buffer_ = new WCHAR[size];
+      if (buffer_)
+        MultiByteToWideChar(CP_UTF8, 0, utf8data, -1, buffer_, size);
+    }
+    operator WCHAR*() const { return buffer_; }
+    WCHAR** operator &() { return &buffer_; }
+    ~Utf8ToUnicode() { if (buffer_) delete[] buffer_; }
+
+  private:
+    Utf8ToUnicode();
+    Utf8ToUnicode(const Utf8ToUnicode&);
+    WCHAR* buffer_;
+  };
+#endif
 }
 
 #endif

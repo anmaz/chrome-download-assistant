@@ -4,6 +4,7 @@
 
 #include "com_object_wapper.h"
 #include "log.h"
+#include "utils.h"
 
 extern Log g_Log;
 
@@ -36,17 +37,13 @@ void ComObjectWapper::Deallocate() {
 
 bool ComObjectWapper::HasMethod(NPIdentifier name) {
   bool bRet = false;
-  char* szName = NPN_UTF8FromIdentifier(name);
-  TCHAR szWName[256];
-  TCHAR* p = szWName;
-  MultiByteToWideChar(CP_UTF8, 0, szName, -1, szWName, 256);
+  utils::IdentifiertoString method_name(name);
+  utils::Utf8ToUnicode unicode_name(method_name);
   DISPID dispid;
-  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1,
+  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &unicode_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr))
     bRet = true;
-  if (szName != NULL)
-    NPN_MemFree(szName);
   return bRet;
 }
 
@@ -54,13 +51,11 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
                              uint32_t argCount, NPVariant *result) {
   bool bRet = false;
   char szLog[256];
-  char* szName = NPN_UTF8FromIdentifier(name);
-  g_Log.WriteLog("Invoke", szName);
-  TCHAR szWName[256];
-  TCHAR* p = szWName;
-  MultiByteToWideChar(CP_UTF8, 0, szName, -1, szWName, 256);
+  utils::IdentifiertoString method_name(name);
+  g_Log.WriteLog("Invoke", method_name);
+  utils::Utf8ToUnicode unicode_name(method_name);
   DISPID dispid;
-  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1,
+  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &unicode_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
@@ -88,16 +83,11 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
           break;
         case NPVariantType_String:
           {
-            g_Log.WriteLog("Param", NPVARIANT_TO_STRING(args[i]).UTF8Characters);
-            bstrList[i] = NPVARIANT_TO_STRING(args[i]).UTF8Characters;
+            const char* param = NPVARIANT_TO_STRING(args[i]).UTF8Characters;
+            g_Log.WriteLog("Param", param);
+            utils::Utf8ToUnicode parameter(param);
+            bstrList[i] = parameter;
             varlist[argCount-i-1].vt = VT_BSTR;
-            int nLen = bstrList[i].length() + 1;
-            if (!MultiByteToWideChar(CP_UTF8, 0,
-                NPVARIANT_TO_STRING(args[i]).UTF8Characters, -1,
-                bstrList[i],nLen)) {
-                sprintf(szLog, "GetLastError=%ld", GetLastError());
-                g_Log.WriteLog("Error", szLog);
-            }
             varlist[argCount-i-1].bstrVal = bstrList[i];
           }
           break;
@@ -125,9 +115,8 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
                       continue;
                     const char* array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
                     g_Log.WriteLog("array", array_item);
-                    _bstr_t bstr = array_item;
-                    MultiByteToWideChar(CP_UTF8, 0, array_item, -1,
-                        bstr, bstr.length()+1);
+                    utils::Utf8ToUnicode parameter(array_item);
+                    _bstr_t bstr = parameter;
                     VARIANT var_out;
                     var_out.vt = VT_BSTR;
                     var_out.bstrVal = bstr;
@@ -188,15 +177,13 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
       }
     }
   }
-  if (szName != NULL)
-    NPN_MemFree(szName);
   return bRet;
 }
 
 bool ComObjectWapper::HasProperty(NPIdentifier name) {
   bool has_property = ScriptObjectBase::HasProperty(name);
   bool has_method = ScriptObjectBase::HasMethod(name);
-  const char* method_name = NPN_UTF8FromIdentifier(name);
+  utils::IdentifiertoString method_name(name);
   if (!has_property && !has_method) {
     has_property = FindFunctionByInvokeKind(method_name,
         INVOKE_PROPERTYGET | INVOKE_PROPERTYPUT);
@@ -222,13 +209,11 @@ bool ComObjectWapper::HasProperty(NPIdentifier name) {
 bool ComObjectWapper::GetProperty(NPIdentifier name, NPVariant *result) {
   bool bRet = false;
   char szLog[256];
-  char* szName = NPN_UTF8FromIdentifier(name);
-  g_Log.WriteLog("GetProperty", szName);
-  TCHAR szWName[256];
-  TCHAR* p = szWName;
-  MultiByteToWideChar(CP_UTF8, 0, szName, -1, szWName, 256);
+  utils::IdentifiertoString property_name(name);
+  g_Log.WriteLog("GetProperty", property_name);
+  utils::Utf8ToUnicode unicode_name(property_name);
   DISPID dispid;
-  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1,
+  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &unicode_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
@@ -268,8 +253,6 @@ bool ComObjectWapper::GetProperty(NPIdentifier name, NPVariant *result) {
       }
     }
   }
-  if (szName != NULL)
-    NPN_MemFree(szName);
   return bRet;
 }
 
@@ -277,13 +260,11 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
                                   const NPVariant *value) {
   bool bRet = false;
   char szLog[256];
-  char* szName = NPN_UTF8FromIdentifier(name);
-  g_Log.WriteLog("SetProperty", szName);
-  TCHAR szWName[256];
-  TCHAR* p = szWName;
-  MultiByteToWideChar(CP_UTF8, 0, szName, -1, szWName, 256);
+  utils::IdentifiertoString property_name(name);
+  g_Log.WriteLog("SetProperty", property_name);
+  utils::Utf8ToUnicode unicode_name(property_name);
   DISPID dispid;
-  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1,
+  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &unicode_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
@@ -311,16 +292,11 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
         break;
       case NPVariantType_String:
         {
-          g_Log.WriteLog("Param", NPVARIANT_TO_STRING(*value).UTF8Characters);
-          bstr = NPVARIANT_TO_STRING(*value).UTF8Characters;
+          const char* param = NPVARIANT_TO_STRING(*value).UTF8Characters;
+          g_Log.WriteLog("Param", param);
+          utils::Utf8ToUnicode parameter(param);
+          bstr = parameter;
           varparam.vt = VT_BSTR;
-          int nLen = bstr.length() + 1;
-          if (!MultiByteToWideChar(CP_UTF8, 0,
-                                   NPVARIANT_TO_STRING(*value).UTF8Characters, -1,
-                                   bstr, nLen)) {
-              sprintf(szLog, "GetLastError=%ld", GetLastError());
-              g_Log.WriteLog("Error", szLog);
-          }
           varparam.bstrVal = bstr;
         }
         break;
@@ -340,8 +316,6 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
             hr, GetLastError(), nErrIndex, varRet.vt);
     g_Log.WriteLog("SetProperty", szLog);
   }
-  if (szName != NULL)
-    NPN_MemFree(szName);
   return bRet;
 }
 
@@ -355,11 +329,9 @@ bool ComObjectWapper::FindFunctionByInvokeKind(const char* name,
   char szLog[256];
   bool ret = false;
   g_Log.WriteLog("FindFunction", name);
-  TCHAR szWName[256];
-  TCHAR* p = szWName;
-  MultiByteToWideChar(CP_UTF8, 0, name, -1, szWName, 256);
+  utils::Utf8ToUnicode method_name(name);
   DISPID dispid;
-  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &p, 1,
+  HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &method_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
