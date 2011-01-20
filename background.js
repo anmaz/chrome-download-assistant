@@ -1,7 +1,6 @@
-var plugin = document.getElementById('pluginId');
 var useContextMenuAPI = true;
-localStorage['defaultDownloader'] = localStorage['defaultDownloader'] || 'chrome_downloader';
-localStorage['contextMenu'] = localStorage['contextMenu'] || 'true';
+var enableDownloaders = [];
+var plugin = document.getElementById('pluginId');
 
 chrome.extension.onRequest.addListener(function(request, sender, response) {
   switch(request.msg) {
@@ -10,7 +9,7 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
         'defaultDownloader': localStorage['defaultDownloader'],
         'contextMenu': localStorage['contextMenu'],
         'useContextMenuAPI': useContextMenuAPI,
-        'contextMenuList': downloaderManager.getEnableDownloader(plugin)});
+        'contextMenuList': enableDownloaders});
       break;
     case 'thunder':
     case 'mini_thunder':
@@ -21,7 +20,7 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
     case 'orbit':
     case 'idm':
     case 'fdm':
-      downloaderManager.downloader(request.msg, request.link, plugin, request.pageUrl).download();
+      downloaderManager.downloader[request.msg].download(request.link);
       break;
     case 'copyLink':
       downloaderManager.copyLinkToClipboard(plugin, request.link.url);
@@ -31,43 +30,59 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
       response({contextMenu: false});
       break;
     case 'downloadAll':
-      downloaderManager.downloader(request.downloader, request.links, plugin, request.pageUrl).downloadAll();
+      downloaderManager.downloader[request.downloader].downloadAll(
+          request.links, request.pageUrl);
       break;
-    default :
-      downloaderManager.linuxDownload(request.msg, request.link, plugin, request.pageUrl);
-      break; 
+    default:  // Linux downloaders
+      downloaderManager.downloader[request.msg].download(request.link);
+      break;
   }
 });
 
- chrome.tabs.onSelectionChanged.addListener(function(tabId) {
-   var js = 'chrome.tabs.executeScript(' + tabId + ', {file: "npdownload.js"});';
-    chrome.tabs.sendRequest(tabId, {
-      'msg': 'init_check',
-      'defaultDownloader': localStorage['defaultDownloader'],
-      'contextMenu': localStorage['contextMenu'],
-      'useContextMenuAPI': useContextMenuAPI,
-      'contextMenuList': downloaderManager.getEnableDownloader(plugin)
-    }, function(response) {
-      // If content script is loaded
-      if (response) {
-        js = '';
-      }
-    });
-    setTimeout(function() {
-      eval(js);
-    }, 500);
- });
+chrome.tabs.onSelectionChanged.addListener(function(tabId) {
+  updateDownloadersIfNeeded();
+  var js = 'chrome.tabs.executeScript(' + tabId + ', {file: "npdownload.js"});';
+  chrome.tabs.sendRequest(tabId, {
+    'msg': 'init_check',
+    'defaultDownloader': localStorage['defaultDownloader'],
+    'contextMenu': localStorage['contextMenu'],
+    'useContextMenuAPI': useContextMenuAPI,
+    'contextMenuList': enableDownloaders
+  }, function(response) {
+    // If content script is loaded
+    if (response)
+      js = '';
+  });
+  setTimeout(function() {
+    eval(js);
+  }, 500);
+});
 
-if (useContextMenuAPI) {
- createContextMenu(plugin);
+function updateDownloadersIfNeeded() {
+  var downloaders = downloaderManager.updateDownloadersIfNeeded(plugin);
+  if (downloaders.length == enableDownloaders.length) {
+    for (var i = 0; i < downloaders.length; i++)
+      if (downloaders[i].name != enableDownloaders[i].name)
+        break;
+    if (i == downloaders.length)
+      return;
+  }
+  for (var i = 0; i < downloaders.length; i++)
+    if (downloaders[i].name == localStorage['defaultDownloader'])
+      break;
+  if (i == downloaders.length)
+    localStorage['defaultDownloader'] = 'chrome_downloader';
+  enableDownloaders = downloaders;
+  chrome.contextMenus.removeAll();
+  createContextMenu(plugin);
 }
 
 function createContextMenu(plugin) {
-  var enableDownloaders = downloaderManager.getEnableDownloader(plugin);
   for (var i = 0; i < enableDownloaders.length; i++) {
     var downloader = enableDownloaders[i];
-    if (!downloader.isSystem) {
-      var title = chrome.i18n.getMessage(downloader.showName);
+    if (!downloader.isSystem && (!downloader.isLinux || downloader.enable)) {
+      title = chrome.i18n.getMessage(downloader.showName) ||
+          downloader.showName;
       var name = downloader.name;
       contextMenuDownload(title, name, plugin);
       if (downloader.supportDownloadAll) {
@@ -78,34 +93,14 @@ function createContextMenu(plugin) {
   }
 }
 
-function isWindowsPlatform() {
-  return navigator.userAgent.toLowerCase().indexOf('windows') > -1;
-}
-
-if (!isWindowsPlatform()) {
-  createLinuxContextMenu();
-}
-
-function createLinuxContextMenu() {
-  var rowCounts = localStorage['rowCounts'];
-  for (var i = 0; i < rowCounts; ++i) {
-    var downloaderConfigureArr  = localStorage['downloaderConfigure' + i].split(',');
-    contextMenuDownload(downloaderConfigureArr[1], downloaderConfigureArr, plugin)
-  }
-}
-
 function contextMenuDownload(title, downloader, plugin) {
   chrome.contextMenus.create({title: title, contexts: ['link'],
       onclick: function(info, tab) {
     var link = {};
     link.url = info.linkUrl;
     link.text = info.selectionText || ' ';
-    link.pageUrl = info.pageUrl ;
-    if (isWindowsPlatform()) {
-      downloaderManager.downloader(downloader, link, plugin, info.pageUrl).download();
-    } else {
-      downloaderManager.linuxDownload(downloader, link, plugin, info.pageUrl);
-    }
+    link.pageUrl = info.pageUrl;
+    downloaderManager.downloader[downloader].download(link);
   }}, function() {});
 }
 
@@ -124,3 +119,15 @@ function contextMenuDownloadAll(title, downloader) {
   }});
 }
 
+function init() {
+  localStorage['defaultDownloader'] =
+      localStorage['defaultDownloader'] || 'chrome_downloader';
+  localStorage['contextMenu'] = localStorage['contextMenu'] || 'true';
+  localStorage['rawCount'] = localStorage['rawCount'] || 0;
+
+  downloaderManager.init(plugin);
+  enableDownloaders = downloaderManager.updateDownloadersIfNeeded(plugin);
+  if (useContextMenuAPI) {
+    createContextMenu(plugin);
+  }
+}

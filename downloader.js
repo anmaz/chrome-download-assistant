@@ -11,310 +11,367 @@ function extend(subClass, superClass) {
   }
 }
 
-/*
-* superClass
-**/
-function Downloader(link, plugin, progId) {
-  this.link = link;
+/* superClass */
+function Downloader(plugin) {
   this.plugin = plugin;
-  this.progId = progId;
-
 }
 
-Downloader.prototype.createNpObjectInstance = function() {
-  return this.plugin.CreateObject(this.progId);
+Downloader.prototype.checkDownloader = function() {
+  return this.plugin.CheckObject(this.progId);
 }
 
-Downloader.prototype.download = function() {
-  return this.link;
+Downloader.prototype.updateNPObjectIfNeeded = function() {
+  if (!this.npObject)
+    this.npObject = this.plugin.CreateObject(this.progId);
 }
 
-Downloader.prototype.downloadAll = function() {
-  return this.link;
+Downloader.prototype.resetNPObject = function() {
+  this.npObject = null;
 }
 
-/*
-thunder downloader
- */
-function Thunder(link, plugin, progId) {
+Downloader.prototype.download = function() {}
+
+Downloader.prototype.downloadAll = function() {}
+
+/* Thunder */
+function Thunder(plugin) {
   Thunder.superClass.constructor.apply(this, arguments);
-  this.thunder = this.createNpObjectInstance();
+  this.progId = 'ThunderAgent.Agent.1';
 }
-
 extend(Thunder, Downloader);
 
-Thunder.prototype.download = function() {
-  var linkObj = Thunder.superClass.download.call(this);
-  this.thunder.AddTask5(linkObj.url, '', '', '', '', -1, 0, -1, '', '', '', 1, '', -1);
-  this.thunder.CommitTasks2(1);
+Thunder.prototype.download = function(linkObj) {
+  this.npObject.AddTask5(
+      linkObj.url, '', '', '', '', -1, 0, -1, '', '', '', 1, '', -1);
+  this.npObject.CommitTasks2(1);
 }
 
-Thunder.prototype.downloadAll = function() {
-  var links = Thunder.superClass.downloadAll.call(this);
+Thunder.prototype.downloadAll = function(links) {
   for (var i = 0; i < links.length; i++) {
-    this.thunder.AddTask4(links[i].url, '', '', links[i].text, '', -1, 0, -1,
-        '', '', '');
+    this.npObject.AddTask4(
+        links[i].url, '', '', links[i].text, '', -1, 0, -1, '', '', '');
   }
-  this.thunder.CommitTasks2(1);
+  this.npObject.CommitTasks2(1);
 }
 
-/*
- mini thunder downloader
- */
-function MiniThunder(link, plugin, progId) {
+/* Mini Thunder */
+function MiniThunder(plugin) {
   MiniThunder.superClass.constructor.apply(this, arguments);
-  this.miniThunder = this.createNpObjectInstance();
+  this.progId = 'ToolbarThunder.DownloadAgent.1';
 }
-
 extend(MiniThunder, Downloader);
 
-MiniThunder.prototype.download = function() {
-  var linkObj = MiniThunder.superClass.download.call(this);
-  this.miniThunder.AddTask(linkObj.url, '', '', '', '');
+MiniThunder.prototype.download = function(linkObj) {
+  this.npObject.AddTask(linkObj.url, '', '', '', '');
 }
 
-/*
-  flashget downloader
- */
-function Flashget(link, plugin, progId, pageUrl) {
-  this.pageUrl = pageUrl;
-  this.version = '3.x';
+/* FlashGet */
+function Flashget(plugin) {
   Flashget.superClass.constructor.apply(this, arguments);
-  this.flashget = this.createNpObjectInstance();
-  if (!this.flashget) {
-    this.version = '1.x';
-    this.progId = 'JetCar.Netscape';
-    this.flashget = this.createNpObjectInstance();
-  }
+  this.progId = 'BHO.IFlashGetNetscapeEx';
+  this.version = '3.x';
 }
-
 extend(Flashget, Downloader);
 
-Flashget.prototype.download = function() {
-  var linkObj = Flashget.superClass.download.call(this);
-  this.flashget.AddUrl(linkObj.url, linkObj.text, linkObj.pageUrl);
+Flashget.prototype.checkDownloader = function() {
+  return this.plugin.CheckObject('BHO.IFlashGetNetscapeEx') ||
+      this.plugin.CheckObject('JetCar.Netscape');
 }
 
-Flashget.prototype.downloadAll = function() {
-  var links = Flashget.superClass.downloadAll.call(this);
+Flashget.prototype.updateNPObjectIfNeeded = function() {
+  if (this.version == '3.x' && !this.plugin.CheckObject(this.progId)) {
+    this.progId = 'JetCar.Netscape';
+    this.version = '1.x';
+    this.npObject = null;
+  } else if (this.version == '1.x' &&
+      this.plugin.CheckObject('BHO.IFlashGetNetscapeEx')) {
+    this.progId = 'BHO.IFlashGetNetscapeEx';
+    this.version = '3.x';
+    this.npObject = null;
+  }
+  if (!this.npObject)
+    this.npObject = this.plugin.CreateObject(this.progId);
+}
+
+Flashget.prototype.download = function(linkObj) {
+  this.npObject.AddUrl(linkObj.url, linkObj.text, linkObj.pageUrl);
+}
+
+Flashget.prototype.downloadAll = function(links, pageUrl) {
   var newLinks = [];
-  newLinks.push(this.pageUrl);
+  newLinks.push(pageUrl);
   for (var i = 0; i < links.length; i++) {
     var url = links[i].url;
     var text = links[i].text;
     newLinks.push(url);
     newLinks.push(text);
   }
-  if (this.version == '3.x') {
-    this.flashget.AddAll(newLinks, '', "FlashGet3", 0,'');
-  } else if(this.version == '1.x') {
-    this.flashget.AddUrlList(newLinks);
-  }
+  if (this.version == '3.x')
+    this.npObject.AddAll(newLinks, '', "FlashGet3", 0, '');
+  else
+    this.npObject.AddUrlList(newLinks);
 }
 
-/*
- mini thunder downloader
- */
-function MiniFlashget(link, plugin, progId, pageUrl) {
-  this.pageUrl = pageUrl;
+/* Mini FlashGet */
+function MiniFlashget(plugin) {
   MiniFlashget.superClass.constructor.apply(this, arguments);
-  this.miniFlashget = this.createNpObjectInstance();
+  this.progId = 'BHO.IFlashGetNetscape';
 }
-
 extend(MiniFlashget, Downloader);
 
-MiniFlashget.prototype.download = function() {
-  var linkObj = MiniFlashget.superClass.download.call(this);
-  this.miniFlashget.AddUrlEx(linkObj.url, linkObj.text, '', "FlashGetMini", 0,'');
+MiniFlashget.prototype.download = function(linkObj) {
+  this.npObject.AddUrlEx(
+      linkObj.url, linkObj.text, '', "FlashGetMini", 0, '');
 }
 
-MiniFlashget.prototype.downloadAll = function() {
-  var links = MiniFlashget.superClass.downloadAll.call(this);
+MiniFlashget.prototype.downloadAll = function(links, pageUrl) {
   var newLinks = [];
-  newLinks.push(this.pageUrl);
+  newLinks.push(pageUrl);
   for (var i = 0; i < links.length; i++) {
     var url = links[i].url;
     var text = links[i].text;
     newLinks.push(url);
     newLinks.push(text);
   }
-  this.miniFlashget.AddAll(newLinks, '', "FlashGetMini", 0,'');
+  this.npObject.AddAll(newLinks, '', "FlashGetMini", 0, '');
 }
 
-/*QQWhirlWind*/
-function QQWhirlWind(link, plugin, progId, pageUrl) {
-  this.pageUrl = pageUrl;
+/* QQ WhirlWind */
+function QQWhirlWind(plugin) {
   QQWhirlWind.superClass.constructor.apply(this, arguments);
-  this.qqWhirlWind = this.createNpObjectInstance();
+  this.progId = 'QQIEHelper.QQRightClick.2';
 }
-
 extend(QQWhirlWind, Downloader);
-QQWhirlWind.prototype.download = function() {
-  var linkObj = QQWhirlWind.superClass.download.call(this);
-  this.qqWhirlWind.SendUrl2(linkObj.url, linkObj.pageUrl, linkObj.text, '', 0, 0);
+
+QQWhirlWind.prototype.download = function(linkObj) {
+  this.npObject.SendUrl2(
+      linkObj.url, linkObj.pageUrl, linkObj.text, '', 0, 0);
 }
 
-QQWhirlWind.prototype.downloadAll = function() {
-  var links = QQWhirlWind.superClass.downloadAll.call(this);
+QQWhirlWind.prototype.downloadAll = function(links, pageUrl) {
   for (var i = 0; i < links.length; i++) {
-    this.qqWhirlWind.AddTask(links[i].url, this.pageUrl, links[i].text);
+    this.npObject.AddTask(links[i].url, pageUrl, links[i].text);
   }
-  this.qqWhirlWind.SendMultiTask();
+  this.npObject.SendMultiTask();
 }
 
-function EMule(link, plugin, progId, pageUrl) {
-  this.pageUrl = pageUrl;
+/* EMule */
+function EMule(plugin) {
   EMule.superClass.constructor.apply(this, arguments);
-  this.eMule = this.createNpObjectInstance();
+  this.progId = 'IE2EM.IE2EMUrlTaker';
 }
 extend(EMule, Downloader);
-EMule.prototype.download = function() {
-  var linkObj = QQWhirlWind.superClass.download.call(this);
-  this.eMule.SendUrl(linkObj.url, linkObj.text, linkObj.pageUrl);
+
+EMule.prototype.download = function(linkObj) {
+  this.npObject.SendUrl(linkObj.url, linkObj.text, linkObj.pageUrl);
 }
 
-function Orbit(link, plugin, progId, pageUrl) {
-  this.pageUrl = pageUrl;
+/* Orbit */
+function Orbit(plugin) {
   Orbit.superClass.constructor.apply(this, arguments);
-  this.orbit = this.createNpObjectInstance();
+  this.progId = 'Orbitmxt.Orbit';
 }
 extend(Orbit, Downloader);
-Orbit.prototype.download = function() {
-  var linkObj = Orbit.superClass.download.call(this);
-  this.orbit.download(linkObj.url, linkObj.text, linkObj.pageUrl, '', 0);
+
+Orbit.prototype.download = function(linkObj) {
+  this.npObject.download(linkObj.url, linkObj.text, linkObj.pageUrl, '', 0);
 }
 
-Orbit.prototype.downloadAll = function() {
-  var links = Orbit.superClass.downloadAll.call(this);
+Orbit.prototype.downloadAll = function(links, pageUrl) {
   var urls = [];
   var texts = [];
   for (var i = 0; i < links.length; i++) {
     urls.push(links[i].url);
     texts.push(links[i].text);
   }
-  this.orbit.downloadList(urls, texts, this.pageUrl, "");
+  this.npObject.downloadList(urls, texts, pageUrl, "");
 }
 
-function IDM(link, plugin, progId, pageUrl) {
-  this.pageUrl = pageUrl;
+/* IDM */
+function IDM(plugin) {
   IDM.superClass.constructor.apply(this, arguments);
-  this.idm = this.createNpObjectInstance();
+  this.progId = 'DownlWithIDM.LinkProcessor';
 }
-
 extend(IDM, Downloader);
-IDM.prototype.download = function() {
-  var linkObj = IDM.superClass.download.call(this);
-  this.idm.Download(linkObj.url);
+
+IDM.prototype.download = function(linkObj) {
+  this.npObject.Download(linkObj.url);
 }
 
-function FDM(link, plugin, progId, pageUrl) {
-  this.pageUrl = pageUrl;
+/* FDM */
+function FDM(plugin) {
   FDM.superClass.constructor.apply(this, arguments);
+  this.progId = 'WG.WGUrlReceiver';
+  this.progId2 = 'WG.WGUrlListReceiver';
 }
 extend(FDM, Downloader);
-FDM.prototype.download = function() {
-  var linkObj = FDM.superClass.download.call(this);
-  this.progId = "WG.WGUrlReceiver";
-  this.fdm = this.createNpObjectInstance();
-  this.fdm.Url = linkObj.url;
-  this.fdm.Comment = linkObj.text;
-  this.fdm.Referer = linkObj.pageUrl;
-  this.fdm.Cookies = "";
-  this.fdm.AddDownload();
+
+FDM.prototype.updateNPObjectIfNeeded = function() {
+  if (!this.npObject)
+    this.npObject = this.plugin.CreateObject(this.progId);
+  if (!this.npObjectAll)
+    this.npObjectAll = this.plugin.CreateObject(this.progId2);
 }
 
-FDM.prototype.downloadAll = function() {
-  var links = FDM.superClass.downloadAll.call(this);
-  this.progId = "WG.WGUrlListReceiver";
-  this.fdm = this.createNpObjectInstance();
-  this.fdm.Referer = this.pageUrl;
-  this.fdm.Cookies = "";
+FDM.prototype.resetNPObject = function() {
+  this.npObject = null;
+  this.npObjectAll = null;
+}
+
+FDM.prototype.download = function(linkObj) {
+  this.npObject.Url = linkObj.url;
+  this.npObject.Comment = linkObj.text;
+  this.npObject.Referer = linkObj.pageUrl;
+  this.npObject.Cookies = "";
+  this.npObject.AddDownload();
+}
+
+FDM.prototype.downloadAll = function(links, pageUrl) {
+  this.npObjectAll.Referer = pageUrl;
+  this.npObjectAll.Cookies = "";
   for (var i = 0; i < links.length; i++) {
-    this.fdm.Url = links[i].url;
-    this.fdm.Comment = links[i].text;
-    this.fdm.AddUrlToList();
+    this.npObjectAll.Url = links[i].url;
+    this.npObjectAll.Comment = links[i].text;
+    this.npObjectAll.AddUrlToList();
   }
-  this.fdm.ShowAddUrlListDialog();
+  this.npObjectAll.ShowAddUrlListDialog();
 }
 
-var downloaderManager = {}
+/* Linux Downloader */
+function LinuxDownloader(plugin, command) {
+  LinuxDownloader.superClass.constructor.apply(this, arguments);
+  this.command = command;
+  this.progId = command.split(' ')[0];
+}
+extend(LinuxDownloader, Downloader);
 
-downloaderManager.supportDownloader = [
-  {name: 'flashget_window', showName: 'menu_flashget', showName2:'download_all_with_flashget', progId: 'BHO.IFlashGetNetscapeEx', privateLink: 'flashget://', supportDownloadAll: true, image: 'images/icon_flashget.png'},
-  {name: 'mini_flashget', showName: 'menu_mini_flashget', showName2:'download_all_with_mini_flashget', progId: 'BHO.IFlashGetNetscape', privateLink: 'flashget://', supportDownloadAll: true, image: 'images/icon_flashget.png'},
-  {name: 'thunder', showName: 'menu_thunder', showName2:'download_all_with_thunder', progId: 'ThunderAgent.Agent.1', privateLink: 'thunder://', supportDownloadAll: true, image: 'images/icon_thunder.png'},
-  {name: 'mini_thunder', showName: 'menu_mini_thunder', showName2:'download_all_with_mini_thunder', progId: 'ToolbarThunder.DownloadAgent.1', privateLink: 'thunder://', supportDownloadAll: false, image: 'images/icon_thunder.png'},
-  {name: 'qq_whirlwind', showName: 'menu_qq_whirlwind', showName2:'download_all_with_qq_whirlwind', progId: 'QQIEHelper.QQRightClick.2', privateLink: '', supportDownloadAll: true, image: 'images/icon_qq.png'},
-  {name: 'emule', showName: 'menu_emule', showName2:'download_all_with_emule', progId: 'IE2EM.IE2EMUrlTaker', privateLink: 'ed2k://', supportDownloadAll: false, image: 'images/icon_emule.png'},
-  {name: 'orbit', showName: 'menu_orbit', showName2:'download_all_with_orbit', progId: 'Orbitmxt.Orbit', privateLink: '', supportDownloadAll: true, image: 'images/icon_orbit.png'},
-  {name: 'idm', showName: 'menu_idm', showName2: 'download_all_with_idm', progId: 'DownlWithIDM.LinkProcessor', privateLink: '', supportDownloadAll: false, image: 'images/icon_idm.png'},
-  {name: 'fdm', showName: 'menu_fdm', showName2: 'download_all_with_fdm', progId: 'WG.WGUrlReceiver', privateLink: '', supportDownloadAll: true, image: 'images/icon_fdm.png'},
-  {name: 'flashget', showName: 'menu_flashget', showName2: 'download_all_with_flashget', progId: 'flashget', privateLink: '', supportDownloadAll: false, image: 'images/icon_flashget_linux.png'},
-  {name: 'jdownloader', showName: 'menu_jdownloader', showName2: 'download_all_with_jdownloader', progId: 'jdownloader', privateLink: '', supportDownloadAll: false, image: 'images/icon_jdownloader.png'},
-  {name: 'gwget', showName: 'menu_gwget', showName2: 'download_all_with_gwget', progId: 'gwget', privateLink: '', supportDownloadAll: false, image: 'images/icon_gwget.png'},
-  {name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true, supportDownloadAll: false, image: 'images/icon_chrome.png'}
-]
-
-downloaderManager.downloader = function(mode, link, plugin, pageUrl) {
-  var downloader;
-  switch(mode) {
-    case 'thunder':
-      downloader = new Thunder(link, plugin, 'ThunderAgent.Agent.1');
-      break;
-    case 'mini_thunder':
-      downloader = new MiniThunder(link, plugin, 'ToolbarThunder.DownloadAgent.1');
-      break;
-    case 'flashget_window':
-      downloader = new Flashget(link, plugin, 'BHO.IFlashGetNetscapeEx', pageUrl);
-      break;
-    case 'mini_flashget':
-      downloader = new MiniFlashget(link, plugin, 'BHO.IFlashGetNetscape', pageUrl);
-      break;
-    case 'qq_whirlwind':
-      downloader = new QQWhirlWind(link, plugin, 'QQIEHelper.QQRightClick.2', pageUrl);
-      break;
-    case 'emule':
-      downloader = new EMule(link, plugin, 'IE2EM.IE2EMUrlTaker', pageUrl);
-      break;
-    case 'orbit':
-      downloader = new Orbit(link, plugin, 'Orbitmxt.Orbit', pageUrl);
-      break;
-    case 'idm':
-      downloader = new IDM(link, plugin, 'DownlWithIDM.LinkProcessor', pageUrl);
-      break;
-    case 'fdm':
-      downloader = new FDM(link, plugin, 'WG.WGUrlReceiver', pageUrl);
-      break;
-  }
-  return downloader;
+LinuxDownloader.prototype.download = function(linkObj) {
+  this.npObject.Download(linkObj.url);
 }
 
-downloaderManager.getEnableDownloader = function(plugin) {
-  var enableDownloader = [];
-  for (var i = 0; i < downloaderManager.supportDownloader.length; i++) {
-    var downloader = downloaderManager.supportDownloader[i];
-    if (downloader.name == 'flashget_window' && !plugin.CheckObject(downloader.progId)) {
-      if (plugin.CheckObject('JetCar.Netscape'))
-        enableDownloader.push(downloader);
-    }
-    if (downloader.isSystem || plugin.CheckObject(downloader.progId)) {
-      enableDownloader.push(downloader);
+var downloaderManager = {};
+
+localStorage['FlashGet'] = localStorage['FlashGet'] || 'true';
+localStorage['JDownloader'] = localStorage['JDownloader'] || 'true';
+localStorage['Gwget Download Manager'] =
+    localStorage['Gwget Download Manager'] || 'true';
+
+downloaderManager.menuItems = [
+  {
+    name: 'flashget', showName: 'menu_flashget',
+    showName2: 'download_all_with_flashget', privateLink: 'flashget://',
+    supportDownloadAll: true, image: 'images/icon_flashget.png'
+  }, {
+    name: 'mini_flashget', showName: 'menu_mini_flashget',
+    showName2: 'download_all_with_mini_flashget', privateLink: 'flashget://',
+    supportDownloadAll: true, image: 'images/icon_flashget.png'
+  }, {
+    name: 'thunder', showName: 'menu_thunder',
+    showName2: 'download_all_with_thunder', privateLink: 'thunder://',
+    supportDownloadAll: true, image: 'images/icon_thunder.png'
+  }, {
+    name: 'mini_thunder', showName: 'menu_mini_thunder',
+    showName2: 'download_all_with_mini_thunder', privateLink: 'thunder://',
+    supportDownloadAll: false, image: 'images/icon_thunder.png'
+  }, {
+    name: 'qq_whirlwind', showName: 'menu_qq_whirlwind',
+    showName2: 'download_all_with_qq_whirlwind', privateLink: '',
+    supportDownloadAll: true, image: 'images/icon_qq.png'
+  }, {
+    name: 'emule', showName: 'menu_emule',
+    showName2: 'download_all_with_emule', privateLink: 'ed2k://',
+    supportDownloadAll: false, image: 'images/icon_emule.png'
+  }, {
+    name: 'orbit', showName: 'menu_orbit',
+    showName2: 'download_all_with_orbit', privateLink: '',
+    supportDownloadAll: true, image: 'images/icon_orbit.png'
+  }, {
+    name: 'idm', showName: 'menu_idm',
+    showName2: 'download_all_with_idm', privateLink: '',
+    supportDownloadAll: false, image: 'images/icon_idm.png'
+  }, {
+    name: 'fdm', showName: 'menu_fdm',
+    showName2: 'download_all_with_fdm', privateLink: '',
+    supportDownloadAll: true, image: 'images/icon_fdm.png'
+  }, {
+    name: 'FlashGet', showName: 'Download Link with FlashGet',
+    privateLink: '', isLinux: true, command: 'flashget $URL',
+    enable: eval(localStorage['FlashGet']),
+    supportDownloadAll: false, image: 'images/icon_flashget_linux.png'
+  }, {
+    name: 'JDownloader', showName: 'Download Link with JDownloader',
+    privateLink: '', isLinux: true, command: 'jdownloader $URL',
+    enable: eval(localStorage['JDownloader']),
+    supportDownloadAll: false, image: 'images/icon_jdownloader.png'
+  }, {
+    name: 'Gwget Download Manager', showName: 'Download Link with Gwget',
+    privateLink: '', isLinux: true, command: 'gwget $URL',
+    enable: eval(localStorage['Gwget Download Manager']),
+    supportDownloadAll: false, image: 'images/icon_gwget.png'
+  }, {
+    name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true,
+    supportDownloadAll: false, image: 'images/icon_chrome.png'
+  }
+];
+
+downloaderManager.downloader = {};
+
+downloaderManager.init = function(plugin) {
+  downloaderManager.downloader['thunder'] = new Thunder(plugin);
+  downloaderManager.downloader['mini_thunder'] = new MiniThunder(plugin);
+  downloaderManager.downloader['flashget'] = new Flashget(plugin);
+  downloaderManager.downloader['mini_flashget'] = new MiniFlashget(plugin);
+  downloaderManager.downloader['qq_whirlwind'] = new QQWhirlWind(plugin);
+  downloaderManager.downloader['emule'] = new EMule(plugin);
+  downloaderManager.downloader['orbit'] = new Orbit(plugin);
+  downloaderManager.downloader['idm'] = new IDM(plugin);
+  downloaderManager.downloader['fdm'] = new FDM(plugin);
+  for (var i = 0; i < downloaderManager.menuItems.length; i++) {
+    var item = downloaderManger.menuItems[i];
+    if (item.isLinux && item.enable) {
+      downloaderManager.downloader[item.name] =
+          new LinuxDownloader(plugin, item[command]);
     }
   }
-  return enableDownloader;
+  for (var name in localStorage) {
+    if (name.indexOf('downloaderConfigure') == 0) {
+      var customArr = localStorage[name].split(',');
+      downloaderManager.addCustomDownloader(name, customArr);
+    }
+  }
+}
+
+downloaderManager.addCustomDownloader = function(name, customArr) {
+  downloaderManager.menuItems.push({
+    storageName: name, name: customArr[1],
+    showName: 'Download Link with ' + customArr[1],
+    isLinux: true, command: customArr[2], enable: true,
+    supportDownloadAll: false, image: customArr[0]});
+  downloaderManager.downloader[name] =
+      new LinuxDownloader(plugin, customArr[2]);
+}
+
+downloaderManager.updateDownloadersIfNeeded = function(plugin) {
+  var enableMenuItems = [];
+  var last = 0;
+  for (var i = 0; i < downloaderManager.menuItems.length; i++) {
+    var item = downloaderManager.menuItems[i];
+    if (item.isSystem) {
+      last = i;
+    } else {
+      var downloader = downloaderManager.downloader[item.name];
+      if (downloader.checkDownloader()) {
+        downloader.updateNPObjectIfNeeded();
+        enableMenuItems.push(item);
+      } else {
+        downloader.resetNPObject();
+      }
+    }
+  }
+  enableMenuItems.push(downloaderManager.menuItems[last]);
+  return enableMenuItems;
 }
 
 downloaderManager.copyLinkToClipboard = function(plugin, url) {
   plugin.CopyToClipboard(url);
-}
-
-downloaderManager.linuxDownload = function(downloaderConfigureArr, link, plugin, pageUrl) {
-  var progId = '';
-  if (downloaderConfigureArr instanceof Array) {
-    progId = downloaderConfigureArr[2].split(' ')[0];
-  } else {
-    progId = downloaderConfigureArr;
-  }
-  var downloader = plugin.CreateObject(progId);
-  downloader.Download(link.url);
 }
