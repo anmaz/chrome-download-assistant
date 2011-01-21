@@ -648,13 +648,16 @@
           }
           count++;
           newItem = linuxoptions.storageTempArr[count];
-        } else if (item.storageName) {
-          downloaderManager.menuItems.splice(i, 1);
-          localStorage.removeItem(item.storageName);
-          i--;
         } else {
-          item.enable = false;
-          localStorage[item.name] = 'false';
+          if (item.storageName) {
+            localStorage.removeItem(item.storageName);
+            downloaderManager.removeDownloader(item.storageName);
+          } else {
+            localStorage[item.name] = 'false';
+            downloaderManager.removeDownloader(item.name);
+          }
+          downloaderManager.menuItems.splice(i, 1);
+          i--;
         }
       }
       for (; count < linuxoptions.storageTempArr.length; count++) {
@@ -669,7 +672,7 @@
       var count = 0;
       for (var i = 0; i < downloaderManager.menuItems.length; i++) {
         var item = downloaderManager.menuItems[i];
-        if (item.isLinux && item.enable) {
+        if (item.isLinux) {
           linuxoptions.insertOneRowInTable(
               count, item.image, item.name, item.command);
           count++;

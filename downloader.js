@@ -251,11 +251,6 @@ LinuxDownloader.prototype.download = function(linkObj) {
 
 var downloaderManager = {};
 
-localStorage['FlashGet'] = localStorage['FlashGet'] || 'true';
-localStorage['JDownloader'] = localStorage['JDownloader'] || 'true';
-localStorage['Gwget Download Manager'] =
-    localStorage['Gwget Download Manager'] || 'true';
-
 downloaderManager.menuItems = [
   {
     name: 'flashget', showName: 'menu_flashget',
@@ -296,17 +291,14 @@ downloaderManager.menuItems = [
   }, {
     name: 'FlashGet', showName: 'Download Link with FlashGet',
     privateLink: '', isLinux: true, command: 'flashget $URL',
-    enable: eval(localStorage['FlashGet']),
     supportDownloadAll: false, image: 'images/icon_flashget_linux.png'
   }, {
     name: 'JDownloader', showName: 'Download Link with JDownloader',
     privateLink: '', isLinux: true, command: 'jdownloader $URL',
-    enable: eval(localStorage['JDownloader']),
     supportDownloadAll: false, image: 'images/icon_jdownloader.png'
   }, {
     name: 'Gwget Download Manager', showName: 'Download Link with Gwget',
     privateLink: '', isLinux: true, command: 'gwget $URL',
-    enable: eval(localStorage['Gwget Download Manager']),
     supportDownloadAll: false, image: 'images/icon_gwget.png'
   }, {
     name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true,
@@ -326,11 +318,23 @@ downloaderManager.init = function(plugin) {
   downloaderManager.downloader['orbit'] = new Orbit(plugin);
   downloaderManager.downloader['idm'] = new IDM(plugin);
   downloaderManager.downloader['fdm'] = new FDM(plugin);
+
+  localStorage['FlashGet'] = localStorage['FlashGet'] || 'true';
+  localStorage['JDownloader'] = localStorage['JDownloader'] || 'true';
+  localStorage['Gwget Download Manager'] =
+      localStorage['Gwget Download Manager'] || 'true';
+
   for (var i = 0; i < downloaderManager.menuItems.length; i++) {
     var item = downloaderManager.menuItems[i];
-    if (item.isLinux && item.enable) {
-      downloaderManager.downloader[item.name] =
-          new LinuxDownloader(plugin, item.command);
+    if (item.isLinux) {
+      if (eval(localStorage[item.name])) {
+        downloaderManager.downloader[item.name] =
+            new LinuxDownloader(plugin, item.command);
+      } else {
+        // If a downloader has been deleted, remove it from the list.
+        downloaderManager.menuItems.splice(i, 1);
+        i--;
+      }
     }
   }
   for (var name in localStorage) {
@@ -345,7 +349,7 @@ downloaderManager.addCustomDownloader = function(name, customArr) {
   downloaderManager.menuItems.push({
     storageName: name, name: customArr[1],
     showName: 'Download Link with ' + customArr[1],
-    isLinux: true, command: customArr[2], enable: true,
+    isLinux: true, command: customArr[2],
     supportDownloadAll: false, image: customArr[0]});
   downloaderManager.downloader[name] =
       new LinuxDownloader(plugin, customArr[2]);
@@ -370,6 +374,11 @@ downloaderManager.updateDownloadersIfNeeded = function(plugin) {
   }
   enableMenuItems.push(downloaderManager.menuItems[last]);
   return enableMenuItems;
+}
+
+downloaderManager.removeDownloader = function(name) {
+  downloaderManager.downloader[name].resetNPObject();
+  delete downloaderManager.downloader[name];
 }
 
 downloaderManager.copyLinkToClipboard = function(plugin, url) {

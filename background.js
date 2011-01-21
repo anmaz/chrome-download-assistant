@@ -80,7 +80,7 @@ function updateDownloadersIfNeeded() {
 function createContextMenu(plugin) {
   for (var i = 0; i < enableDownloaders.length; i++) {
     var downloader = enableDownloaders[i];
-    if (!downloader.isSystem && (!downloader.isLinux || downloader.enable)) {
+    if (!downloader.isSystem) {
       title = chrome.i18n.getMessage(downloader.showName) ||
           downloader.showName;
       var name = downloader.name;
