@@ -253,39 +253,39 @@ var downloaderManager = {};
 
 downloaderManager.menuItems = [
   {
-    name: 'flashget', showName: 'menu_flashget',
+    name: 'flashget', showName: 'menu_flashget', isLinux: false,
     showName2: 'download_all_with_flashget', privateLink: 'flashget://',
     supportDownloadAll: true, image: 'images/icon_flashget.png'
   }, {
-    name: 'mini_flashget', showName: 'menu_mini_flashget',
+    name: 'mini_flashget', showName: 'menu_mini_flashget',isLinux: false,
     showName2: 'download_all_with_mini_flashget', privateLink: 'flashget://',
     supportDownloadAll: true, image: 'images/icon_flashget.png'
   }, {
-    name: 'thunder', showName: 'menu_thunder',
+    name: 'thunder', showName: 'menu_thunder',isLinux: false,
     showName2: 'download_all_with_thunder', privateLink: 'thunder://',
     supportDownloadAll: true, image: 'images/icon_thunder.png'
   }, {
-    name: 'mini_thunder', showName: 'menu_mini_thunder',
+    name: 'mini_thunder', showName: 'menu_mini_thunder',isLinux: false,
     showName2: 'download_all_with_mini_thunder', privateLink: 'thunder://',
     supportDownloadAll: false, image: 'images/icon_thunder.png'
   }, {
-    name: 'qq_whirlwind', showName: 'menu_qq_whirlwind',
+    name: 'qq_whirlwind', showName: 'menu_qq_whirlwind',isLinux: false,
     showName2: 'download_all_with_qq_whirlwind', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_qq.png'
   }, {
-    name: 'emule', showName: 'menu_emule',
+    name: 'emule', showName: 'menu_emule',isLinux: false,
     showName2: 'download_all_with_emule', privateLink: 'ed2k://',
     supportDownloadAll: false, image: 'images/icon_emule.png'
   }, {
-    name: 'orbit', showName: 'menu_orbit',
+    name: 'orbit', showName: 'menu_orbit',isLinux: false,
     showName2: 'download_all_with_orbit', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_orbit.png'
   }, {
-    name: 'idm', showName: 'menu_idm',
+    name: 'idm', showName: 'menu_idm',isLinux: false,
     showName2: 'download_all_with_idm', privateLink: '',
     supportDownloadAll: false, image: 'images/icon_idm.png'
   }, {
-    name: 'fdm', showName: 'menu_fdm',
+    name: 'fdm', showName: 'menu_fdm',isLinux: false,
     showName2: 'download_all_with_fdm', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_fdm.png'
   }, {
@@ -302,7 +302,7 @@ downloaderManager.menuItems = [
     supportDownloadAll: false, image: 'images/icon_gwget.png'
   }, {
     name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true,
-    supportDownloadAll: false, image: 'images/icon_chrome.png'
+    supportDownloadAll: false,image: 'images/icon_chrome.png'
   }
 ];
 

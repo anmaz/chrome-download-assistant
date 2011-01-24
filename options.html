@@ -56,14 +56,6 @@
     margin: 50px auto 20px auto;
     width: 600px;
   }
-  #downloaderOPtion div{
-    line-height: 28px;
-    margin-left: 8px;
-    margin-bottom: 5px;
-  }
-  #downloaderOPtion input {
-    margin-right: 35px;
-  }
   #contextMenuItem {
     margin-left: 32px;
   }
@@ -86,6 +78,7 @@
   }
   .th0 {
     width: 70px;
+    min-width: 62px;
     height: auto;
   }
   .th1 {
@@ -98,7 +91,7 @@
   }
   .th1  div {
     float: left;
-    padding-left: 5px;
+    padding-left: 12px;
   }
   .th2 {
     width: 285px;
@@ -106,7 +99,7 @@
   }
   .th2 div {
     float: left;
-    padding-left: 15px;
+    padding-left: 20px;
   }
   .th3 {
     width: 105px;
@@ -114,13 +107,13 @@
   }
   .th3 .btnDiv {
     float: right;
-    padding-right:25px;
   }
   #downloaderSetting {
     font-weight: bolder;
   }
   .itemImg {
    float: right;
+   padding-right: 7px;
    cursor: pointer;
    width: 30px;
    height: 30px;
@@ -131,9 +124,9 @@
     margin-left: 15px;
   }
   .itemParameter {
-    width: 265px;
+    width: 255px;
     float: left;
-    margin-left: 20px;
+    padding-left: 16px;
   }
   button {
    cursor: pointer;
@@ -142,7 +135,6 @@
   .downloaderItemContainer tr{
     height: 45px;
     border: 0;
-    background-color: #f6fbff;
   }
   input[type=text] {
     height: 22px;
@@ -229,6 +221,18 @@
     margin-top:-12px;
     cursor:pointer;
   }
+  #downloaderOption {
+    padding-left: 16px;
+  }
+  #downloaderOption span {
+    padding-left: 28px;
+  }
+  #downloaderOption div {
+    padding: 5px 0 5px ; 
+  }
+  #downloaderOPtion input {
+    margin-right: 35px;
+  }
 </style>
 </head>
 <body onload="init();">
@@ -246,6 +250,7 @@
     <img id="visibleAddDownloaderPanel"  src="images/down.png"
          style="float: right;margin-right: 5px;">
   </div>
+    <h4 class="downloaderOptionTitle" style="border-bottom: 2px dotted #c3c3c3;"></h4>
   <div id="downloaderContainer">
     <div class="downloaderItem">
       <table>
@@ -350,13 +355,18 @@
       } else {
         imageUrl = chrome.extension.getURL(item.image);
       }
-      var option = document.createElement('div');
+      addDownloaderOption(element, imageUrl, item.name)
+    }
+  }
+  
+  function addDownloaderOption(element, imageUrl, name) {
+    var option = document.createElement('div');
       option.style.background = 'url(' + imageUrl + ') no-repeat 22px 0px';
       var label = document.createElement('label');
       var radio = document.createElement('input');
       radio.type = 'radio';
       radio.name = 'downloader';
-      radio.value = item.name;
+      radio.value = name;
       if (defaultDownloader == radio.value) {
         radio.checked = true;
       }
@@ -369,18 +379,17 @@
         }
       })(radio);
       var span = document.createElement('span');
-      span.innerText = chrome.i18n.getMessage(item.name) || item.name;
+      span.innerText = chrome.i18n.getMessage(name) || name;
       label.appendChild(span);
       option.appendChild(label);
       element.appendChild(option);
-    }
   }
 
   function saveAndClose() {
     localStorage['defaultDownloader'] = defaultDownloader;
     localStorage['contextMenu'] = (checkboxContextMenu.checked ? 'false' : 'true');
     if (linuxoptions.isLinuxPlatform()) {
-      linuxoptions.saveDownloader();
+        linuxoptions.saveDownloader();
     }
     chrome.tabs.getSelected(null, function(tab) {
       chrome.tabs.remove(tab.id);
@@ -388,7 +397,7 @@
   };
 
   function i18nReplace(id, messageName) {
-    return $(id).innerText =
+    return $(id).innerHTML =
       chrome.i18n.getMessage(messageName);
   };
 
@@ -460,12 +469,9 @@
         var imgsrc = $('settingImg').src;
         var downloaderName = $('settingName').value;
         var dowloaderParameter = $('settingParameter').value;
-        linuxoptions.insertOneRowInTable(linuxoptions.rowCount, imgsrc,
+        linuxoptions.addDownloadertoSettingTable(imgsrc, 
             downloaderName, dowloaderParameter);
-        linuxoptions.rowCount++;
-        linuxoptions.temporaryStorage(imgsrc, downloaderName,
-            dowloaderParameter);
-        linuxoptions.cleanAddedDownloaderSettingData();
+       addDownloaderOption($('downloaderOption'), imgsrc, downloaderName);
       }, false);
 
       $('settingName').addEventListener('focus', function() {
@@ -522,17 +528,40 @@
       iconURL.style.color = '#a5a5a5';
       iconURL.value = chrome.i18n.getMessage('icon_url');
     },
+    
+    addDownloadertoSettingTable: function(imgsrc, downloaderName, dowloaderParameter) {
+      var projId = dowloaderParameter.split(' ')[0];
+      if (!bg.plugin.CheckObject(projId) || ''==projId) {
+          return;
+      }
+      linuxoptions.insertOneRowInTable(linuxoptions.rowCount, imgsrc,
+          downloaderName, dowloaderParameter);
+      linuxoptions.setRowBackgroundColor();
+      linuxoptions.rowCount++;
+      linuxoptions.temporaryStorage(imgsrc, downloaderName,
+          dowloaderParameter);
+      linuxoptions.cleanAddedDownloaderSettingData();
+    },
 
     insertOneRowInTable: function(rowCount, imgsrc, name, parameter) {
       var downloaderItem = $('downloaderlist');
       var row = downloaderItem.insertRow(rowCount);
-      if ((rowCount + 1) % 2 != 0) {
-        row.style.backgroundColor = 'White';
-      }
       linuxoptions.insertImageToTheRow(row, imgsrc);
       linuxoptions.insertNameOrLinkToTheRow(row, 1, name);
       linuxoptions.insertNameOrLinkToTheRow(row, 2, parameter);
       linuxoptions.insertOptionsToTheRow(row);
+    },
+    
+    setRowBackgroundColor: function() {
+      var table = $('downloaderlist');
+      var rows = table.rows;
+      for(var i = 0; i < rows.length; ++i) {
+        if ((i + 1) % 2 != 0) {
+          rows[i].style.backgroundColor = 'White';
+        } else {
+          rows[i].style.backgroundColor = '#f6fbff';
+        }
+      }
     },
 
     insertImageToTheRow: function(row, src) {
@@ -605,6 +634,7 @@
       var tbody = tr.parentNode;
       tbody.removeChild(tr);
       linuxoptions.rowCount--;
+      linuxoptions.setRowBackgroundColor();
     },
 
     displayLinuxOptionPage: function() {
@@ -670,14 +700,17 @@
 
     readDownloader: function() {
       var count = 0;
-      for (var i = 0; i < downloaderManager.menuItems.length; i++) {
-        var item = downloaderManager.menuItems[i];
+      for (var i = 0; i < downloaderManager.menuItems.length; i++) { 
+        var item = downloaderManager.menuItems[i];  
         if (item.isLinux) {
-          linuxoptions.insertOneRowInTable(
-              count, item.image, item.name, item.command);
-          count++;
-          linuxoptions.temporaryStorage(item.image, item.name,
-              item.command);
+          var projId = item.command.split(' ')[0];
+          if(bg.plugin.CheckObject(projId)){   
+            linuxoptions.insertOneRowInTable(
+                count, item.image, item.name, item.command);
+            count++;
+            linuxoptions.temporaryStorage(item.image, item.name,
+                item.command);
+           }
         }
       }
       linuxoptions.rowCount = count;
