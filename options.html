@@ -469,9 +469,11 @@
         var imgsrc = $('settingImg').src;
         var downloaderName = $('settingName').value;
         var dowloaderParameter = $('settingParameter').value;
-        linuxoptions.addDownloadertoSettingTable(imgsrc, 
+        var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc, 
             downloaderName, dowloaderParameter);
-       addDownloaderOption($('downloaderOption'), imgsrc, downloaderName);
+        if (isInstallation) {
+          addDownloaderOption($('downloaderOption'), imgsrc, downloaderName);
+        }
       }, false);
 
       $('settingName').addEventListener('focus', function() {
@@ -532,7 +534,7 @@
     addDownloadertoSettingTable: function(imgsrc, downloaderName, dowloaderParameter) {
       var projId = dowloaderParameter.split(' ')[0];
       if (!bg.plugin.CheckObject(projId) || ''==projId) {
-          return;
+          return false;
       }
       linuxoptions.insertOneRowInTable(linuxoptions.rowCount, imgsrc,
           downloaderName, dowloaderParameter);
@@ -541,6 +543,7 @@
       linuxoptions.temporaryStorage(imgsrc, downloaderName,
           dowloaderParameter);
       linuxoptions.cleanAddedDownloaderSettingData();
+      return true;
     },
 
     insertOneRowInTable: function(rowCount, imgsrc, name, parameter) {
