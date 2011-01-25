@@ -50,7 +50,6 @@
   "add_url_cancel_btn": {"message": "取消"},
   "delete": {"message": "删除"},
   "modify": {"message": "修改"},
-  "bottom_line": {"message": "注释：参数里需要一些$URL之类的符号"},
   "setting_name": {"message": "请输入下载器名称"},
   "setting_parameter": {"message": "请输入下载器命令行"},
   "icon_url": {"message": "请输入URL地址"}

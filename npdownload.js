@@ -192,7 +192,6 @@ var npDownload = {
     document.onclick = function() {
       if (document.getElementById(contextMenu.id)) {
         contextMenu.parentNode.removeChild(contextMenu);
-        console.log("remove");
       }
     }
   },

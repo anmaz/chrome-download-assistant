@@ -50,8 +50,7 @@
   "add_url_cancel_btn": {"message": "Cancel"},
   "delete": {"message": "Delete"},
   "modify": {"message": "Modify"},
-  "bottom_line": {"message": "Note: Parameters in require some sort of sign $ URL"},
   "setting_name": {"message": "Enter the name"},
   "setting_parameter": {"message": "Enter the parameters"},
-  "icon_url": {"message": "Please enter the URL"}
+  "icon_url": {"message": "Enter the URL"}
 }

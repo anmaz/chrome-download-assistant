@@ -306,15 +306,15 @@
           <div class="button4" id="addURLCancelBtn"></div>
         </div></div>
       </div></div>
-    </div>
-    <div id="closeBtn">
+    </div> 
+  </div>
+  <h4 id="bottomLine"></h4>
+   <div id="closeBtn">
       <div class="button1"><div class="button2">
         <div class="button3">&nbsp;</div>
         <div class="button4" id="saveAndClose"  onclick="saveAndClose()"></div>
       </div></div>
     </div>
-  </div>
-  <h4 id="bottomLine"></h4>
 </div>
 <div id="footer" style="margin: 30px 0 0 0;">&copy;2011 Google</div>
 <script>
@@ -414,7 +414,6 @@
       i18nReplace('urlAddress', 'url_address');
       i18nReplace('addURLOkBtn', 'add_url_ok_btn');
       i18nReplace('addURLCancelBtn', 'add_url_cancel_btn');
-      i18nReplace('bottomLine','bottom_line');
       linuxoptions.displayLinuxOptionPage();
       linuxoptions.setPromptText();
       linuxoptions.addEventListener();
@@ -681,16 +680,6 @@
           }
           count++;
           newItem = linuxoptions.storageTempArr[count];
-        } else {
-          if (item.storageName) {
-            localStorage.removeItem(item.storageName);
-            downloaderManager.removeDownloader(item.storageName);
-          } else {
-            localStorage[item.name] = 'false';
-            downloaderManager.removeDownloader(item.name);
-          }
-          downloaderManager.menuItems.splice(i, 1);
-          i--;
         }
       }
       for (; count < linuxoptions.storageTempArr.length; count++) {

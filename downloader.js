@@ -308,6 +308,20 @@ downloaderManager.menuItems = [
 
 downloaderManager.downloader = {};
 
+downloaderManager.getDownloader = function(item) {
+  var linuxDownloader = downloaderManager.downloader[item.name];
+  if (navigator.userAgent.toLowerCase().indexOf('linux') > -1 && item.isLinux) { 
+      if(linuxDownloader != undefined && linuxDownloader.hasOwnProperty('checkDownloader')) {
+        return linuxDownloader;
+      } else {
+        var linuxDownloader = new LinuxDownloader(plugin, item.command);
+        return linuxDownloader;
+      }
+    } else {
+      return linuxDownloader;
+  }
+};
+
 downloaderManager.init = function(plugin) {
   downloaderManager.downloader['thunder'] = new Thunder(plugin);
   downloaderManager.downloader['mini_thunder'] = new MiniThunder(plugin);
@@ -358,12 +372,13 @@ downloaderManager.addCustomDownloader = function(name, customArr) {
 downloaderManager.updateDownloadersIfNeeded = function(plugin) {
   var enableMenuItems = [];
   var last = 0;
+   var item = ''
   for (var i = 0; i < downloaderManager.menuItems.length; i++) {
-    var item = downloaderManager.menuItems[i];
+    item = downloaderManager.menuItems[i];
     if (item.isSystem) {
       last = i;
     } else {
-      var downloader = downloaderManager.downloader[item.name];
+      var downloader = downloaderManager.getDownloader(item);
       if (downloader.checkDownloader()) {
         downloader.updateNPObjectIfNeeded();
         enableMenuItems.push(item);
