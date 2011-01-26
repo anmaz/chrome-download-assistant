@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html>
 <head>
 <title> Download Helper Options </title>
@@ -26,7 +26,7 @@
     color: #1C7EC5;
   }
   #downloader {
-    border-bottom: 2px dotted #c3c3c3;
+    border-bottom: 3px dotted #CCDDED;
   }
   .downloaderOptionTitle {
     padding-left:0.5em;
@@ -63,6 +63,9 @@
     text-align: center;
     font-size: 13px;
   }
+  table {
+     border-collapse: collapse;
+  }
   .downloaderItem {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%,
         from(#FEFEFE), to(#eff8fa));
@@ -70,7 +73,7 @@
     border-bottom: 1px #dee7ee solid;
   }
   .downloaderItem th {
-    font:12px boder ËÎÌå;
+    font-size: 12px;
     color : #1a82c4;
     height: 25px;
     border-right: 1px solid #D0D0D0;
@@ -104,6 +107,7 @@
   .th3 {
     width: 105px;
     height: auto;
+    font-size: 12px;
   }
   .th3 .btnDiv {
     float: right;
@@ -119,19 +123,22 @@
    height: 30px;
   }
   .itemName {
-    width: 122px;
+    width: 110px;
     float: left;
-    margin-left: 15px;
+    margin-left: 11px;
   }
   .itemParameter {
     width: 255px;
     float: left;
-    padding-left: 16px;
+    padding-left: 3px;
+    margin-left: 17px;
   }
   button {
    cursor: pointer;
   }
-  .downloaderItemContainer{}
+  .downloaderItemContainer {
+    background-color: #f6fbff;
+  }
   .downloaderItemContainer tr{
     height: 45px;
     border: 0;
@@ -151,6 +158,8 @@
     border: 1px solid #a2bad4;
     display: none;
     position: absolute;
+    -webkit-border-radius: 5px;
+    -webkit-box-shadow:  #CCC 0px 0px 7px 1px;
   }
   .addURL-Dialog .body {
     background-color: White;
@@ -172,66 +181,35 @@
     padding-right: 10px;
   }
   #urlAddress {
-    font: 12px border ËÎÌå;
+    font-weight: bold;
     color: #6587a2;
   }
   #bottomLine {
     border-top: 1px solid #c1d1e0;
-    margin-top: 60px;
-    font: 12px/1.65em Arial "ËÎÌå" ;
-    color: #a5a5a5;
-    text-align: center;
-    line-height: 30px;
-    display: none;
   }
   #downloaderContainer {
     display: none;
   }
   #downloaderSettingTitle {
-     margin: 20px 0 10px 0;
+     margin: 20px 0 0 0;
      display: none;
-  }
-  .button1 {
-    display:inline-block;
-    border-width:1px 0;
-    border-color:#4F7193;
-    border-style:solid;
-    vertical-align:middle;
-    zoom:1;
-  }
-  .button2 {
-    height:22px;
-    border-width:0 1px;
-    border-color:#4F7193;
-    border-style:solid;
-    margin:0 -1px;
-    background:#e3e3e3;
-    position:relative;
-    _float:left;
-    }
-  .button3 {
-    line-height:10px;
-    background:#f9f9f9;
-    border-bottom:2px solid #eeeeee;
-  }
-  .button4 {
-    padding:0 8px;
-    line-height:22px;
-    color:#000000;
-    margin-top:-12px;
-    cursor:pointer;
   }
   #downloaderOption {
     padding-left: 16px;
   }
   #downloaderOption span {
-    padding-left: 28px;
+    padding-left: 5px;
   }
   #downloaderOption div {
     padding: 5px 0 5px ; 
   }
   #downloaderOPtion input {
-    margin-right: 35px;
+   margin: 0 3px 3px 5px;
+  }
+  #linuxTitleLine {
+    border-bottom: 3px dotted #CCDDED;
+    margin: 0;
+    display: none;
   }
 </style>
 </head>
@@ -247,10 +225,10 @@
   </div>
   <div id="downloaderSettingTitle">
     <span id="downloaderSetting" class="downloaderOptionTitle"></span>
-    <img id="visibleAddDownloaderPanel"  src="images/down.png"
+    <img id="visibleAddDownloaderPanel"  src="images/up.png"
          style="float: right;margin-right: 5px;">
-  </div>
-    <h4 class="downloaderOptionTitle" style="border-bottom: 2px dotted #c3c3c3;"></h4>
+  </div>  
+         <h4 id="linuxTitleLine"></h4>
   <div id="downloaderContainer">
     <div class="downloaderItem">
       <table>
@@ -270,17 +248,14 @@
         <table>
           <tr>
             <td class="th0"><img id="settingImg" class="itemImg"
-                style="padding-right:3px" src="images/icon-nomal.png"></td>
+                style="padding-right:5px" src="images/icon-nomal.png"></td>
             <td class="th1"><input id="settingName" class="itemName"
                 type="text"></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
                 type="text"></td>
             <td class="th3">
               <div class="btnDiv">
-                <div class="button1"><div class="button2">
-                  <div class="button3">&nbsp;</div>
-                  <div class="button4" id="addDownloader"></div>
-                </div></div>
+                <button  id="addDownloader"></button>
               </div>
             </td>
           </tr>
@@ -296,24 +271,15 @@
           <input type="text" id="iconURL">
         </div>
       </div>
-      <div class="bottom"><div class="btnDiv">
-        <div class="button1"><div class="button2">
-          <div class="button3">&nbsp;</div>
-          <div class="button4" id="addURLOkBtn"></div>
-        </div></div>
-        <div class="button1"><div class="button2">
-          <div class="button3">&nbsp;</div>
-          <div class="button4" id="addURLCancelBtn"></div>
-        </div></div>
+      <div class="bottom"><div class="btnDiv">       
+        <button  id="addURLOkBtn"></button>
+        <button  id="addURLCancelBtn"></button>
       </div></div>
     </div> 
   </div>
   <h4 id="bottomLine"></h4>
    <div id="closeBtn">
-      <div class="button1"><div class="button2">
-        <div class="button3">&nbsp;</div>
-        <div class="button4" id="saveAndClose"  onclick="saveAndClose()"></div>
-      </div></div>
+      <button  id="saveAndClose"  onclick="saveAndClose()"></button>
     </div>
 </div>
 <div id="footer" style="margin: 30px 0 0 0;">&copy;2011 Google</div>
@@ -350,18 +316,22 @@
     for (var i = 0; i < enableOptions.length; i++) {
       var item = enableOptions[i];
       var imageUrl = '';
+      var optionItemId = ''
       if (item.isLinux) {
         imageUrl = item.image;
+        optionItemId = item.command;
       } else {
         imageUrl = chrome.extension.getURL(item.image);
       }
-      addDownloaderOption(element, imageUrl, item.name)
+      addDownloaderOption(element, imageUrl, item.name, optionItemId)
     }
   }
   
-  function addDownloaderOption(element, imageUrl, name) {
-    var option = document.createElement('div');
-      option.style.background = 'url(' + imageUrl + ') no-repeat 22px 0px';
+  function addDownloaderOption(element, imageUrl, name, id) {
+      var option = document.createElement('div');
+      if (linuxoptions.isLinuxPlatform()) {
+        option.id = id;
+      }
       var label = document.createElement('label');
       var radio = document.createElement('input');
       radio.type = 'radio';
@@ -378,6 +348,13 @@
           }
         }
       })(radio);
+      
+      var img = document.createElement('img');
+      img.src = imageUrl;
+      img.style.height = '30px';
+      img.style.weight = '30px';
+      label.appendChild(img);
+      
       var span = document.createElement('span');
       span.innerText = chrome.i18n.getMessage(name) || name;
       label.appendChild(span);
@@ -389,6 +366,7 @@
     localStorage['defaultDownloader'] = defaultDownloader;
     localStorage['contextMenu'] = (checkboxContextMenu.checked ? 'false' : 'true');
     if (linuxoptions.isLinuxPlatform()) {
+        linuxoptions.deleteDownLoaderStorage();
         linuxoptions.saveDownloader();
     }
     chrome.tabs.getSelected(null, function(tab) {
@@ -404,6 +382,7 @@
   var linuxoptions = {
     rowCount: 0,
     storageTempArr: [],
+    deleteRowCounts:[],
 
     init: function() {
       i18nReplace('downloaderSetting', 'downloader_setting');
@@ -457,10 +436,10 @@
         var downloaderContainer = $('downloaderContainer');
         if ('none' == downloaderContainer.style.display) {
           downloaderContainer.style.display = 'block';
-        this.src = 'images/down.png';
+          this.src = 'images/up.png';
         } else {
           downloaderContainer.style.display = 'none';
-          this.src = 'images/up.png';
+          this.src = 'images/down.png';
         }
       }, false);
 
@@ -471,7 +450,8 @@
         var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc, 
             downloaderName, dowloaderParameter);
         if (isInstallation) {
-          addDownloaderOption($('downloaderOption'), imgsrc, downloaderName);
+          addDownloaderOption($('downloaderOption'), imgsrc, downloaderName,
+              dowloaderParameter);
         }
       }, false);
 
@@ -533,7 +513,7 @@
     addDownloadertoSettingTable: function(imgsrc, downloaderName, dowloaderParameter) {
       var projId = dowloaderParameter.split(' ')[0];
       if (!bg.plugin.CheckObject(projId) || ''==projId) {
-          return false;
+        return false;
       }
       linuxoptions.insertOneRowInTable(linuxoptions.rowCount, imgsrc,
           downloaderName, dowloaderParameter);
@@ -615,7 +595,7 @@
       var inputArr = tr.getElementsByTagName('input');
       var downloaderName = inputArr[0].value;
       var downloaderParameter = inputArr[1].value;
-      modifyTemporaryStorage(
+      linuxoptions.modifyTemporaryStorage(
           rowCount, imgSrc, downloaderName, downloaderParameter);
     },
 
@@ -632,16 +612,32 @@
     deleteDownloader: function(event) {
       var obj = event.target;
       var tr = obj.parentNode.parentNode;
+      linuxoptions.deleteOptionDownLoader(tr);
       linuxoptions.deleteTemporaryStorage(tr['rowIndex']);
+      linuxoptions.deleteRowCounts.push(tr['rowIndex']);
       var tbody = tr.parentNode;
       tbody.removeChild(tr);
       linuxoptions.rowCount--;
       linuxoptions.setRowBackgroundColor();
     },
+    
+    deleteOptionDownLoader: function(tr) {
+      var input = tr.childNodes[2].firstChild
+      var id = input.value;
+      $('downloaderOption').removeChild($(id));      
+    },
+    
+    deleteDownLoaderStorage: function() {
+      for (var i =0; i < linuxoptions.deleteRowCounts.length; ++i) {
+        localStorage.removeItem('downloaderConfigure' + 
+        linuxoptions.deleteRowCounts[i]);
+      }
+    },
 
     displayLinuxOptionPage: function() {
       $('downloaderSettingTitle').style.display = 'block';
       $('downloaderContainer').style.display = 'block';
+      $('linuxTitleLine').style.display = 'block';
       $('bottomLine').style.display = 'block';
       $('closeBtn').style.cssFloat = 'right';
     },

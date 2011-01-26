@@ -45,7 +45,7 @@
   "downloader_name": {"message": "Name"},
   "downloader_parameter": {"message": "Command line"},
   "add_downloader": {"message": "Add&nbsp;Downloader"},
-  "url_address": {"message": "Download icon"},
+  "url_address": {"message": "Download icon:"},
   "add_url_ok_btn": {"message": "OK"},
   "add_url_cancel_btn": {"message": "Cancel"},
   "delete": {"message": "Delete"},
