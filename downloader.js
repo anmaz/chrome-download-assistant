@@ -253,24 +253,29 @@ var downloaderManager = {};
 
 downloaderManager.menuItems = [
   {
-    name: 'flashget', showName: 'menu_flashget', isLinux: false,
-    showName2: 'download_all_with_flashget', privateLink: 'flashget://',
+    name: 'flashget', showName: 'menu_flashget', 
+    showName2: 'download_all_with_flashget',
+     privateLink: 'flashget://',isLinux: false,
     supportDownloadAll: true, image: 'images/icon_flashget.png'
   }, {
-    name: 'mini_flashget', showName: 'menu_mini_flashget',isLinux: false,
-    showName2: 'download_all_with_mini_flashget', privateLink: 'flashget://',
+    name: 'mini_flashget', showName: 'menu_mini_flashget',
+    showName2: 'download_all_with_mini_flashget',
+     privateLink: 'flashget://',isLinux: false,
     supportDownloadAll: true, image: 'images/icon_flashget.png'
   }, {
-    name: 'thunder', showName: 'menu_thunder',isLinux: false,
-    showName2: 'download_all_with_thunder', privateLink: 'thunder://',
+    name: 'thunder', showName: 'menu_thunder',
+    showName2: 'download_all_with_thunder',
+    privateLink: 'thunder://', isLinux: false,
     supportDownloadAll: true, image: 'images/icon_thunder.png'
   }, {
-    name: 'mini_thunder', showName: 'menu_mini_thunder',isLinux: false,
-    showName2: 'download_all_with_mini_thunder', privateLink: 'thunder://',
+    name: 'mini_thunder', showName: 'menu_mini_thunder',
+    showName2: 'download_all_with_mini_thunder', 
+    privateLink: 'thunder://', isLinux: false,
     supportDownloadAll: false, image: 'images/icon_thunder.png'
   }, {
-    name: 'qq_whirlwind', showName: 'menu_qq_whirlwind',isLinux: false,
-    showName2: 'download_all_with_qq_whirlwind', privateLink: '',
+    name: 'qq_whirlwind', showName: 'menu_qq_whirlwind',
+    showName2: 'download_all_with_qq_whirlwind', 
+    privateLink: '',isLinux: false,
     supportDownloadAll: true, image: 'images/icon_qq.png'
   }, {
     name: 'emule', showName: 'menu_emule',isLinux: false,
@@ -294,17 +299,20 @@ downloaderManager.menuItems = [
     isUserAdd: false, supportDownloadAll: false,
     image: 'images/icon_flashget_linux.png'
   }, {
-    name: 'JDownloader', showName: 'Download Link with JDownloader',
+    name: 'JDownloader', 
+    showName: 'Download Link with JDownloader',
     privateLink: '', isLinux: true, command: 'jdownloader $URL',
     isUserAdd: false,supportDownloadAll: false, 
     image: 'images/icon_jdownloader.png'
   }, {
-    name: 'Gwget Download Manager', showName: 'Download Link with Gwget',
-    privateLink: '', isLinux: true, command: 'gwget $URL', isUserAdd: false,
+    name: 'Gwget Download Manager',
+    showName: 'Download Link with Gwget',privateLink: '', 
+    isLinux: true, command: 'gwget $URL', isUserAdd: false,
     supportDownloadAll: false, image: 'images/icon_gwget.png'
   }, {
-    name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true,
-    supportDownloadAll: false,image: 'images/icon_chrome.png'
+    name: 'chrome_downloader', showName: 'menu_chrome', 
+    isSystem: true, supportDownloadAll: false,
+    image: 'images/icon_chrome.png'
   }
 ];
 
@@ -312,31 +320,35 @@ downloaderManager.downloader = {};
 
 downloaderManager.getDownloader = function(item) {
   var linuxDownloader = downloaderManager.downloader[item.name];
-  if (navigator.userAgent.toLowerCase().indexOf('linux') > -1 && item.isLinux) { 
-      if(linuxDownloader != undefined && linuxDownloader.hasOwnProperty('checkDownloader')) {
-        return linuxDownloader;
-      } else {
-        var linuxDownloader = new LinuxDownloader(plugin, item.command);
-        return linuxDownloader;
+  if (navigator.userAgent.toLowerCase().
+      indexOf('linux') > -1 && item.isLinux) { 
+      if(!(linuxDownloader != undefined && linuxDownloader.
+          hasOwnProperty('checkDownloader'))) {
+        linuxDownloader = new LinuxDownloader(plugin, item.command);
       }
-    } else {
-      return linuxDownloader;
-  }
+  } 
+  return linuxDownloader; 
 };
 
 downloaderManager.init = function(plugin) {
-  downloaderManager.downloader['thunder'] = new Thunder(plugin);
-  downloaderManager.downloader['mini_thunder'] = new MiniThunder(plugin);
-  downloaderManager.downloader['flashget'] = new Flashget(plugin);
-  downloaderManager.downloader['mini_flashget'] = new MiniFlashget(plugin);
-  downloaderManager.downloader['qq_whirlwind'] = new QQWhirlWind(plugin);
+  downloaderManager.downloader['thunder'] = 
+      new Thunder(plugin);
+  downloaderManager.downloader['mini_thunder'] =
+      new MiniThunder(plugin);
+  downloaderManager.downloader['flashget'] = 
+      new Flashget(plugin);
+  downloaderManager.downloader['mini_flashget'] = 
+      new MiniFlashget(plugin);
+  downloaderManager.downloader['qq_whirlwind'] = 
+      new QQWhirlWind(plugin);
   downloaderManager.downloader['emule'] = new EMule(plugin);
   downloaderManager.downloader['orbit'] = new Orbit(plugin);
   downloaderManager.downloader['idm'] = new IDM(plugin);
   downloaderManager.downloader['fdm'] = new FDM(plugin);
 
   localStorage['FlashGet'] = localStorage['FlashGet'] || 'true';
-  localStorage['JDownloader'] = localStorage['JDownloader'] || 'true';
+  localStorage['JDownloader'] = 
+      localStorage['JDownloader'] || 'true';
   localStorage['Gwget Download Manager'] =
       localStorage['Gwget Download Manager'] || 'true';
 
@@ -361,7 +373,8 @@ downloaderManager.init = function(plugin) {
   }
 }
 
-downloaderManager.addCustomDownloader = function(name, customArr) {
+downloaderManager.addCustomDownloader = 
+    function(name, customArr) {
   downloaderManager.menuItems.push({
     storageName: name, name: customArr[1],
     showName: 'Download Link with ' + customArr[1],
@@ -380,7 +393,8 @@ downloaderManager.updateDownloadersIfNeeded = function(plugin) {
     if (item.isSystem) {
       last = i;
     } else {
-      var downloader = downloaderManager.getDownloader(item);
+      var downloader = downloaderManager.downloader[item.name] = 
+          downloaderManager.getDownloader(item);
       if (downloader.checkDownloader()) {
         downloader.updateNPObjectIfNeeded();
         enableMenuItems.push(item);
