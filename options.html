@@ -690,7 +690,7 @@
       var count = 0;
       for (var i = 0; i < downloaderManager.menuItems.length; i++) { 
         var item = downloaderManager.menuItems[i];  
-        if (item.isLinux) {
+        if (item.isLinux && item.isUserAdd) {
           var projId = item.command.split(' ')[0];
           if(bg.plugin.CheckObject(projId)){   
             linuxoptions.insertOneRowInTable(

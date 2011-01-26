@@ -290,15 +290,17 @@ downloaderManager.menuItems = [
     supportDownloadAll: true, image: 'images/icon_fdm.png'
   }, {
     name: 'FlashGet', showName: 'Download Link with FlashGet',
-    privateLink: '', isLinux: true, command: 'flashget $URL',
-    supportDownloadAll: false, image: 'images/icon_flashget_linux.png'
+    privateLink: '', isLinux: true, command: 'flashget $URL', 
+    isUserAdd: false, supportDownloadAll: false,
+    image: 'images/icon_flashget_linux.png'
   }, {
     name: 'JDownloader', showName: 'Download Link with JDownloader',
     privateLink: '', isLinux: true, command: 'jdownloader $URL',
-    supportDownloadAll: false, image: 'images/icon_jdownloader.png'
+    isUserAdd: false,supportDownloadAll: false, 
+    image: 'images/icon_jdownloader.png'
   }, {
     name: 'Gwget Download Manager', showName: 'Download Link with Gwget',
-    privateLink: '', isLinux: true, command: 'gwget $URL',
+    privateLink: '', isLinux: true, command: 'gwget $URL', isUserAdd: false,
     supportDownloadAll: false, image: 'images/icon_gwget.png'
   }, {
     name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true,
@@ -363,7 +365,7 @@ downloaderManager.addCustomDownloader = function(name, customArr) {
   downloaderManager.menuItems.push({
     storageName: name, name: customArr[1],
     showName: 'Download Link with ' + customArr[1],
-    isLinux: true, command: customArr[2],
+    isLinux: true, command: customArr[2], isUserAdd: true,
     supportDownloadAll: false, image: customArr[0]});
   downloaderManager.downloader[name] =
       new LinuxDownloader(plugin, customArr[2]);
