@@ -49,7 +49,6 @@
   "add_url_ok_btn": {"message": "OK"},
   "add_url_cancel_btn": {"message": "Cancel"},
   "delete": {"message": "Delete"},
-  "modify": {"message": "Modify"},
   "setting_name": {"message": "Enter the name"},
   "setting_parameter": {"message": "Enter the parameters"},
   "icon_url": {"message": "Enter the URL"},

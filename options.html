@@ -226,8 +226,7 @@
   <td>
     <div id="downloaderOption"></div>
   </td>
-  <td style="float:right;margin-left:130px;">
-   <div id="downloaderOption2"></div>
+  <td>
   </td>
   </tr>
   </table>
@@ -324,7 +323,7 @@
     i18nReplace('disableMenu', 'menu_disable');
     i18nReplace('saveAndClose', 'save_and_close');
     bg.updateDownloadersIfNeeded();
-    createDownloaderOption();
+    createDownloaderOption($('downloaderOption'));
     if (bg.useContextMenuAPI) {
       $('contextMenuItem').style.display = 'none';
     } else if (!eval(localStorage['contextMenu'])) {
@@ -335,7 +334,7 @@
     }
   }
 
-  function createDownloaderOption() {
+  function createDownloaderOption(element) {
     var enableOptions = bg.enableDownloaders;
     for (var i = 0; i < enableOptions.length; i++) {
       var item = enableOptions[i];
@@ -346,27 +345,12 @@
         optionItemId = item.command;
       } else {
         imageUrl = chrome.extension.getURL(item.image);
-      }   
-      addDownloaderPosition(imageUrl, item.name, optionItemId);
+      }
+      addDownloaderOption(element, imageUrl, item.name, optionItemId)
     }
   }
   
-  function addDownloaderPosition (imageUrl, name, optionItemId) {
-    if ($('downloaderOption').childNodes.length < 5) {
-      addDownloaderOption('downloaderOption', imageUrl, name, optionItemId);
-    } else { 
-      if ( $('downloaderOption2').childNodes.length != 0 && $('downloaderOption').childNodes.length
-          > $('downloaderOption2').childNodes.length && $('downloaderOption').childNodes.length
-          < 2*($('downloaderOption2').childNodes.length)) {
-        addDownloaderOption('downloaderOption', imageUrl, name, optionItemId);
-      } else {
-        addDownloaderOption('downloaderOption2', imageUrl, name, optionItemId);
-      }      
-    } 
-  }
-  
-  function addDownloaderOption(containerId, imageUrl, name, id) {
-      var element = $(containerId);
+  function addDownloaderOption(element, imageUrl, name, id) {
       var option = document.createElement('div');
       if (linuxoptions.isLinuxPlatform()) {
         option.id = id;
@@ -494,9 +478,8 @@
         var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc, 
             downloaderName, dowloaderParameter);
         if (isInstallation) {
-          
-            addDownloaderPosition(imgsrc, downloaderName,
-              dowloaderParameter)
+          addDownloaderOption($('downloaderOption'), imgsrc, downloaderName,
+              dowloaderParameter);
         }
       }, false);
 
@@ -614,36 +597,37 @@
       var cell = row.insertCell(cellCount);
       cell.className = 'th' + cellCount;
       var input = document.createElement('input');
-      input.setAttribute('readonly', 'readonly');
       input.onblur = linuxoptions.saveModification;
+      input .onfocus= linuxoptions.setInputCss; 
       input.className = cellCount == 1 ? 'itemName' : 'itemParameter';
       input.style.border = '0';
       input.style.background = '0';
+      input.style.height = '22px';
       input.value = value;
       cell.appendChild(input);
+    },
+    
+    setInputCss: function(event) {
+      var obj = event.target;
+      obj.style.border = '1px solid #c1d1e0';
+      obj.style.background = ' -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#edf5f5))';
     },
 
     insertOptionsToTheRow: function(row) {
       var cell = row.insertCell(3);
       cell.className = 'th3';
-
-      var aModify = document.createElement('A');
-      aModify.innerText =  chrome.i18n.getMessage('modify');
-      aModify.href = 'javascript:';
-      aModify.onclick = linuxoptions.modifyDownloader;
-
       var  aDelete = document.createElement('A');
       aDelete.innerText =  chrome.i18n.getMessage('delete');
       aDelete.href = 'javascript:';
-      aDelete.style.paddingLeft = '5px';
+      aDelete.style.paddingLeft = '30px';
       aDelete.onclick = linuxoptions.deleteDownloader;
-
-      cell.appendChild(aModify);
       cell.appendChild(aDelete);
     },
 
     saveModification : function(event) {
       var obj = event.target;
+      obj.style.border = '0';
+      obj.style.background = '0';
       var tr = obj.parentNode.parentNode;
       var rowCount = tr['rowIndex'];
       var imgSrc = tr.getElementsByTagName('img')[0].src;
@@ -652,16 +636,6 @@
       var downloaderParameter = inputArr[1].value;
       linuxoptions.modifyTemporaryStorage(
           rowCount, imgSrc, downloaderName, downloaderParameter);
-    },
-
-    modifyDownloader: function(event) {
-      var obj = event.target;
-      var td = obj.parentNode.parentNode;
-      var inputArr = td.getElementsByTagName("input");
-      for (var i = 0; i < inputArr.length; i++) {
-        inputArr[i].removeAttribute('readonly');
-      }
-      inputArr[0].focus();
     },
 
     deleteDownloader: function(event) {

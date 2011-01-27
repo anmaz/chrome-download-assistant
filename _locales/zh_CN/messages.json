@@ -49,7 +49,6 @@
   "add_url_ok_btn": {"message": "确定"},
   "add_url_cancel_btn": {"message": "取消"},
   "delete": {"message": "删除"},
-  "modify": {"message": "修改"},
   "setting_name": {"message": "请输入下载器名称"},
   "setting_parameter": {"message": "请输入下载器命令行"},
   "icon_url": {"message": "请输入URL地址"}
