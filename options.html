@@ -628,9 +628,14 @@
     },
     
     deleteDownLoaderStorage: function() {
-      for (var i =0; i < linuxoptions.deleteRowCounts.length; ++i) {
-        localStorage.removeItem('downloaderConfigure' + 
-        linuxoptions.deleteRowCounts[i]);
+      for (var i = 0; i < linuxoptions.deleteRowCounts.length; ++i) {
+        var localStorageName = 'downloaderConfigure' + linuxoptions.deleteRowCounts[i]
+        localStorage.removeItem(localStorageName);
+        for (var j = 0; j<  downloaderManager.menuItems.length; ++j) {
+          if(downloaderManager.menuItems[j].storageName == localStorageName) {
+            downloaderManager.menuItems.splice(j,1);
+          }
+        }
       }
     },
 
