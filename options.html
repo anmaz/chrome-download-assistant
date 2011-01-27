@@ -226,7 +226,8 @@
   <td>
     <div id="downloaderOption"></div>
   </td>
-  <td>
+  <td style="float:right;margin-left:130px;">
+   <div id="downloaderOption2"></div>
   </td>
   </tr>
   </table>
@@ -270,11 +271,8 @@
       <div>
         <table>
           <tr>
-            <td class="th0">
-             <img id="settingImg" class="itemImg"
-                style="padding-right:5px;display: none;" src="images/icon-nomal.png">
-                <a id="addDownloaderIcon" style="font-size:12px;float:right;margin-right: 5px;"></a>        
-                </td>
+            <td class="th0"><img id="settingImg" class="itemImg"
+                style="padding-right:5px" src="images/icon-nomal.png"></td>
             <td class="th1"><input id="settingName" class="itemName"
                 type="text"></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
@@ -326,7 +324,7 @@
     i18nReplace('disableMenu', 'menu_disable');
     i18nReplace('saveAndClose', 'save_and_close');
     bg.updateDownloadersIfNeeded();
-    createDownloaderOption($('downloaderOption'));
+    createDownloaderOption();
     if (bg.useContextMenuAPI) {
       $('contextMenuItem').style.display = 'none';
     } else if (!eval(localStorage['contextMenu'])) {
@@ -337,7 +335,7 @@
     }
   }
 
-  function createDownloaderOption(element) {
+  function createDownloaderOption() {
     var enableOptions = bg.enableDownloaders;
     for (var i = 0; i < enableOptions.length; i++) {
       var item = enableOptions[i];
@@ -348,12 +346,27 @@
         optionItemId = item.command;
       } else {
         imageUrl = chrome.extension.getURL(item.image);
-      }
-      addDownloaderOption(element, imageUrl, item.name, optionItemId)
+      }   
+      addDownloaderPosition(imageUrl, item.name, optionItemId);
     }
   }
   
-  function addDownloaderOption(element, imageUrl, name, id) {
+  function addDownloaderPosition (imageUrl, name, optionItemId) {
+    if ($('downloaderOption').childNodes.length < 5) {
+      addDownloaderOption('downloaderOption', imageUrl, name, optionItemId);
+    } else { 
+      if ( $('downloaderOption2').childNodes.length != 0 && $('downloaderOption').childNodes.length
+          > $('downloaderOption2').childNodes.length && $('downloaderOption').childNodes.length
+          < 2*($('downloaderOption2').childNodes.length)) {
+        addDownloaderOption('downloaderOption', imageUrl, name, optionItemId);
+      } else {
+        addDownloaderOption('downloaderOption2', imageUrl, name, optionItemId);
+      }      
+    } 
+  }
+  
+  function addDownloaderOption(containerId, imageUrl, name, id) {
+      var element = $(containerId);
       var option = document.createElement('div');
       if (linuxoptions.isLinuxPlatform()) {
         option.id = id;
@@ -422,7 +435,6 @@
       i18nReplace('downloaderSettings', 'downloader_settings');
       i18nReplace('selectDefaultDownloader', 'select_default_downloader');
       i18nReplace('downloaderSettingsPrompt', 'downloader_settings_prompt');
-      i18nReplace('addDownloaderIcon', 'add_downloader_icon');
       linuxoptions.displayLinuxOptionPage();
       linuxoptions.setPromptText();
       linuxoptions.addEventListener();
@@ -431,18 +443,30 @@
     },
 
     addEventListener: function() {
-    
-      $('addDownloaderIcon').addEventListener('click', function() {
-        linuxoptions.displayAddIconURLDialog();
+      $('settingImg').addEventListener('mouseover', function() {
+        if (this.src.indexOf('images/icon-nomal.png') != -1) {
+        this.src = 'images/icon-over.png';
+        }
       }, false);
-      
+
+      $('settingImg').addEventListener('mouseout', function() {
+        if (this.src.indexOf('images/icon-over.png') != -1) {
+          this.src = 'images/icon-nomal.png';
+        }
+      }, false);
+
       $('settingImg').addEventListener('click', function() {
-        linuxoptions.displayAddIconURLDialog();
+        var addURLDialog = $('addURLDialog');
+        addURLDialog.style.display = 'block';
+        addURLDialog.style.top =  (document.body.scrollTop +
+            (document.documentElement.clientHeight - 200 -
+            addURLDialog.offsetHeight) / 2) + 'px';
+        addURLDialog.style.left =  (document.body.scrollLeft +
+            (document.documentElement.clientWidth -
+            addURLDialog.offsetWidth) / 2) + 'px';
       }, false);
 
       $('addURLOkBtn').addEventListener('click', function() {
-        $('settingImg').style.display = "block";
-        $('addDownloaderIcon').style.display = 'none';
         $('settingImg').src = $('iconURL').value;
         $('iconURL').value = '';
         linuxoptions.closeAddURLDialog();
@@ -470,8 +494,9 @@
         var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc, 
             downloaderName, dowloaderParameter);
         if (isInstallation) {
-          addDownloaderOption($('downloaderOption'), imgsrc, downloaderName,
-              dowloaderParameter);
+          
+            addDownloaderPosition(imgsrc, downloaderName,
+              dowloaderParameter)
         }
       }, false);
 
@@ -516,17 +541,6 @@
           this.style.color =  '#a5a5a5';
         }
       });
-    },
-    
-    displayAddIconURLDialog: function () {
-      var addURLDialog = $('addURLDialog');
-      addURLDialog.style.display = 'block';
-      addURLDialog.style.top =  (document.body.scrollTop +
-          (document.documentElement.clientHeight - 200 -
-          addURLDialog.offsetHeight) / 2) + 'px';
-      addURLDialog.style.left =  (document.body.scrollLeft +
-          (document.documentElement.clientWidth -
-          addURLDialog.offsetWidth) / 2) + 'px';
     },
 
     setPromptText: function() {
@@ -752,8 +766,6 @@
 
     cleanAddedDownloaderSettingData: function() {
       $('settingImg').src = 'images/icon-nomal.png';
-      $('settingImg').style.display = "none";
-      $('addDownloaderIcon').style.display = 'block';
       $('settingName').value = '';
       $('settingParameter').value = '';
     },
