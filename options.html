@@ -270,8 +270,11 @@
       <div>
         <table>
           <tr>
-            <td class="th0"><img id="settingImg" class="itemImg"
-                style="padding-right:5px" src="images/icon-nomal.png"></td>
+            <td class="th0">
+             <img id="settingImg" class="itemImg"
+                style="padding-right:5px;display: none;" src="images/icon-nomal.png">
+                <a id="addDownloaderIcon" style="font-size:12px;float:right;margin-right: 5px;"></a>        
+                </td>
             <td class="th1"><input id="settingName" class="itemName"
                 type="text"></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
@@ -419,6 +422,7 @@
       i18nReplace('downloaderSettings', 'downloader_settings');
       i18nReplace('selectDefaultDownloader', 'select_default_downloader');
       i18nReplace('downloaderSettingsPrompt', 'downloader_settings_prompt');
+      i18nReplace('addDownloaderIcon', 'add_downloader_icon');
       linuxoptions.displayLinuxOptionPage();
       linuxoptions.setPromptText();
       linuxoptions.addEventListener();
@@ -427,31 +431,20 @@
     },
 
     addEventListener: function() {
-      $('settingImg').addEventListener('mouseover', function() {
-        if (this.src.indexOf('images/icon-nomal.png') != -1) {
-        this.src = 'images/icon-over.png';
-        }
+    
+      $('addDownloaderIcon').addEventListener('click', function() {
+        linuxoptions.displayAddIconURLDialog();
       }, false);
-
-      $('settingImg').addEventListener('mouseout', function() {
-        if (this.src.indexOf('images/icon-over.png') != -1) {
-          this.src = 'images/icon-nomal.png';
-        }
-      }, false);
-
+      
       $('settingImg').addEventListener('click', function() {
-        var addURLDialog = $('addURLDialog');
-        addURLDialog.style.display = 'block';
-        addURLDialog.style.top =  (document.body.scrollTop +
-            (document.documentElement.clientHeight - 200 -
-            addURLDialog.offsetHeight) / 2) + 'px';
-        addURLDialog.style.left =  (document.body.scrollLeft +
-            (document.documentElement.clientWidth -
-            addURLDialog.offsetWidth) / 2) + 'px';
+        linuxoptions.displayAddIconURLDialog();
       }, false);
 
       $('addURLOkBtn').addEventListener('click', function() {
+        $('settingImg').style.display = "block";
+        $('addDownloaderIcon').style.display = 'none';
         $('settingImg').src = $('iconURL').value;
+        $('iconURL').value = '';
         linuxoptions.closeAddURLDialog();
       }, false);
 
@@ -523,6 +516,17 @@
           this.style.color =  '#a5a5a5';
         }
       });
+    },
+    
+    displayAddIconURLDialog: function () {
+      var addURLDialog = $('addURLDialog');
+      addURLDialog.style.display = 'block';
+      addURLDialog.style.top =  (document.body.scrollTop +
+          (document.documentElement.clientHeight - 200 -
+          addURLDialog.offsetHeight) / 2) + 'px';
+      addURLDialog.style.left =  (document.body.scrollLeft +
+          (document.documentElement.clientWidth -
+          addURLDialog.offsetWidth) / 2) + 'px';
     },
 
     setPromptText: function() {
@@ -748,6 +752,8 @@
 
     cleanAddedDownloaderSettingData: function() {
       $('settingImg').src = 'images/icon-nomal.png';
+      $('settingImg').style.display = "none";
+      $('addDownloaderIcon').style.display = 'block';
       $('settingName').value = '';
       $('settingParameter').value = '';
     },
