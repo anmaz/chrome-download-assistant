@@ -52,5 +52,9 @@
   "modify": {"message": "Modify"},
   "setting_name": {"message": "Enter the name"},
   "setting_parameter": {"message": "Enter the parameters"},
-  "icon_url": {"message": "Enter the URL"}
+  "icon_url": {"message": "Enter the URL"},
+  "add_downloader_icon": {"message": "Add Icon"},
+  "select_default_downloader": {"message": "Please install FlashGet, JDownloader or Gwget Download Manager, or add another downloader in "},
+  "downloader_settings_prompt": {"message": "Downloader Settings."},
+  "downloader_settings": {"message": "Have you installed a downloader which can run from command line? Now you can add it into the following form and use it in Chrome. When you fill in the command line, please use '$URL'as a placeholder for the actual URL, eg. 'flashget $URL'."}
 }

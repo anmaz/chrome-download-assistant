@@ -24,6 +24,8 @@
   }
   a {
     color: #1C7EC5;
+    text-decoration: underline;
+    cursor: pointer;
   }
   #downloader {
     border-bottom: 3px dotted #CCDDED;
@@ -219,17 +221,38 @@
     <h1><span id="pageTitle"></span></h1>
   </div>
   <h4 id="downloader" class="downloaderOptionTitle"></h4>
-  <div id="downloaderOption"></div>
+  <table>
+  <tr>
+  <td>
+    <div id="downloaderOption"></div>
+  </td>
+  <td>
+  </td>
+  </tr>
+  </table>
+  <div  id="selectDefaultDownloaderPrompt" style="margin:16px 0;font-size: 12px; display:none;
+     background-color: #f6fbff ;border:1px #ecf6fe solid;height: 50px;">
+     <div style="padding: 10px 0 0 25px;">
+      <span  id="selectDefaultDownloader"></span>
+      <a  id="downloaderSettingsPrompt" href="javascript:" onclick="document.
+          getElementById('downloaderContainer').style.display='block'"></a></div>
+       </div>
   <div id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu">
     <span id="disableMenu"></span></label>
   </div>
   <div id="downloaderSettingTitle">
     <span id="downloaderSetting" class="downloaderOptionTitle"></span>
-    <img id="visibleAddDownloaderPanel"  src="images/up.png"
-         style="float: right;margin-right: 5px;">
+    <img id="visibleAddDownloaderPanel"  src="images/down.png"
+         style="float: right;margin-right: 5px;cursor: pointer;">
   </div>  
          <h4 id="linuxTitleLine"></h4>
   <div id="downloaderContainer">
+  <div style="margin:16px 0;font-size: 12px; background-color: #f6fbff ;
+      border:1px #ecf6fe solid;height: 65px;">
+    <div style="padding: 10px 0 0 25px;">
+    <span  id="downloaderSettings"></span>
+    </div>
+       </div>
     <div class="downloaderItem">
       <table>
         <tr>
@@ -393,10 +416,14 @@
       i18nReplace('urlAddress', 'url_address');
       i18nReplace('addURLOkBtn', 'add_url_ok_btn');
       i18nReplace('addURLCancelBtn', 'add_url_cancel_btn');
+      i18nReplace('downloaderSettings', 'downloader_settings');
+      i18nReplace('selectDefaultDownloader', 'select_default_downloader');
+      i18nReplace('downloaderSettingsPrompt', 'downloader_settings_prompt');
       linuxoptions.displayLinuxOptionPage();
       linuxoptions.setPromptText();
       linuxoptions.addEventListener();
       linuxoptions.readDownloader();
+      linuxoptions.displaySelectDafaultDownloaderPormpt();
     },
 
     addEventListener: function() {
@@ -508,6 +535,16 @@
       settingParameter.style.color = '#a5a5a5';
       iconURL.style.color = '#a5a5a5';
       iconURL.value = chrome.i18n.getMessage('icon_url');
+    },
+    
+    displaySelectDafaultDownloaderPormpt: function() {
+      var defaultDownloaderProId = ['flashget', 'jdownloader', 'gwget'];
+      for (var i = 0; i < defaultDownloaderProId.length; ++i) {
+        if (!(bg.plugin.CheckObject(defaultDownloaderProId[i]))) {
+          $('selectDefaultDownloaderPrompt').style.display = 'block';
+          return;
+        }
+      }
     },
     
     addDownloadertoSettingTable: function(imgsrc, downloaderName, dowloaderParameter) {
@@ -641,7 +678,6 @@
 
     displayLinuxOptionPage: function() {
       $('downloaderSettingTitle').style.display = 'block';
-      $('downloaderContainer').style.display = 'block';
       $('linuxTitleLine').style.display = 'block';
       $('bottomLine').style.display = 'block';
       $('closeBtn').style.cssFloat = 'right';
