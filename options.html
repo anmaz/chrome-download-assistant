@@ -230,7 +230,7 @@
   </td>
   </tr>
   </table>
-  <div  id="selectDefaultDownloaderPrompt" style="margin:16px 0;font-size: 12px; display:none;
+  <div  id="selectDefaultDownloaderPrompt" style="margin:16px 0;font-size: 12px; display:block;
      background-color: #f6fbff ;border:1px #ecf6fe solid;height: 50px;">
      <div style="padding: 10px 0 0 25px;">
       <span  id="selectDefaultDownloader"></span>
@@ -540,8 +540,8 @@
     displaySelectDafaultDownloaderPormpt: function() {
       var defaultDownloaderProId = ['flashget', 'jdownloader', 'gwget'];
       for (var i = 0; i < defaultDownloaderProId.length; ++i) {
-        if (!(bg.plugin.CheckObject(defaultDownloaderProId[i]))) {
-          $('selectDefaultDownloaderPrompt').style.display = 'block';
+        if (bg.plugin.CheckObject(defaultDownloaderProId[i])) {
+          $('selectDefaultDownloaderPrompt').style.display = 'none';
           return;
         }
       }
