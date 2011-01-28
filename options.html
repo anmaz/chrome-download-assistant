@@ -342,7 +342,7 @@
       var optionItemId = ''
       if (item.isLinux) {
         imageUrl = item.image;
-        optionItemId = item.command;
+        optionItemId =item.name + item.command;
       } else {
         imageUrl = chrome.extension.getURL(item.image);
       }
@@ -405,7 +405,7 @@
   var linuxoptions = {
     rowCount: 0,
     storageTempArr: [],
-    deleteRowCounts:[],
+    deleteRowTempArray:[],
 
     init: function() {
       i18nReplace('downloaderSetting', 'downloader_setting');
@@ -475,11 +475,12 @@
         var imgsrc = $('settingImg').src;
         var downloaderName = $('settingName').value;
         var dowloaderParameter = $('settingParameter').value;
+        var downloaderId = downloaderName + dowloaderParameter;
         var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc, 
             downloaderName, dowloaderParameter);
         if (isInstallation) {
           addDownloaderOption($('downloaderOption'), imgsrc, downloaderName,
-              dowloaderParameter);
+              downloaderId);
         }
       }, false);
 
@@ -550,7 +551,8 @@
     
     addDownloadertoSettingTable: function(imgsrc, downloaderName, dowloaderParameter) {
       var projId = dowloaderParameter.split(' ')[0];
-      if (!bg.plugin.CheckObject(projId) || ''==projId) {
+      if (!bg.plugin.CheckObject(projId) || ''==projId || !linuxoptions.
+          checkRepeatDownloader(downloaderName, dowloaderParameter)) {
         return false;
       }
       linuxoptions.insertOneRowInTable(linuxoptions.rowCount, imgsrc,
@@ -562,6 +564,20 @@
       linuxoptions.cleanAddedDownloaderSettingData();
       return true;
     },
+    
+  checkRepeatDownloader: function(name, parameter) {
+    var downloaderId = name + parameter;
+    var table = $('downloaderlist');
+    var rows = table.rows;
+    for(var i = 0; i < rows.length; ++i) {
+      var checkId = table.rows[i].cells[1].firstChild.value +
+          table.rows[i].cells[2].firstChild.value;
+      if (downloaderId == checkId) {
+        return false;
+      }
+    }
+    return true ;
+  },
 
     insertOneRowInTable: function(rowCount, imgsrc, name, parameter) {
       var downloaderItem = $('downloaderlist');
@@ -643,7 +659,6 @@
       var tr = obj.parentNode.parentNode;
       linuxoptions.deleteOptionDownLoader(tr);
       linuxoptions.deleteTemporaryStorage(tr['rowIndex']);
-      linuxoptions.deleteRowCounts.push(tr['rowIndex']);
       var tbody = tr.parentNode;
       tbody.removeChild(tr);
       linuxoptions.rowCount--;
@@ -651,21 +666,30 @@
     },
     
     deleteOptionDownLoader: function(tr) {
-      var input = tr.childNodes[2].firstChild
-      var id = input.value;
+      var imgSrc =  tr.childNodes[0].firstChild.src;
+      var name = tr.childNodes[1].firstChild.value;
+      var parameter = tr.childNodes[2].firstChild.value;
+      var deleteRowArray = [imgSrc, name, parameter];
+      linuxoptions.deleteRowTempArray.push(deleteRowArray);
+      var id = name + parameter;
       $('downloaderOption').removeChild($(id));      
     },
     
-    deleteDownLoaderStorage: function() {
-      for (var i = 0; i < linuxoptions.deleteRowCounts.length; ++i) {
-        var localStorageName = 'downloaderConfigure' + linuxoptions.deleteRowCounts[i]
-        localStorage.removeItem(localStorageName);
-        for (var j = 0; j<  downloaderManager.menuItems.length; ++j) {
-          if(downloaderManager.menuItems[j].storageName == localStorageName) {
-            downloaderManager.menuItems.splice(j,1);
-          }
-        }
-      }
+    deleteDownLoaderStorage: function() { 
+      if (linuxoptions.deleteRowTempArray.length == 0) {
+        return;
+      }                   
+      for(var j = 0; j < linuxoptions.deleteRowTempArray.length; j++) {
+        var newItem = linuxoptions.deleteRowTempArray[j];
+        for (var i = 0; i < downloaderManager.menuItems.length; i++) {
+          var item = downloaderManager.menuItems[i];
+          if (newItem[0] == item.image && newItem[1] == item.name &&
+            newItem[2] == item.command){
+            localStorage.removeItem(item.storageName);
+            downloaderManager.menuItems.splice(i,1);    
+          }       
+        }       
+      }     
     },
 
     displayLinuxOptionPage: function() {
@@ -699,21 +723,16 @@
       for (var i = 0; i < downloaderManager.menuItems.length; i++) {
         var item = downloaderManager.menuItems[i];
         if (count < linuxoptions.storageTempArr.length &&
-            newItem[0] == item.image && newItem[1] == item.name &&
-            newItem[2] == item.command) {
-          if (item.storageName &&
-              item.storageName != 'downloaderConfigure' + count) {
-            localStorage['downloaderConfigure' + count] =
-                localStorage[item.storageName];
-            localStorage.removeItem(item.storageName);
-          }
+          newItem[0] == item.image && newItem[1] == item.name &&
+          newItem[2] == item.command) {
+          
           count++;
           newItem = linuxoptions.storageTempArr[count];
         }
       }
       for (; count < linuxoptions.storageTempArr.length; count++) {
-        var name = 'downloaderConfigure' + count;
         var tempArr = linuxoptions.storageTempArr[count];
+        var name = 'downloaderConfigure' +  tempArr[1] + tempArr[2];
         localStorage[name] = [tempArr[0], tempArr[1], tempArr[2]];
         downloaderManager.addCustomDownloader(name, tempArr);
       }
