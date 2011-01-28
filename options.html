@@ -213,6 +213,12 @@
     margin: 0;
     display: none;
   }
+  .tip_failed {
+    color: #ffffff;
+    background: #ff8080;
+    height:22px;
+    line-height:22px
+  }
 </style>
 </head>
 <body onload="init();">
@@ -221,14 +227,9 @@
     <h1><span id="pageTitle"></span></h1>
   </div>
   <h4 id="downloader" class="downloaderOptionTitle"></h4>
-  <table>
-  <tr>
-  <td>
+  <table><tr><td>
     <div id="downloaderOption"></div>
-  </td>
-  <td>
-  </td>
-  </tr>
+  </td><td> </td></tr>
   </table>
   <div  id="selectDefaultDownloaderPrompt" style="margin:16px 0;font-size: 12px; display:block;
      background-color: #f6fbff ;border:1px #ecf6fe solid;height: 50px;">
@@ -241,11 +242,13 @@
     <span id="disableMenu"></span></label>
   </div>
   <div id="downloaderSettingTitle">
-    <span id="downloaderSetting" class="downloaderOptionTitle"></span>
-    <img id="visibleAddDownloaderPanel"  src="images/down.png"
-         style="float: right;margin-right: 5px;cursor: pointer;">
-  </div>  
-         <h4 id="linuxTitleLine"></h4>
+   <table><tr>
+   <td style="width: 251px;"> <span id="downloaderSetting" class="downloaderOptionTitle">
+   </span></td><td style="width:326px"><div id="tipContainer"></div></td>
+       <td> <img id="visibleAddDownloaderPanel"  src="images/down.png"
+         style="float: right;margin-right: 5px;cursor: pointer;"></td></tr> 
+   </table>  </div>  
+   <h4 id="linuxTitleLine"></h4>
   <div id="downloaderContainer">
   <div style="margin:16px 0;font-size: 12px; background-color: #f6fbff ;
       border:1px #ecf6fe solid;height: 65px;">
@@ -551,8 +554,16 @@
     
     addDownloadertoSettingTable: function(imgsrc, downloaderName, dowloaderParameter) {
       var projId = dowloaderParameter.split(' ')[0];
-      if (!bg.plugin.CheckObject(projId) || ''==projId || !linuxoptions.
-          checkRepeatDownloader(downloaderName, dowloaderParameter)) {
+      if (!bg.plugin.CheckObject(projId)) {
+        if ('Enter' !== projId) {
+          linuxoptions.showTip('tip_failed', 'can_not_add_downloader', '160');
+        }
+        return false;
+      } else if ( !linuxoptions.
+          checkRepeatDownloader(downloaderName, dowloaderParameter)){
+          linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
+          return false; 
+      } else if (''==projId) {
         return false;
       }
       linuxoptions.insertOneRowInTable(linuxoptions.rowCount, imgsrc,
@@ -761,6 +772,23 @@
       $('settingImg').src = 'images/icon-nomal.png';
       $('settingName').value = '';
       $('settingParameter').value = '';
+    },
+    
+    showTip: function(className, message, width) {
+      if ($('tipTextContainer')) {
+        return;
+      }
+      var tipContainer =  $('tipContainer');
+      var div = document.createElement('DIV');
+      div.className = className;
+      div.style.width = width + 'px';
+      div.id = 'tipTextContainer';
+      div.innerText = chrome.i18n.getMessage(message);
+      tipContainer.appendChild(div);
+      div.style.left = (document.body.clientWidth - div.clientWidth) / 2 + 'px';
+      window.setTimeout(function() {
+        tipContainer.removeChild(div);
+      }, 2000);
     },
 
     isLinuxPlatform: function() {
