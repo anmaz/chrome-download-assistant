@@ -325,15 +325,15 @@
     i18nReplace('downloader', 'downloader');
     i18nReplace('disableMenu', 'menu_disable');
     i18nReplace('saveAndClose', 'save_and_close');
+    if (linuxoptions.isLinuxPlatform()) {
+      linuxoptions.init();
+    }
     bg.updateDownloadersIfNeeded();
     createDownloaderOption($('downloaderOption'));
     if (bg.useContextMenuAPI) {
       $('contextMenuItem').style.display = 'none';
     } else if (!eval(localStorage['contextMenu'])) {
       checkboxContextMenu.checked = true;
-    }
-    if (linuxoptions.isLinuxPlatform()) {
-      linuxoptions.init();
     }
   }
 
@@ -408,8 +408,8 @@
   var linuxoptions = {
     rowCount: 0,
     storageTempArr: [],
-    deleteRowTempArray:[],
-
+    deleteRowTempArray: [],
+    modifyTempValue: '',
     init: function() {
       i18nReplace('downloaderSetting', 'downloader_setting');
       i18nReplace('downloaderIcon', 'downloader_icon');
@@ -638,6 +638,7 @@
       var obj = event.target;
       obj.style.border = '1px solid #c1d1e0';
       obj.style.background = ' -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#edf5f5))';
+      linuxoptions.modifyTempValue = obj.value;
     },
 
     insertOptionsToTheRow: function(row) {
@@ -661,6 +662,14 @@
       var inputArr = tr.getElementsByTagName('input');
       var downloaderName = inputArr[0].value;
       var downloaderParameter = inputArr[1].value;
+      var preOptionsId = '';     
+      if ('itemName' == obj.className) { 
+        preOptionsId =  linuxoptions.modifyTempValue +downloaderParameter;
+      } else {
+        preOptionsId =  downloaderName + linuxoptions.modifyTempValue
+      }      
+      var optionsId = downloaderName +downloaderParameter;
+      $(preOptionsId).id = optionsId;       
       linuxoptions.modifyTemporaryStorage(
           rowCount, imgSrc, downloaderName, downloaderParameter);
     },
@@ -722,6 +731,18 @@
     modifyTemporaryStorage: function(index, imgsrc, name, parameter) {
       var tempArr = [imgsrc, name, parameter];
       linuxoptions.storageTempArr[index] = tempArr;
+      for (var i = 0; i < downloaderManager.menuItems.length; i++) {
+        var item = downloaderManager.menuItems[i];
+        if ( imgsrc == item.image) { 
+          if (name == item.name &&
+              linuxoptions.modifyTempValue == item.command){
+               item.command = parameter;
+          } else if (linuxoptions.modifyTempValue == item.name &&
+              parameter == item.command){
+                item.name = name;
+          }
+        }
+      } 
     },
 
     deleteTemporaryStorage: function(index) {
@@ -731,12 +752,17 @@
     saveDownloader: function() {
       var count = 0;
       var newItem = linuxoptions.storageTempArr[count];
-      for (var i = 0; i < downloaderManager.menuItems.length; i++) {
+      for (var i = 13; i < downloaderManager.menuItems.length; i++) {
         var item = downloaderManager.menuItems[i];
         if (count < linuxoptions.storageTempArr.length &&
           newItem[0] == item.image && newItem[1] == item.name &&
-          newItem[2] == item.command) {
-          
+          newItem[2] == item.command) {        
+           if (item.storageName &&
+              item.storageName != 'downloaderConfigure' + item.name +item.command) {
+            localStorage[ 'downloaderConfigure' + item.name +item.command] =
+                [item.image, item.name, item.command];
+            localStorage.removeItem(item.storageName);
+          }       
           count++;
           newItem = linuxoptions.storageTempArr[count];
         }
@@ -751,8 +777,18 @@
 
     readDownloader: function() {
       var count = 0;
-      for (var i = 0; i < downloaderManager.menuItems.length; i++) { 
-        var item = downloaderManager.menuItems[i];  
+      for (var i = 13; i < downloaderManager.menuItems.length; i++) { 
+        var item = downloaderManager.menuItems[i];
+        for (var name in localStorage) {
+          if (name.indexOf('downloaderConfigure') == 0) {
+            if (item.storageName && name == item.storageName) {
+              var customArr = localStorage[name].split(',');
+              item.image = customArr[0];
+              item.name = customArr[1];
+              item.command = customArr[2];
+            }
+          }
+        }
         if (item.isLinux && item.isUserAdd) {
           var projId = item.command.split(' ')[0];
           if(bg.plugin.CheckObject(projId)){   
