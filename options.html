@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title> Download Helper Options </title>
@@ -119,7 +119,7 @@
   }
   .itemImg {
    float: right;
-   padding-right: 7px;
+   padding-right: 17px;
    cursor: pointer;
    width: 30px;
    height: 30px;
@@ -274,7 +274,7 @@
         <table>
           <tr>
             <td class="th0"><img id="settingImg" class="itemImg"
-                style="padding-right:5px" src="images/icon-nomal.png"></td>
+                style="padding-right:15px" src="images/icon-nomal.png"></td>
             <td class="th1"><input id="settingName" class="itemName"
                 type="text"></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
@@ -491,13 +491,15 @@
         if (this.value ==  chrome.i18n.getMessage('setting_name')) {
           this.value = '';
           this.style.color = '#000000';
+          this.style.cssText='-webkit-box-shadow:0px 0px 10px #C4E4F9;';     
         }
       });
 
       $('settingName').addEventListener('blur', function() {
         if (this.value == '') {
-          this.value = chrome.i18n.getMessage('setting_name');
-          this.style.color =  '#a5a5a5';
+          this.value = chrome.i18n.getMessage('setting_name');        
+          this.style.cssText='';
+          this.style.color =  '#a5a5a5';     
         }
       });
 
@@ -505,13 +507,15 @@
         if (this.value ==  chrome.i18n.getMessage('setting_parameter')) {
           this.value = '';
           this.style.color = '#000000';
+          this.style.cssText='-webkit-box-shadow:  0px 0px 10px #C4E4F9;';     
         }
       });
 
       $('settingParameter').addEventListener('blur', function() {
         if (this.value == '') {
           this.value = chrome.i18n.getMessage('setting_parameter');
-          this.style.color =  '#a5a5a5';
+          this.style.cssText='';
+          this.style.color =  '#a5a5a5';    
         }
       });
 
@@ -559,8 +563,8 @@
           linuxoptions.showTip('tip_failed', 'can_not_add_downloader', '160');
         }
         return false;
-      } else if ( !linuxoptions.
-          checkRepeatDownloader(downloaderName, dowloaderParameter)){
+      } else if (!linuxoptions.
+          checkRepeatDownloader(downloaderName, dowloaderParameter)) {
           linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
           return false; 
       } else if (''==projId) {
@@ -629,15 +633,16 @@
       input.className = cellCount == 1 ? 'itemName' : 'itemParameter';
       input.style.border = '0';
       input.style.background = '0';
-      input.style.height = '22px';
       input.value = value;
       cell.appendChild(input);
     },
     
     setInputCss: function(event) {
       var obj = event.target;
-      obj.style.border = '1px solid #c1d1e0';
-      obj.style.background = ' -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#edf5f5))';
+      obj.style.cssText='-webkit-box-shadow:0px 0px 10px #C4E4F9;';
+      obj.style.height = '22px';     
+      obj.style.border = '1px inset #c1d1e0';
+      obj.style.background = ' -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#edf5f5))';  
       linuxoptions.modifyTempValue = obj.value;
     },
 
@@ -652,8 +657,9 @@
       cell.appendChild(aDelete);
     },
 
-    saveModification : function(event) {
+    saveModification: function(event) {
       var obj = event.target;
+      obj.style.cssText='';
       obj.style.border = '0';
       obj.style.background = '0';
       var tr = obj.parentNode.parentNode;
@@ -666,7 +672,7 @@
       if ('itemName' == obj.className) { 
         preOptionsId =  linuxoptions.modifyTempValue +downloaderParameter;
       } else {
-        preOptionsId =  downloaderName + linuxoptions.modifyTempValue
+        preOptionsId =  downloaderName + linuxoptions.modifyTempValue;
       }      
       var optionsId = downloaderName +downloaderParameter;
       $(preOptionsId).id = optionsId;       
@@ -704,7 +710,7 @@
         for (var i = 0; i < downloaderManager.menuItems.length; i++) {
           var item = downloaderManager.menuItems[i];
           if (newItem[0] == item.image && newItem[1] == item.name &&
-            newItem[2] == item.command){
+            newItem[2] == item.command) {
             localStorage.removeItem(item.storageName);
             downloaderManager.menuItems.splice(i,1);    
           }       
@@ -735,10 +741,10 @@
         var item = downloaderManager.menuItems[i];
         if ( imgsrc == item.image) { 
           if (name == item.name &&
-              linuxoptions.modifyTempValue == item.command){
+              linuxoptions.modifyTempValue == item.command) {
                item.command = parameter;
           } else if (linuxoptions.modifyTempValue == item.name &&
-              parameter == item.command){
+              parameter == item.command) {
                 item.name = name;
           }
         }
@@ -791,7 +797,7 @@
         }
         if (item.isLinux && item.isUserAdd) {
           var projId = item.command.split(' ')[0];
-          if(bg.plugin.CheckObject(projId)){   
+          if (bg.plugin.CheckObject(projId)) {   
             linuxoptions.insertOneRowInTable(
                 count, item.image, item.name, item.command);
             count++;
