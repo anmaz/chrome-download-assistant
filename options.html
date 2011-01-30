@@ -327,6 +327,8 @@
     i18nReplace('saveAndClose', 'save_and_close');
     if (linuxoptions.isLinuxPlatform()) {
       linuxoptions.init();
+    } else {
+      $('selectDefaultDownloaderPrompt').style.display = 'none';
     }
     bg.updateDownloadersIfNeeded();
     createDownloaderOption($('downloaderOption'));
