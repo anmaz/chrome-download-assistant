@@ -631,7 +631,9 @@
       cell.className = 'th' + cellCount;
       var input = document.createElement('input');
       input.onblur = linuxoptions.saveModification;
-      input .onfocus= linuxoptions.setInputCss; 
+      input .onfocus= linuxoptions.setOnfocusCss;
+      input.onmouseover = linuxoptions.setMouseOverCss;
+      input.onmouseout = linuxoptions.setMouseOutCss;
       input.className = cellCount == 1 ? 'itemName' : 'itemParameter';
       input.style.border = '0';
       input.style.background = '0';
@@ -639,13 +641,35 @@
       cell.appendChild(input);
     },
     
-    setInputCss: function(event) {
+    setMouseOverCss: function(event) {
       var obj = event.target;
-      obj.style.cssText='-webkit-box-shadow:0px 0px 10px #C4E4F9;';
-      obj.style.height = '22px';     
-      obj.style.border = '1px inset #c1d1e0';
-      obj.style.background = ' -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#edf5f5))';  
+      linuxoptions.setInputCss(obj);
+    },
+    
+    setMouseOutCss: function(event) {
+      var obj = event.target;
+      if (document.activeElement != obj) {
+        linuxoptions.removeInputCss(obj);
+      }
+    },
+    
+    setOnfocusCss: function(event) {
+      var obj = event.target;
+      obj.style.cssText='-webkit-box-shadow:0px 0px 10px #c3e5fa;';
+      linuxoptions.setInputCss(obj);
       linuxoptions.modifyTempValue = obj.value;
+    },
+    
+    setInputCss: function(obj) {
+      obj.style.height = '22px';     
+      obj.style.border = '1px solid #c1d1e0';
+      obj.style.background = ' -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#edf5f5))';    
+    },
+    
+    removeInputCss: function(obj) {
+      obj.style.cssText='';
+      obj.style.border = '0';
+      obj.style.background = '0';
     },
 
     insertOptionsToTheRow: function(row) {
@@ -661,9 +685,7 @@
 
     saveModification: function(event) {
       var obj = event.target;
-      obj.style.cssText='';
-      obj.style.border = '0';
-      obj.style.background = '0';
+      linuxoptions.removeInputCss(obj);
       var tr = obj.parentNode.parentNode;
       var rowCount = tr['rowIndex'];
       var imgSrc = tr.getElementsByTagName('img')[0].src;
