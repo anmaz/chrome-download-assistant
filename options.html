@@ -271,11 +271,11 @@
         <table>
           <tr>
             <td class="th0"><img id="settingImg" class="itemImg"
-                style="padding-right:15px" src="images/icon-nomal.png"></td>
+                style="padding-right:13px" src="images/icon-nomal.png"></td>
             <td class="th1"><input id="settingName" class="itemName"
-                type="text"></td>
+                type="text" style="padding-left: 7px;"></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
-                type="text"></td>
+                type="text" style="padding-left: 11px;"></td>
             <td class="th3">
               <div class="btnDiv">
                 <button  id="addDownloader"></button>
@@ -490,7 +490,7 @@
         if (this.value ==  chrome.i18n.getMessage('setting_name')) {
           this.value = '';
           this.style.color = '#000000';
-          this.style.cssText='-webkit-box-shadow:0px 0px 10px #C4E4F9;';     
+          this.style.cssText='-webkit-box-shadow:0px 0px 10px #C4E4F9;';
         }
       });
 
@@ -498,7 +498,8 @@
         if (this.value == '') {
           this.value = chrome.i18n.getMessage('setting_name');        
           this.style.cssText='';
-          this.style.color =  '#a5a5a5';     
+          this.style.color =  '#a5a5a5';
+          this.style.paddingLeft = '7px';
         }
       });
 
@@ -514,7 +515,8 @@
         if (this.value == '') {
           this.value = chrome.i18n.getMessage('setting_parameter');
           this.style.cssText='';
-          this.style.color =  '#a5a5a5';    
+          this.style.color =  '#a5a5a5';
+          this.style.paddingLeft = '12px';    
         }
       });
 
@@ -563,7 +565,7 @@
         }
         return false;
       } else if (!linuxoptions.
-          checkRepeatDownloader(downloaderName, downloaderParameter)) {
+          checkRepeatDownloader(downloaderName, downloaderParameter, -1)) {
           linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
           return false; 
       } else if (''==projId) {
@@ -579,20 +581,20 @@
       return true;
     },
     
-  checkRepeatDownloader: function(name, parameter) {
+  checkRepeatDownloader: function(name, parameter, rowIndex) {
     var downloaderId = name + parameter;
     var table = $('downloaderlist');
     var rows = table.rows;
     for(var i = 0; i < rows.length; ++i) {
       var checkId = table.rows[i].cells[1].firstChild.value +
           table.rows[i].cells[2].firstChild.value;
-      if (downloaderId == checkId) {
+      if (downloaderId == checkId && i != rowIndex) {
         return false;
       }
     }
     return true ;
   },
-
+  
     insertOneRowInTable: function(rowCount, imgsrc, name, parameter) {
       var downloaderItem = $('downloaderlist');
       var row = downloaderItem.insertRow(rowCount);
@@ -699,7 +701,13 @@
           linuxoptions.restoreParameterValue(obj);
           return false;
         }
-      }    
+      }   
+      if (!linuxoptions.
+          checkRepeatDownloader(downloaderName, downloaderParameter, rowCount)) {
+        linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
+        linuxoptions.restoreParameterValue(obj);
+        return false;  
+      }        
       linuxoptions.removeInputCss(obj);     
       if ('itemName' == obj.className) { 
         preOptionsId =  linuxoptions.modifyTempValue +downloaderParameter;
