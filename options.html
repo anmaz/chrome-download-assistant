@@ -189,9 +189,6 @@
   #bottomLine {
     border-top: 1px solid #c1d1e0;
   }
-  #downloaderContainer {
-    display: none;
-  }
   #downloaderSettingTitle {
      margin: 20px 0 0 0;
      display: none;
@@ -249,7 +246,7 @@
          style="float: right;margin-right: 5px;cursor: pointer;"></td></tr> 
    </table>  </div>  
    <h4 id="linuxTitleLine"></h4>
-  <div id="downloaderContainer">
+  <div id="downloaderContainer" style="display: none;">
   <div style="margin:16px 0;font-size: 12px; background-color: #f6fbff ;
       border:1px #ecf6fe solid;height: 65px;">
     <div style="padding: 10px 0 0 25px;">
@@ -479,10 +476,10 @@
       $('addDownloader').addEventListener('click', function() {
         var imgsrc = $('settingImg').src;
         var downloaderName = $('settingName').value;
-        var dowloaderParameter = $('settingParameter').value;
-        var downloaderId = downloaderName + dowloaderParameter;
+        var downloaderParameter = $('settingParameter').value;
+        var downloaderId = downloaderName + downloaderParameter;
         var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc, 
-            downloaderName, dowloaderParameter);
+            downloaderName, downloaderParameter);
         if (isInstallation) {
           addDownloaderOption($('downloaderOption'), imgsrc, downloaderName,
               downloaderId);
@@ -558,26 +555,26 @@
       }
     },
     
-    addDownloadertoSettingTable: function(imgsrc, downloaderName, dowloaderParameter) {
-      var projId = dowloaderParameter.split(' ')[0];
+    addDownloadertoSettingTable: function(imgsrc, downloaderName, downloaderParameter) {
+      var projId = downloaderParameter.split(' ')[0];
       if (!bg.plugin.CheckObject(projId)) {
         if ('Enter' !== projId) {
           linuxoptions.showTip('tip_failed', 'can_not_add_downloader', '160');
         }
         return false;
       } else if (!linuxoptions.
-          checkRepeatDownloader(downloaderName, dowloaderParameter)) {
+          checkRepeatDownloader(downloaderName, downloaderParameter)) {
           linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
           return false; 
       } else if (''==projId) {
         return false;
       }
       linuxoptions.insertOneRowInTable(linuxoptions.rowCount, imgsrc,
-          downloaderName, dowloaderParameter);
+          downloaderName, downloaderParameter);
       linuxoptions.setRowBackgroundColor();
       linuxoptions.rowCount++;
       linuxoptions.temporaryStorage(imgsrc, downloaderName,
-          dowloaderParameter);
+          downloaderParameter);
       linuxoptions.cleanAddedDownloaderSettingData();
       return true;
     },
@@ -685,23 +682,39 @@
 
     saveModification: function(event) {
       var obj = event.target;
-      linuxoptions.removeInputCss(obj);
       var tr = obj.parentNode.parentNode;
       var rowCount = tr['rowIndex'];
       var imgSrc = tr.getElementsByTagName('img')[0].src;
       var inputArr = tr.getElementsByTagName('input');
       var downloaderName = inputArr[0].value;
       var downloaderParameter = inputArr[1].value;
-      var preOptionsId = '';     
+      var preOptionsId = '';    
+      var projId = downloaderParameter.split(' ')[0];
+      if ('itemParameter' == obj.className) {
+        if (!bg.plugin.CheckObject(projId)) {   
+          linuxoptions.showTip('tip_failed', 'can_not_add_downloader', '160');
+          linuxoptions.restoreParameterValue(obj);
+          return false;
+        } else if (''==projId) {
+          linuxoptions.restoreParameterValue(obj);
+          return false;
+        }
+      }    
+      linuxoptions.removeInputCss(obj);     
       if ('itemName' == obj.className) { 
         preOptionsId =  linuxoptions.modifyTempValue +downloaderParameter;
       } else {
         preOptionsId =  downloaderName + linuxoptions.modifyTempValue;
       }      
       var optionsId = downloaderName +downloaderParameter;
-      $(preOptionsId).id = optionsId;       
+      $(preOptionsId).id = optionsId;
       linuxoptions.modifyTemporaryStorage(
           rowCount, imgSrc, downloaderName, downloaderParameter);
+    },
+    
+    restoreParameterValue: function(obj) {
+      obj.value = linuxoptions.modifyTempValue;
+      obj.focus();
     },
 
     deleteDownloader: function(event) {
