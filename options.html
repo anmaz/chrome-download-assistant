@@ -96,7 +96,7 @@
   }
   .th1  div {
     float: left;
-    padding-left: 12px;
+    padding-left: 13px;
   }
   .th2 {
     width: 285px;
@@ -104,7 +104,7 @@
   }
   .th2 div {
     float: left;
-    padding-left: 20px;
+    padding-left: 12px;
   }
   .th3 {
     width: 105px;
@@ -113,6 +113,7 @@
   }
   .th3 .btnDiv {
     float: right;
+    padding-right: 30px;
   }
   #downloaderSetting {
     font-weight: bolder;
@@ -127,13 +128,14 @@
   .itemName {
     width: 110px;
     float: left;
-    margin-left: 11px;
+    margin-left: 8px;
+    padding-left: 5px;
   }
   .itemParameter {
     width: 255px;
     float: left;
-    padding-left: 3px;
-    margin-left: 17px;
+    padding-left: 5px;
+    margin-left: 8px;
   }
   button {
    cursor: pointer;
@@ -271,11 +273,11 @@
         <table>
           <tr>
             <td class="th0"><img id="settingImg" class="itemImg"
-                style="padding-right:10px" src="images/icon-nomal.png"></td>
+                style="padding-right:18px" src="images/icon-nomal.png"></td>
             <td class="th1"><input id="settingName" class="itemName"
-                type="text" style="padding-left: 7px;"></td>
+                type="text"  style="width: 110px;"></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
-                type="text" style="padding-left: 11px;"></td>
+                type="text" style="width: 255px;"></td>
             <td class="th3">
               <div class="btnDiv">
                 <button  id="addDownloader"></button>
@@ -498,7 +500,7 @@
           this.value = chrome.i18n.getMessage('setting_name');        
           this.style.cssText='';
           this.style.color =  '#a5a5a5';
-          this.style.paddingLeft = '7px';
+          this.style.width = '110px';
         }
       });
 
@@ -514,7 +516,7 @@
           this.value = chrome.i18n.getMessage('setting_parameter');
           this.style.cssText='';
           this.style.color =  '#a5a5a5';
-          this.style.paddingLeft = '12px';    
+          this.style.width = ' 255px';
         }
       });
 
