@@ -56,7 +56,7 @@
     padding: 30px;
     text-align: left;
     margin: 50px auto 20px auto;
-    width: 600px;
+    width: 657px;
   }
   #contextMenuItem {
     margin-left: 32px;
@@ -67,6 +67,7 @@
   }
   table {
      border-collapse: collapse;
+     width: 657px;
   }
   .downloaderItem {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%,
@@ -77,74 +78,73 @@
   .downloaderItem th {
     font-size: 12px;
     color : #1a82c4;
-    height: 25px;
+    height: 27px;
     border-right: 1px solid #D0D0D0;
     color: #5e769c;
   }
   .th0 {
-    width: 70px;
-    min-width: 62px;
-    height: auto;
+    width: 80px;
+    height: 27px;
   }
   .th1 {
-    width: 130px;
-    height: auto;
+    width: 149px;
+    height: 27px;
   }
   .th0 div{
-    float: right;
-    padding-right: 20px;
+    float: left;
+    padding-left: 29px;
   }
   .th1  div {
     float: left;
-    padding-left: 13px;
+    padding-left: 17px;
   }
   .th2 {
-    width: 285px;
-    height: auto;
+    width: 337px;
+    height: 27px;
   }
   .th2 div {
     float: left;
-    padding-left: 12px;
+    padding-left: 17px;
   }
   .th3 {
-    width: 105px;
-    height: auto;
+    width: 76px;
+    height: 27px;
     font-size: 12px;
   }
   .th3 .btnDiv {
     float: right;
-    padding-right: 30px;
+    padding-right: 17px;
   }
   #downloaderSetting {
     font-weight: bolder;
   }
   .itemImg {
-   float: right;
-   padding-right: 17px;
+   float: left;
+   padding-left: 18px;
    cursor: pointer;
    width: 30px;
    height: 30px;
   }
   .itemName {
-    width: 110px;
+    width: 123px;
     float: left;
+    height: 22px;
     margin-left: 8px;
-    padding-left: 5px;
+    padding-left: 10px;
   }
   .itemParameter {
-    width: 255px;
+    width: 309px;
     float: left;
-    padding-left: 5px;
+    padding-left: 10px;
+    height: 22px;
     margin-left: 8px;
   }
   button {
    cursor: pointer;
   }
-  .downloaderItemContainer {
-    background-color: #f6fbff;
-  }
+  .downloaderItemContainer {}
   .downloaderItemContainer tr{
-    height: 45px;
+    height: 41px;
     border: 0;
   }
   input[type=text] {
@@ -190,6 +190,7 @@
   }
   #bottomLine {
     border-top: 1px solid #c1d1e0;
+    display: none;
   }
   #downloaderSettingTitle {
      margin: 20px 0 0 0;
@@ -202,14 +203,15 @@
     padding-left: 5px;
   }
   #downloaderOption div {
-    padding: 5px 0 5px ; 
+    padding: 3px 0 2px ; 
   }
   #downloaderOPtion input {
    margin: 0 3px 3px 5px;
   }
   #linuxTitleLine {
     border-bottom: 3px dotted #CCDDED;
-    margin: 0;
+    margin-bottom: 0px;
+    margin-top: 0px;
     display: none;
   }
   .tip_failed {
@@ -231,9 +233,9 @@
   </td><td> </td></tr>
   </table>
   <div  id="selectDefaultDownloaderPrompt" style="margin:16px 0;font-size: 12px; display:block;
-     background-color: #f6fbff ;border:1px #ecf6fe solid;height: 50px;">
-     <div style="padding: 10px 0 0 25px;">
-      <span  id="selectDefaultDownloader"></span>
+     background-color: #f6fbff ;border:1px #ecf6fe solid;height: 69px;">
+     <div style="padding: 14px 0 0 19px;">
+      <span  id="selectDefaultDownloader"  style="line-height: 14px;"></span>
       <a  id="downloaderSettingsPrompt" href="javascript:" onclick="document.
           getElementById('downloaderContainer').style.display='block'"></a></div>
        </div>
@@ -243,16 +245,16 @@
   <div id="downloaderSettingTitle">
    <table><tr>
    <td style="width: 251px;"> <span id="downloaderSetting" class="downloaderOptionTitle">
-   </span></td><td style="width:326px"><div id="tipContainer"></div></td>
+   </span></td><td style="width:386px"><div id="tipContainer"></div></td>
        <td> <img id="visibleAddDownloaderPanel"  src="images/down.png"
          style="float: right;margin-right: 5px;cursor: pointer;"></td></tr> 
    </table>  </div>  
-   <h4 id="linuxTitleLine"></h4>
+   <h4 id="linuxTitleLine" style="margin-bottom: 34px;"></h4>
   <div id="downloaderContainer" style="display: none;">
-  <div style="margin:16px 0;font-size: 12px; background-color: #f6fbff ;
-      border:1px #ecf6fe solid;height: 65px;">
-    <div style="padding: 10px 0 0 25px;">
-    <span  id="downloaderSettings"></span>
+  <div style="margin-bottom: 30px;background-color: #f6fbff ;
+      border:1px #ecf6fe solid;height: 98px;">
+    <div style="padding: 23px 0 0 20px;">
+    <span  id="downloaderSettings" style="line-height: 14px; font-size: 12px;"></span>
     </div>
        </div>
     <div class="downloaderItem">
@@ -261,11 +263,11 @@
           <th class="th0"><div id="downloaderIcon"></div></th>
           <th class="th1"><div id="downloaderName"></div></th>
           <th class="th2"><div  id="downloaderParameter"></div></th>
-          <th class="th3"><div></div></th>
+          <th class="th3" style="border: 0;"><div></div></th>
         </tr>
       </table>
     </div>
-    <div class="downloaderItemContainer">
+    <div class="downloaderItemContainer" id='downloaderContainerItem'>
       <div>
         <table id="downloaderlist"></table>
       </div>
@@ -273,11 +275,11 @@
         <table>
           <tr>
             <td class="th0"><img id="settingImg" class="itemImg"
-                style="padding-right:18px" src="images/icon-nomal.png"></td>
+                src="images/icon-nomal.png"></td>
             <td class="th1"><input id="settingName" class="itemName"
-                type="text"  style="width: 110px;"></td>
+                type="text" ></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
-                type="text" style="width: 255px;"></td>
+                type="text" ></td>
             <td class="th3">
               <div class="btnDiv">
                 <button  id="addDownloader"></button>
@@ -293,7 +295,7 @@
       <div class="body">
         <div style="padding:20px">
           <div id="urlAddress"></div>
-          <input type="text" id="iconURL">
+          <input type="text" id="iconURL" style="padding-left: 6px;">
         </div>
       </div>
       <div class="bottom"><div class="btnDiv">       
@@ -303,9 +305,10 @@
     </div> 
   </div>
   <h4 id="bottomLine"></h4>
-   <div id="closeBtn">
+   <div id="closeBtn" style="margin: 14px 0 30px 0;">
       <button  id="saveAndClose"  onclick="saveAndClose()"></button>
     </div>
+    <div style="height: 50px;" id="bottomDiv"></div>
 </div>
 <div id="footer" style="margin: 30px 0 0 0;">&copy;2011 Google</div>
 <script>
@@ -320,7 +323,7 @@
   var downloaderManager = bg.downloaderManager;
 
   function init() {
-    i18nReplace('pageTitle', 'page_title');
+    i18nReplace('pageTitle', 'page_title'); 
     i18nReplace('downloader', 'downloader');
     i18nReplace('disableMenu', 'menu_disable');
     i18nReplace('saveAndClose', 'save_and_close');
@@ -328,6 +331,9 @@
       linuxoptions.init();
     } else {
       $('selectDefaultDownloaderPrompt').style.display = 'none';
+      $('closeBtn').style.margin = '34px 0 0 20px';
+    //  $('closeBtn').style.marginBottom = '0';
+      $('bottomDiv').style.height = '0';
     }
     bg.updateDownloadersIfNeeded();
     createDownloaderOption($('downloaderOption'));
@@ -467,11 +473,17 @@
       $('visibleAddDownloaderPanel').addEventListener('click', function() {
         var downloaderContainer = $('downloaderContainer');
         if ('none' == downloaderContainer.style.display) {
-          downloaderContainer.style.display = 'block';
+          downloaderContainer.style.display = 'inline';
+          $('bottomLine').style.display = 'block';
           this.src = 'images/up.png';
+          $('closeBtn').style.marginRight = '18px';
+          $('linuxTitleLine').style.marginBottom = '0';
         } else {
           downloaderContainer.style.display = 'none';
           this.src = 'images/down.png';
+          $('bottomLine').style.display = 'none';
+          $('closeBtn').style.marginRight = '0';
+          $('linuxTitleLine').style.marginBottom = '34px';
         }
       }, false);
 
@@ -500,7 +512,6 @@
           this.value = chrome.i18n.getMessage('setting_name');        
           this.style.cssText='';
           this.style.color =  '#a5a5a5';
-          this.style.width = '110px';
         }
       });
 
@@ -516,7 +527,6 @@
           this.value = chrome.i18n.getMessage('setting_parameter');
           this.style.cssText='';
           this.style.color =  '#a5a5a5';
-          this.style.width = ' 255px';
         }
       });
 
@@ -606,13 +616,20 @@
     
     setRowBackgroundColor: function() {
       var table = $('downloaderlist');
+      var downloaderContainerItem = $('downloaderContainerItem');
       var rows = table.rows;
-      for(var i = 0; i < rows.length; ++i) {
+      var i = 0;
+      for(; i < rows.length; ++i) {
         if ((i + 1) % 2 != 0) {
           rows[i].style.backgroundColor = 'White';
         } else {
           rows[i].style.backgroundColor = '#f6fbff';
         }
+      }
+      if (i % 2 != 0) {
+       downloaderContainerItem.style.backgroundColor ='#f6fbff';      
+      } else {
+        downloaderContainerItem.style.backgroundColor ='White';
       }
     },
 
@@ -677,7 +694,7 @@
       var  aDelete = document.createElement('A');
       aDelete.innerText =  chrome.i18n.getMessage('delete');
       aDelete.href = 'javascript:';
-      aDelete.style.paddingLeft = '30px';
+      aDelete.style.paddingLeft = '15px';
       aDelete.onclick = linuxoptions.deleteDownloader;
       cell.appendChild(aDelete);
     },
@@ -766,7 +783,6 @@
     displayLinuxOptionPage: function() {
       $('downloaderSettingTitle').style.display = 'block';
       $('linuxTitleLine').style.display = 'block';
-      $('bottomLine').style.display = 'block';
       $('closeBtn').style.cssFloat = 'right';
     },
 
