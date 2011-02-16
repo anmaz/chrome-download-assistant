@@ -3,7 +3,7 @@ localStorage['defaultDownloader'] =
 localStorage['contextMenu'] = localStorage['contextMenu'] || 'true';
 var plugin = document.getElementById('pluginId');
 downloaderManager.init(plugin);
-var enableDownloaders = downloaderManager.updateDownloadersIfNeeded(plugin);
+var enableDownloaders = downloaderManager.getEnableDownloaders(plugin);
 var useContextMenuAPI = true;
 
 chrome.extension.onRequest.addListener(function(request, sender, response) {
@@ -61,7 +61,7 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId) {
 });
 
 function updateDownloadersIfNeeded() {
-  var downloaders = downloaderManager.updateDownloadersIfNeeded(plugin);
+  var downloaders = downloaderManager.getEnableDownloaders(plugin);
   if (downloaders.length == enableDownloaders.length) {
     for (var i = 0; i < downloaders.length; i++)
       if (downloaders[i].name != enableDownloaders[i].name)

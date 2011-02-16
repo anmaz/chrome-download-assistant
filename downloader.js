@@ -207,10 +207,9 @@ function FDM(plugin, progId) {
 extend(FDM, Downloader);
 
 FDM.prototype.updateNPObjectIfNeeded = function() {
-  if (!this.npObject)
-    this.npObject = this.plugin.CreateObject(this.progId);
-  if (!this.npObjectAll)
-    this.npObjectAll = this.plugin.CreateObject(this.progId2);
+  // For Free Download Manager, create NPObject before downloading intead of
+  // create NPObject here, because unlike other downloaders, when its NPObject
+  // is created, its .exe executes at once.
 }
 
 FDM.prototype.resetNPObject = function() {
@@ -219,6 +218,8 @@ FDM.prototype.resetNPObject = function() {
 }
 
 FDM.prototype.download = function(linkObj) {
+  if (!this.npObject)
+    this.npObject = this.plugin.CreateObject(this.progId);
   this.npObject.Url = linkObj.url;
   this.npObject.Comment = linkObj.text;
   this.npObject.Referer = linkObj.pageUrl;
@@ -227,6 +228,8 @@ FDM.prototype.download = function(linkObj) {
 }
 
 FDM.prototype.downloadAll = function(links, pageUrl) {
+  if (!this.npObjectAll)
+    this.npObjectAll = this.plugin.CreateObject(this.progId2);
   this.npObjectAll.Referer = pageUrl;
   this.npObjectAll.Cookies = "";
   for (var i = 0; i < links.length; i++) {
@@ -296,7 +299,7 @@ downloaderManager.init = function(plugin) {
   downloaderManager.downloader['fdm'] = new FDM(plugin);
 }
 
-downloaderManager.updateDownloadersIfNeeded = function(plugin) {
+downloaderManager.getEnableDownloaders = function(plugin) {
   var enableMenuItems = [];
   for (var i = 0; i < downloaderManager.menuItems.length; i++) {
     var item = downloaderManager.menuItems[i];
