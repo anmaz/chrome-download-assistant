@@ -71,7 +71,7 @@
   }
   .downloaderItem {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%,
-        from(#FEFEFE), to(#eff8fa));
+        from(#fefefe), to(#eff8fa));
     height: 27px;
     border-top: 3px dotted #C1D1E0;
     border-bottom: 1px solid #C1D1E0;
@@ -205,10 +205,7 @@
   #downloaderOption > div > label > * {
     vertical-align: middle;
     margin-right: 10px;
-  #downloaderOPtion input {
-   margin: 0 3px 3px 5px;
   }
-  
   .tip_failed {
     color: #ffffff;
     background: #ff8080;
@@ -383,7 +380,8 @@
 
   function saveAndClose() {
     localStorage['defaultDownloader'] = defaultDownloader;
-    localStorage['contextMenu'] = (checkboxContextMenu.checked ? 'false' : 'true');
+    localStorage['contextMenu'] =
+      (checkboxContextMenu.checked ? 'false' : 'true');
     if (linuxoptions.isLinuxPlatform()) {
         linuxoptions.deleteDownLoaderStorage();
         linuxoptions.saveDownloader();
@@ -493,7 +491,8 @@
       }
     },
 
-    addDownloadertoSettingTable: function(imgsrc, downloaderName, downloaderParameter) {
+    addDownloadertoSettingTable: function(imgsrc, downloaderName,
+                                          downloaderParameter) {
       var projId = downloaderParameter.split(' ')[0];
       if (!bg.plugin.CheckObject(projId)) {
         if ('Enter' !== projId) {
@@ -520,7 +519,7 @@
   checkRepeatDownloader: function(name, parameter, rowIndex) {
     var table = $('downloaderlist');
     var rows = table.rows;
-    for(var i = 0; i < rows.length; ++i) {
+    for (var i = 0; i < rows.length; ++i) {
       var exsitingName = table.rows[i].cells[1].firstChild.value;
       var exsitingParameter = table.rows[i].cells[2].firstChild.value;
       if ((name == exsitingName || parameter == exsitingParameter) &&
@@ -614,7 +613,8 @@
     setInputCss: function(obj) {
       obj.style.height = '22px';     
       obj.style.border = '1px solid #c1d1e0';
-      obj.style.background = '-webkit-gradient(linear, left top, left bottom, from(#edf5f5), to(#FFFFFF))';
+      obj.style.background = '-webkit-gradient(linear, left top, left bottom,' +
+        'from(#edf5f5), to(#fff))';
     },
     
     removeInputCss: function(obj) {
@@ -717,7 +717,7 @@
 
     displayLinuxOptionPage: function() {
       $('downloaderSettingTitle').style.display = 'block';
-      $("downloaderContainer").style.display = 'block';
+      $('downloaderContainer').style.display = 'block';
       $('closeBtn').style.cssFloat = 'right';
     },
 
