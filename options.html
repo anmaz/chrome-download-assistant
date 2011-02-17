@@ -73,7 +73,8 @@
     background: -webkit-gradient(linear, 0% 0%, 0% 100%,
         from(#FEFEFE), to(#eff8fa));
     height: 27px;
-    border-top: 1px solid #C1D1E0;
+    border-top: 3px dotted #C1D1E0;
+    border-bottom: 1px solid #C1D1E0;
   }
   .downloaderItem th {
     font-size: 12px;
@@ -85,15 +86,13 @@
   .th0 {
     width: 80px;
     height: 27px;
+    text-align: center;
   }
   .th1 {
     width: 149px;
     height: 27px;
   }
-  .th0 div{
-    float: left;
-    padding-left: 29px;
-  }
+
   .th1  div {
     float: left;
     padding-left: 17px;
@@ -119,11 +118,9 @@
     font-weight: bolder;
   }
   .itemImg {
-   float: left;
-   padding-left: 18px;
-   cursor: pointer;
-   width: 30px;
-   height: 30px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
   }
   .itemName {
     width: 123px;
@@ -150,8 +147,8 @@
   input[type=text] {
     height: 22px;
     border: 1px solid #c1d1e0;
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%,
-        from(#FFFFFF), to(#edf5f5));
+    background: -webkit-gradient(linear, left top, left bottom,
+      from(#edf5f5), to(#FFFFFF));
   }
   .addURL-Dialog {
     z-index: 1000;
@@ -193,7 +190,7 @@
     display: none;
   }
   #downloaderSettingTitle {
-     margin: 20px 0 0 0;
+     margin: 20px 0 3px;
      display: none;
   }
   #downloaderOption {
@@ -205,15 +202,13 @@
   #downloaderOption div {
     padding: 3px 0 2px ; 
   }
+  #downloaderOption > div > label > * {
+    vertical-align: middle;
+    margin-right: 10px;
   #downloaderOPtion input {
    margin: 0 3px 3px 5px;
   }
-  #linuxTitleLine {
-    border-bottom: 3px dotted #CCDDED;
-    margin-bottom: 0px;
-    margin-top: 0px;
-    display: none;
-  }
+  
   .tip_failed {
     color: #ffffff;
     background: #ff8080;
@@ -246,21 +241,13 @@
    <table><tr>
    <td style="width: 251px;"> <span id="downloaderSetting" class="downloaderOptionTitle">
    </span></td><td style="width:386px"><div id="tipContainer"></div></td>
-       <td> <img id="visibleAddDownloaderPanel"  src="images/down.png"
-         style="float: right;margin-right: 5px;cursor: pointer;"></td></tr> 
-   </table>  </div>  
-   <h4 id="linuxTitleLine" style="margin-bottom: 34px;"></h4>
+       </tr>
+   </table>  </div>
   <div id="downloaderContainer" style="display: none;">
-  <div style="margin-bottom: 30px;background-color: #f6fbff ;
-      border:1px #ecf6fe solid;height: 98px;">
-    <div style="padding: 23px 0 0 20px;">
-    <span  id="downloaderSettings" style="line-height: 14px; font-size: 12px;"></span>
-    </div>
-       </div>
     <div class="downloaderItem">
       <table>
         <tr>
-          <th class="th0"><div id="downloaderIcon"></div></th>
+          <th class="th0"><span id="downloaderIcon"></span></th>
           <th class="th1"><div id="downloaderName"></div></th>
           <th class="th2"><div  id="downloaderParameter"></div></th>
           <th class="th3" style="border: 0;"><div></div></th>
@@ -282,7 +269,7 @@
                 type="text" ></td>
             <td class="th3">
               <div class="btnDiv">
-                <button  id="addDownloader"></button>
+                <button type="button" id="addDownloader" style="width: 55px; height: 25px;"></button>
               </div>
             </td>
           </tr>
@@ -407,8 +394,7 @@
   };
 
   function i18nReplace(id, messageName) {
-    return $(id).innerHTML =
-      chrome.i18n.getMessage(messageName);
+    return $(id).innerHTML = chrome.i18n.getMessage(messageName);
   };
 
   var linuxoptions = {
@@ -425,11 +411,18 @@
       i18nReplace('urlAddress', 'url_address');
       i18nReplace('addURLOkBtn', 'add_url_ok_btn');
       i18nReplace('addURLCancelBtn', 'add_url_cancel_btn');
-      i18nReplace('downloaderSettings', 'downloader_settings');
       i18nReplace('selectDefaultDownloader', 'select_default_downloader');
       i18nReplace('downloaderSettingsPrompt', 'downloader_settings_prompt');
+
+      // Use placeholder attribute show prompting message
+      $('settingName').setAttribute('placeholder',
+        chrome.i18n.getMessage('setting_name'));
+      $('settingParameter').setAttribute('placeholder',
+        chrome.i18n.getMessage('setting_parameter'));
+      $('iconURL').setAttribute('placeholder',
+        chrome.i18n.getMessage('icon_url'));
+
       linuxoptions.displayLinuxOptionPage();
-      linuxoptions.setPromptText();
       linuxoptions.addEventListener();
       linuxoptions.readDownloader();
       linuxoptions.displaySelectDafaultDownloaderPormpt();
@@ -438,7 +431,7 @@
     addEventListener: function() {
       $('settingImg').addEventListener('mouseover', function() {
         if (this.src.indexOf('images/icon-nomal.png') != -1) {
-        this.src = 'images/icon-over.png';
+          this.src = 'images/icon-over.png';
         }
       }, false);
 
@@ -460,30 +453,20 @@
       }, false);
 
       $('addURLOkBtn').addEventListener('click', function() {
-        $('settingImg').src = $('iconURL').value;
-        $('iconURL').value = '';
-        linuxoptions.closeAddURLDialog();
+        var url = $('iconURL').value;
+        if (url != '') {
+          if (!/https?:\/\//.test(url))
+            url = 'http://' + url;
+          $('settingImg').src = url;
+          $('iconURL').value = '';
+          linuxoptions.closeAddURLDialog();
+        } else {
+          $('iconURL').focus();
+        }
       }, false);
 
       $('addURLCancelBtn').addEventListener('click', function() {
         linuxoptions.closeAddURLDialog();
-      }, false);
-
-      $('visibleAddDownloaderPanel').addEventListener('click', function() {
-        var downloaderContainer = $('downloaderContainer');
-        if ('none' == downloaderContainer.style.display) {
-          downloaderContainer.style.display = 'inline';
-          $('bottomLine').style.display = 'block';
-          this.src = 'images/up.png';
-          $('closeBtn').style.marginRight = '18px';
-          $('linuxTitleLine').style.marginBottom = '0';
-        } else {
-          downloaderContainer.style.display = 'none';
-          this.src = 'images/down.png';
-          $('bottomLine').style.display = 'none';
-          $('closeBtn').style.marginRight = '0';
-          $('linuxTitleLine').style.marginBottom = '34px';
-        }
       }, false);
 
       $('addDownloader').addEventListener('click', function() {
@@ -491,71 +474,15 @@
         var downloaderName = $('settingName').value;
         var downloaderParameter = $('settingParameter').value;
         var downloaderId = downloaderName + downloaderParameter;
-        var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc, 
+        var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc,
             downloaderName, downloaderParameter);
         if (isInstallation) {
           addDownloaderOption($('downloaderOption'), imgsrc, downloaderName,
               downloaderId);
         }
       }, false);
-
-      $('settingName').addEventListener('focus', function() {
-        if (this.value ==  chrome.i18n.getMessage('setting_name')) {
-          this.value = '';
-          this.style.color = '#000000';
-        }
-      });
-
-      $('settingName').addEventListener('blur', function() {
-        if (this.value == '') {
-          this.value = chrome.i18n.getMessage('setting_name');        
-          this.style.cssText='';
-          this.style.color =  '#a5a5a5';
-        }
-      });
-
-      $('settingParameter').addEventListener('focus', function() {
-        if (this.value ==  chrome.i18n.getMessage('setting_parameter')) {
-          this.value = '';
-          this.style.color = '#000000';
-        }
-      });
-
-      $('settingParameter').addEventListener('blur', function() {
-        if (this.value == '') {
-          this.value = chrome.i18n.getMessage('setting_parameter');
-          this.style.cssText='';
-          this.style.color =  '#a5a5a5';
-        }
-      });
-
-      $('iconURL').addEventListener('focus', function() {
-        if (this.value ==  chrome.i18n.getMessage('icon_url')) {
-          this.value = '';
-          this.style.color = '#000000';
-        }
-      });
-
-      $('iconURL').addEventListener('blur', function() {
-        if (this.value == '') {
-          this.value = chrome.i18n.getMessage('icon_url');
-          this.style.color =  '#a5a5a5';
-        }
-      });
     },
 
-    setPromptText: function() {
-      var settingName = $('settingName');
-      var settingParameter = $('settingParameter');
-      var iconURL = $('iconURL');
-      settingName.value = chrome.i18n.getMessage('setting_name');
-      settingName.style.color = '#a5a5a5';
-      settingParameter.value = chrome.i18n.getMessage('setting_parameter');
-      settingParameter.style.color = '#a5a5a5';
-      iconURL.style.color = '#a5a5a5';
-      iconURL.value = chrome.i18n.getMessage('icon_url');
-    },
-    
     displaySelectDafaultDownloaderPormpt: function() {
       var defaultDownloaderProId = ['flashget', 'jdownloader', 'gwget'];
       for (var i = 0; i < defaultDownloaderProId.length; ++i) {
@@ -565,7 +492,7 @@
         }
       }
     },
-    
+
     addDownloadertoSettingTable: function(imgsrc, downloaderName, downloaderParameter) {
       var projId = downloaderParameter.split(' ')[0];
       if (!bg.plugin.CheckObject(projId)) {
@@ -576,8 +503,8 @@
       } else if (!linuxoptions.
           checkRepeatDownloader(downloaderName, downloaderParameter, -1)) {
           linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
-          return false; 
-      } else if (''==projId) {
+          return false;
+      } else if ('' == projId) {
         return false;
       }
       linuxoptions.insertOneRowInTable(linuxoptions.rowCount, imgsrc,
@@ -589,30 +516,30 @@
       linuxoptions.cleanAddedDownloaderSettingData();
       return true;
     },
-    
+
   checkRepeatDownloader: function(name, parameter, rowIndex) {
-    var downloaderId = name + parameter;
     var table = $('downloaderlist');
     var rows = table.rows;
     for(var i = 0; i < rows.length; ++i) {
-      var checkId = table.rows[i].cells[1].firstChild.value +
-          table.rows[i].cells[2].firstChild.value;
-      if (downloaderId == checkId && i != rowIndex) {
+      var exsitingName = table.rows[i].cells[1].firstChild.value;
+      var exsitingParameter = table.rows[i].cells[2].firstChild.value;
+      if ((name == exsitingName || parameter == exsitingParameter) &&
+          i != rowIndex) {
         return false;
       }
     }
     return true ;
   },
-  
+
     insertOneRowInTable: function(rowCount, imgsrc, name, parameter) {
       var downloaderItem = $('downloaderlist');
       var row = downloaderItem.insertRow(rowCount);
       linuxoptions.insertImageToTheRow(row, imgsrc);
       linuxoptions.insertNameOrLinkToTheRow(row, 1, name);
       linuxoptions.insertNameOrLinkToTheRow(row, 2, parameter);
-      linuxoptions.insertOptionsToTheRow(row);
+      linuxoptions.insertOptionsToTheRow(row); // Insert "Delete" link
     },
-    
+
     setRowBackgroundColor: function() {
       var table = $('downloaderlist');
       var downloaderContainerItem = $('downloaderContainerItem');
@@ -626,7 +553,7 @@
         }
       }
       if (i % 2 != 0) {
-       downloaderContainerItem.style.backgroundColor ='#f6fbff';      
+       downloaderContainerItem.style.backgroundColor ='#f6fbff';
       } else {
         downloaderContainerItem.style.backgroundColor ='White';
       }
@@ -638,6 +565,15 @@
       var img = document.createElement('img');
       img.className = 'itemImg';
       img.src = src;
+      if (src.indexOf('chrome-extension') == 0) {
+        img.onmouseover = function() {
+          this.src = 'images/icon-over.png';
+        };
+        img.onmouseout = function() {
+          this.src = 'images/icon-nomal.png';
+        }
+      }
+
       cell.appendChild(img);
     },
 
@@ -646,7 +582,7 @@
       cell.className = 'th' + cellCount;
       var input = document.createElement('input');
       input.onblur = linuxoptions.saveModification;
-      input .onfocus= linuxoptions.setOnfocusCss;
+      input.onfocus= linuxoptions.setOnfocusCss;
       input.onmouseover = linuxoptions.setMouseOverCss;
       input.onmouseout = linuxoptions.setMouseOutCss;
       input.className = cellCount == 1 ? 'itemName' : 'itemParameter';
@@ -678,7 +614,7 @@
     setInputCss: function(obj) {
       obj.style.height = '22px';     
       obj.style.border = '1px solid #c1d1e0';
-      obj.style.background = ' -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#edf5f5))';    
+      obj.style.background = '-webkit-gradient(linear, left top, left bottom, from(#edf5f5), to(#FFFFFF))';
     },
     
     removeInputCss: function(obj) {
@@ -690,7 +626,7 @@
     insertOptionsToTheRow: function(row) {
       var cell = row.insertCell(3);
       cell.className = 'th3';
-      var  aDelete = document.createElement('A');
+      var aDelete = document.createElement('A');
       aDelete.innerText =  chrome.i18n.getMessage('delete');
       aDelete.href = 'javascript:';
       aDelete.style.paddingLeft = '15px';
@@ -706,7 +642,7 @@
       var inputArr = tr.getElementsByTagName('input');
       var downloaderName = inputArr[0].value;
       var downloaderParameter = inputArr[1].value;
-      var preOptionsId = '';    
+      var preOptionsId = '';
       var projId = downloaderParameter.split(' ')[0];
       if ('itemParameter' == obj.className) {
         if (!bg.plugin.CheckObject(projId)) {   
@@ -781,7 +717,7 @@
 
     displayLinuxOptionPage: function() {
       $('downloaderSettingTitle').style.display = 'block';
-      $('linuxTitleLine').style.display = 'block';
+      $("downloaderContainer").style.display = 'block';
       $('closeBtn').style.cssFloat = 'right';
     },
 
