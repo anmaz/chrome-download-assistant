@@ -261,7 +261,7 @@
             <td class="th0"><img id="settingImg" class="itemImg"
                 src="images/icon-nomal.png"></td>
             <td class="th1"><input id="settingName" class="itemName"
-                type="text" ></td>
+                type="text" maxLength="15"></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
                 type="text" ></td>
             <td class="th3">
@@ -368,7 +368,7 @@
       var img = document.createElement('img');
       img.src = imageUrl;
       img.style.height = '30px';
-      img.style.weight = '30px';
+      img.style.width = '30px';
       label.appendChild(img);
       
       var span = document.createElement('span');
@@ -471,6 +471,8 @@
         var imgsrc = $('settingImg').src;
         var downloaderName = $('settingName').value;
         var downloaderParameter = $('settingParameter').value;
+        if (downloaderParameter.trim().split(' ').length == 1)
+          downloaderParameter += ' $URL';
         var downloaderId = downloaderName + downloaderParameter;
         var isInstallation = linuxoptions.addDownloadertoSettingTable(imgsrc,
             downloaderName, downloaderParameter);
