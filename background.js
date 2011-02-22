@@ -120,12 +120,14 @@ function contextMenuDownloadAll(title, downloader) {
 }
 
 function init() {
+  // Initialize setting in localStorage
   localStorage['defaultDownloader'] =
       localStorage['defaultDownloader'] || 'chrome_downloader';
   localStorage['contextMenu'] = localStorage['contextMenu'] || 'true';
   localStorage['rawCount'] = localStorage['rawCount'] || 0;
 
   downloaderManager.init(plugin);
+  // Get supported downloaders list
   enableDownloaders = downloaderManager.updateDownloadersIfNeeded(plugin);
   if (useContextMenuAPI) {
     createContextMenu(plugin);

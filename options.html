@@ -31,7 +31,6 @@
     border-bottom: 3px dotted #CCDDED;
   }
   .downloaderOptionTitle {
-    padding-left:0.5em;
     color: #333333;
     line-height: 28px;
     font-size:15px;
@@ -75,6 +74,7 @@
     height: 27px;
     border-top: 3px dotted #C1D1E0;
     border-bottom: 1px solid #C1D1E0;
+    margin-bottom: 10px;
   }
   .downloaderItem th {
     font-size: 12px;
@@ -119,8 +119,6 @@
   }
   .itemImg {
     cursor: pointer;
-    width: 30px;
-    height: 30px;
   }
   .itemName {
     width: 123px;
@@ -200,17 +198,29 @@
     padding-left: 5px;
   }
   #downloaderOption div {
-    padding: 3px 0 2px ; 
+    padding: 3px 0 2px ;
+    height: 30px;
   }
   #downloaderOption > div > label > * {
     vertical-align: middle;
     margin-right: 10px;
+  }
+  #downloaderOption > div > label > span {
+    white-space: nowrap;
+    width: 200px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .tip_failed {
     color: #ffffff;
     background: #ff8080;
     height:22px;
     line-height:22px
+  }
+  .column-show {
+    -webkit-column-count: 2;
+    -webkit-column-gap: 2em;
   }
 </style>
 </head>
@@ -261,7 +271,7 @@
             <td class="th0"><img id="settingImg" class="itemImg"
                 src="images/icon-nomal.png"></td>
             <td class="th1"><input id="settingName" class="itemName"
-                type="text" maxLength="15"></td>
+                type="text" maxLength="30"></td>
             <td class="th2"><input id="settingParameter" class="itemParameter"
                 type="text" ></td>
             <td class="th3">
@@ -296,6 +306,7 @@
 </div>
 <div id="footer" style="margin: 30px 0 0 0;">&copy;2011 Google</div>
 <script>
+  const MIN_DOWNLOADER_NUMBER_OF_ONE_COLUMN = 5;
   function $(id) {
     return document.getElementById(id);
   }
@@ -305,6 +316,9 @@
   var checkboxContextMenu = $('checkboxContextMenu');
   var bg = chrome.extension.getBackgroundPage();
   var downloaderManager = bg.downloaderManager;
+  // This variable is used to store the number of downloaders, include added
+  // downloaders that using "Add More Downloaders" feature
+  var allDownloadersNumber = bg.enableDownloaders.length;
 
   function init() {
     i18nReplace('pageTitle', 'page_title'); 
@@ -314,12 +328,14 @@
     if (linuxoptions.isLinuxPlatform()) {
       linuxoptions.init();
     } else {
+      // Set page style on Windows platform
       $('selectDefaultDownloaderPrompt').style.display = 'none';
       $('closeBtn').style.margin = '34px 0 0 20px';
       $('bottomDiv').style.height = '0';
     }
-    bg.updateDownloadersIfNeeded();
     createDownloaderOption($('downloaderOption'));
+    bg.updateDownloadersIfNeeded();
+
     if (bg.useContextMenuAPI) {
       $('contextMenuItem').style.display = 'none';
     } else if (!eval(localStorage['contextMenu'])) {
@@ -329,17 +345,37 @@
 
   function createDownloaderOption(element) {
     var enableOptions = bg.enableDownloaders;
-    for (var i = 0; i < enableOptions.length; i++) {
+    var optionsLength = enableOptions.length;
+    for (var i = 0; i < optionsLength; i++) {
       var item = enableOptions[i];
       var imageUrl = '';
       var optionItemId = ''
       if (item.isLinux) {
         imageUrl = item.image;
-        optionItemId =item.name + item.command;
+        optionItemId = item.name + item.command;
       } else {
         imageUrl = chrome.extension.getURL(item.image);
       }
       addDownloaderOption(element, imageUrl, item.name, optionItemId)
+    }
+    updateDownloaderOptionView(optionsLength);
+  }
+
+  // Show in 2 columns if has more than 5 downloaders
+  function updateDownloaderOptionView(length) {
+    var container = $('downloaderOption');
+    if (length > MIN_DOWNLOADER_NUMBER_OF_ONE_COLUMN) {
+      container.className = 'column-show';
+      // If amount of downloaders less than 11, then show 5 downloaders in the
+      // first column, show others in the second column
+      if (length < (MIN_DOWNLOADER_NUMBER_OF_ONE_COLUMN * 2 + 1)) {
+        container.style.height = '175px';
+      } else {
+        container.style.height = 'auto';
+      }
+    } else {
+      container.style.height = 'auto';
+      container.removeAttribute('class');
     }
   }
   
@@ -367,17 +403,18 @@
       
       var img = document.createElement('img');
       img.src = imageUrl;
-      img.style.height = '30px';
-      img.style.width = '30px';
       label.appendChild(img);
       
       var span = document.createElement('span');
-      span.innerText = chrome.i18n.getMessage(name) || name;
+      name = chrome.i18n.getMessage(name) || name;
+      span.innerText = name
+      span.setAttribute('title', name);
       label.appendChild(span);
       option.appendChild(label);
       element.appendChild(option);
   }
 
+  // Save settting and close option page
   function saveAndClose() {
     localStorage['defaultDownloader'] = defaultDownloader;
     localStorage['contextMenu'] =
@@ -386,6 +423,8 @@
         linuxoptions.deleteDownLoaderStorage();
         linuxoptions.saveDownloader();
     }
+
+    // Close option page
     chrome.tabs.getSelected(null, function(tab) {
       chrome.tabs.remove(tab.id);
     });
@@ -401,6 +440,7 @@
     deleteRowTempArray: [],
     modifyTempValue: '',
     init: function() {
+      // i18n
       i18nReplace('downloaderSetting', 'downloader_setting');
       i18nReplace('downloaderIcon', 'downloader_icon');
       i18nReplace('downloaderName', 'downloader_name');
@@ -422,8 +462,9 @@
 
       linuxoptions.displayLinuxOptionPage();
       linuxoptions.addEventListener();
-      linuxoptions.readDownloader();
-      linuxoptions.displaySelectDafaultDownloaderPormpt();
+      // It looks like unuseful
+      // linuxoptions.readDownloader();
+      linuxoptions.displaySelectDefaultDownloaderPrompt();
     },
 
     addEventListener: function() {
@@ -450,6 +491,7 @@
             addURLDialog.offsetWidth) / 2) + 'px';
       }, false);
 
+      // Confirm to add downloader icon
       $('addURLOkBtn').addEventListener('click', function() {
         var url = $('iconURL').value;
         if (url != '') {
@@ -463,10 +505,12 @@
         }
       }, false);
 
+      // Cancel to add downloader icon
       $('addURLCancelBtn').addEventListener('click', function() {
         linuxoptions.closeAddURLDialog();
       }, false);
 
+      // add downloader
       $('addDownloader').addEventListener('click', function() {
         var imgsrc = $('settingImg').src;
         var downloaderName = $('settingName').value;
@@ -479,11 +523,21 @@
         if (isInstallation) {
           addDownloaderOption($('downloaderOption'), imgsrc, downloaderName,
               downloaderId);
+
+          // Always put default downloader in the last of downloader list
+          var defaultChromeDownloader =
+            $('downloaderOption').lastElementChild.previousElementSibling;
+          $('downloaderOption').appendChild(defaultChromeDownloader);
+          
+          // Update downloader option view
+          updateDownloaderOptionView(++allDownloadersNumber);
         }
       }, false);
     },
 
-    displaySelectDafaultDownloaderPormpt: function() {
+    // Hide downloader installation prompting if user has installed at least one
+    // downloader in Linux platform
+    displaySelectDefaultDownloaderPrompt: function() {
       var defaultDownloaderProId = ['flashget', 'jdownloader', 'gwget'];
       for (var i = 0; i < defaultDownloaderProId.length; ++i) {
         if (bg.plugin.CheckObject(defaultDownloaderProId[i])) {
@@ -497,14 +551,16 @@
                                           downloaderParameter) {
       var projId = downloaderParameter.split(' ')[0];
       if (!bg.plugin.CheckObject(projId)) {
+        // Check if the downloader is valid
         if ('Enter' !== projId) {
           linuxoptions.showTip('tip_failed', 'can_not_add_downloader', '160');
         }
         return false;
       } else if (!linuxoptions.
           checkRepeatDownloader(downloaderName, downloaderParameter, -1)) {
-          linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
-          return false;
+        // Check if the downloader has added.
+        linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
+        return false;
       } else if ('' == projId) {
         return false;
       }
@@ -651,20 +707,23 @@
           linuxoptions.showTip('tip_failed', 'can_not_add_downloader', '160');
           linuxoptions.restoreParameterValue(obj);
           return false;
-        } else if (''==projId) {
+        } else if ('' == projId) {
           linuxoptions.restoreParameterValue(obj);
           return false;
         }
-      }   
-      if (!linuxoptions.
-          checkRepeatDownloader(downloaderName, downloaderParameter, rowCount)) {
+      }
+
+      // Check duplication of downloader's name and parameter
+      if (!linuxoptions.checkRepeatDownloader(downloaderName,
+          downloaderParameter, rowCount)) {
         linuxoptions.showTip('tip_failed', 'repeat_add_downloader', '180');
         linuxoptions.restoreParameterValue(obj);
         return false;  
-      }        
+      }
+
       linuxoptions.removeInputCss(obj);     
       if ('itemName' == obj.className) { 
-        preOptionsId =  linuxoptions.modifyTempValue +downloaderParameter;
+        preOptionsId =  linuxoptions.modifyTempValue + downloaderParameter;
       } else {
         preOptionsId =  downloaderName + linuxoptions.modifyTempValue;
       }      
@@ -673,7 +732,8 @@
       linuxoptions.modifyTemporaryStorage(
           rowCount, imgSrc, downloaderName, downloaderParameter);
     },
-    
+
+    // Restore original value
     restoreParameterValue: function(obj) {
       obj.value = linuxoptions.modifyTempValue;
       obj.focus();
@@ -697,7 +757,12 @@
       var deleteRowArray = [imgSrc, name, parameter];
       linuxoptions.deleteRowTempArray.push(deleteRowArray);
       var id = name + parameter;
-      $('downloaderOption').removeChild($(id));      
+
+      // Remove downloader option
+      $('downloaderOption').removeChild($(id));
+
+      // Update downloader option view
+      updateDownloaderOptionView(--allDownloadersNumber);
     },
     
     deleteDownLoaderStorage: function() { 
@@ -717,6 +782,7 @@
       }     
     },
 
+    // Show title and content of "Add more downloaders"
     displayLinuxOptionPage: function() {
       $('downloaderSettingTitle').style.display = 'block';
       $('downloaderContainer').style.display = 'block';
@@ -737,13 +803,13 @@
       linuxoptions.storageTempArr[index] = tempArr;
       for (var i = 0; i < downloaderManager.menuItems.length; i++) {
         var item = downloaderManager.menuItems[i];
-        if ( imgsrc == item.image) { 
+        if (imgsrc == item.image) {
           if (name == item.name &&
               linuxoptions.modifyTempValue == item.command) {
                item.command = parameter;
           } else if (linuxoptions.modifyTempValue == item.name &&
               parameter == item.command) {
-                item.name = name;
+            item.name = name;
           }
         }
       } 

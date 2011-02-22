@@ -290,7 +290,7 @@ downloaderManager.menuItems = [
     showName2: 'download_all_with_idm', privateLink: '',
     supportDownloadAll: false, image: 'images/icon_idm.png'
   }, {
-    name: 'fdm', showName: 'menu_fdm',isLinux: false,
+    name: 'fdm', showName: 'menu_fdm', isLinux: false,
     showName2: 'download_all_with_fdm', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_fdm.png'
   }, {
@@ -331,6 +331,8 @@ downloaderManager.getDownloader = function(item) {
 };
 
 downloaderManager.init = function(plugin) {
+  // Create supported downloaders and save them in object
+  // downloaderManager.downloader
   downloaderManager.downloader['thunder'] = 
       new Thunder(plugin);
   downloaderManager.downloader['mini_thunder'] =
@@ -356,6 +358,7 @@ downloaderManager.init = function(plugin) {
     var item = downloaderManager.menuItems[i];
     if (item.isLinux) {
       if (eval(localStorage[item.name])) {
+        // Create downloader in Linux platform and save them.
         downloaderManager.downloader[item.name] =
             new LinuxDownloader(plugin, item.command);
       } else {
@@ -390,6 +393,7 @@ downloaderManager.updateDownloadersIfNeeded = function(plugin) {
    var item = ''
   for (var i = 0; i < downloaderManager.menuItems.length; i++) {
     item = downloaderManager.menuItems[i];
+    // Check if the downloader is default downloader of Chrome
     if (item.isSystem) {
       last = i;
     } else {
