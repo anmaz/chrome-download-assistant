@@ -315,7 +315,7 @@ downloaderManager.menuItems = [
     image: 'images/icon_chrome.png'
   }
 ];
-
+downloaderManager.originalMenuItemLength = downloaderManager.menuItems.length;
 downloaderManager.downloader = {};
 
 downloaderManager.getDownloader = function(item) {

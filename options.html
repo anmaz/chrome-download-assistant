@@ -142,11 +142,14 @@
     height: 41px;
     border: 0;
   }
+  input {
+    outline-color: #8bcdf4;
+  }
   input[type=text] {
-    height: 22px;
+    height: 21px;
     border: 1px solid #c1d1e0;
     background: -webkit-gradient(linear, left top, left bottom,
-      from(#edf5f5), to(#FFFFFF));
+      from(#edf5f5), to(#fff));
   }
   .addURL-Dialog {
     z-index: 1000;
@@ -158,7 +161,7 @@
     display: none;
     position: absolute;
     -webkit-border-radius: 5px;
-    -webkit-box-shadow:  #CCC 0px 0px 7px 1px;
+    -webkit-box-shadow:  #ccc 0px 0px 7px 1px;
   }
   .addURL-Dialog .body {
     background-color: White;
@@ -167,7 +170,7 @@
     margin: 10px 10px;
   }
   .addURL-Dialog input {
-    width: 230px;
+    width: 217px;
     margin-top: 10px;
   }
   .addURL-Dialog .bottom {
@@ -316,6 +319,7 @@
   var checkboxContextMenu = $('checkboxContextMenu');
   var bg = chrome.extension.getBackgroundPage();
   var downloaderManager = bg.downloaderManager;
+
   // This variable is used to store the number of downloaders, include added
   // downloaders that using "Add More Downloaders" feature
   var allDownloadersNumber = bg.enableDownloaders.length;
@@ -333,8 +337,8 @@
       $('closeBtn').style.margin = '34px 0 0 20px';
       $('bottomDiv').style.height = '0';
     }
-    createDownloaderOption($('downloaderOption'));
     bg.updateDownloadersIfNeeded();
+    createDownloaderOption($('downloaderOption'));
 
     if (bg.useContextMenuAPI) {
       $('contextMenuItem').style.display = 'none';
@@ -420,7 +424,7 @@
     localStorage['contextMenu'] =
       (checkboxContextMenu.checked ? 'false' : 'true');
     if (linuxoptions.isLinuxPlatform()) {
-        linuxoptions.deleteDownLoaderStorage();
+        linuxoptions.deleteDownloaderStorage();
         linuxoptions.saveDownloader();
     }
 
@@ -462,8 +466,7 @@
 
       linuxoptions.displayLinuxOptionPage();
       linuxoptions.addEventListener();
-      // It looks like unuseful
-      // linuxoptions.readDownloader();
+      linuxoptions.readDownloader();
       linuxoptions.displaySelectDefaultDownloaderPrompt();
     },
 
@@ -510,7 +513,7 @@
         linuxoptions.closeAddURLDialog();
       }, false);
 
-      // add downloader
+      // Add downloader
       $('addDownloader').addEventListener('click', function() {
         var imgsrc = $('settingImg').src;
         var downloaderName = $('settingName').value;
@@ -663,7 +666,7 @@
     
     setOnfocusCss: function(event) {
       var obj = event.target;
-      obj.style.cssText='-webkit-box-shadow:0px 0px 10px #c3e5fa;';
+      obj.style.cssText='-webkit-box-shadow: 0px 0px 10px #c3e5fa;';
       linuxoptions.setInputCss(obj);
       linuxoptions.modifyTempValue = obj.value;
     },
@@ -757,18 +760,25 @@
       var deleteRowArray = [imgSrc, name, parameter];
       linuxoptions.deleteRowTempArray.push(deleteRowArray);
       var id = name + parameter;
+      var waitToRemove = $(id);
+      var downloaderOption = $('downloaderOption');
+      var radio = waitToRemove.querySelector('input');
+
+      // If the removed downloader is selected to be default downloader, then
+      // restore chrome downloader as default downloader
+      if (radio.checked) {
+        downloaderOption.querySelector('input[value="chrome_downloader"]')
+          .checked = true;
+      }
 
       // Remove downloader option
-      $('downloaderOption').removeChild($(id));
+      downloaderOption.removeChild(waitToRemove);
 
       // Update downloader option view
       updateDownloaderOptionView(--allDownloadersNumber);
     },
     
-    deleteDownLoaderStorage: function() { 
-      if (linuxoptions.deleteRowTempArray.length == 0) {
-        return;
-      }                   
+    deleteDownloaderStorage: function() {
       for(var j = 0; j < linuxoptions.deleteRowTempArray.length; j++) {
         var newItem = linuxoptions.deleteRowTempArray[j];
         for (var i = 0; i < downloaderManager.menuItems.length; i++) {
@@ -777,9 +787,9 @@
             newItem[2] == item.command) {
             localStorage.removeItem(item.storageName);
             downloaderManager.menuItems.splice(i,1);    
-          }       
-        }       
-      }     
+          }
+        }
+      }
     },
 
     // Show title and content of "Add more downloaders"
@@ -822,17 +832,18 @@
     saveDownloader: function() {
       var count = 0;
       var newItem = linuxoptions.storageTempArr[count];
-      for (var i = 13; i < downloaderManager.menuItems.length; i++) {
+      for (var i = downloaderManager.originalMenuItemLength;
+           i < downloaderManager.menuItems.length; i++) {
         var item = downloaderManager.menuItems[i];
         if (count < linuxoptions.storageTempArr.length &&
           newItem[0] == item.image && newItem[1] == item.name &&
-          newItem[2] == item.command) {        
+          newItem[2] == item.command) {
            if (item.storageName &&
-              item.storageName != 'downloaderConfigure' + item.name +item.command) {
+              item.storageName != 'downloaderConfigure' + item.name + item.command) {
             localStorage[ 'downloaderConfigure' + item.name +item.command] =
                 [item.image, item.name, item.command];
             localStorage.removeItem(item.storageName);
-          }       
+          }
           count++;
           newItem = linuxoptions.storageTempArr[count];
         }
@@ -847,7 +858,8 @@
 
     readDownloader: function() {
       var count = 0;
-      for (var i = 13; i < downloaderManager.menuItems.length; i++) { 
+      for (var i = downloaderManager.originalMenuItemLength;
+           i < downloaderManager.menuItems.length; i++) {
         var item = downloaderManager.menuItems[i];
         for (var name in localStorage) {
           if (name.indexOf('downloaderConfigure') == 0) {
@@ -861,7 +873,7 @@
         }
         if (item.isLinux && item.isUserAdd) {
           var projId = item.command.split(' ')[0];
-          if (bg.plugin.CheckObject(projId)) {   
+          if (bg.plugin.CheckObject(projId)) {
             linuxoptions.insertOneRowInTable(
                 count, item.image, item.name, item.command);
             count++;
