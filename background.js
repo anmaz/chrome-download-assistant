@@ -24,6 +24,9 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
   case 'orbit':
   case 'idm':
   case 'fdm':
+  case 'download_master':
+  case 'getgo':
+  case 'dap':
     downloaderManager.downloader[request.msg].download(
         request.link, request.pageUrl);
     break;

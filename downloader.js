@@ -240,6 +240,51 @@ FDM.prototype.downloadAll = function(links, pageUrl) {
   this.npObjectAll.ShowAddUrlListDialog();
 }
 
+/* DownloadMaster */
+function DownloadMaster(plugin, progId) {
+  DownloadMaster.superClass.constructor.apply(this, arguments);
+  this.progId = 'dmie.moveurl';
+}
+extend(DownloadMaster, Downloader);
+
+DownloadMaster.prototype.download = function(linkObj) {
+  this.npObject.AddURL(linkObj.url, linkObj.pageUrl);
+}
+
+DownloadMaster.prototype.downloadAll = function(links, pageUrl) {
+  var urls = [];
+  for (var i = 0; l = links.length, i < l; i++) {
+    urls.push(links[i].url);
+  }
+  this.npObject.AddURLs(urls, pageUrl);
+}
+
+/* GetGo */
+function GetGo(plugin, progId) {
+  GetGo.superClass.constructor.apply(this, arguments);
+  this.progId = 'URLCatch.IEMenu';
+}
+extend(GetGo, Downloader);
+
+GetGo.prototype.download = function(linkObj) {
+  this.npObject.AddURL(linkObj.url);
+}
+
+GetGo.prototype.downloadAll = function(links, pageUrl) {
+  this.npObject.AddAllURL(pageUrl);
+}
+
+/* DAP */
+function DAP(plugin, progId) {
+  DAP.superClass.constructor.apply(this, arguments);
+  this.progId = 'dapie.catcher';
+}
+extend(DAP, Downloader);
+
+DAP.prototype.download = function(linkObj) {
+  this.npObject.MenuUrl2(linkObj.url, linkObj.pageUrl, '', linkObj.text);
+}
+
 var downloaderManager = {};
 
 downloaderManager.menuItems = [
@@ -280,6 +325,18 @@ downloaderManager.menuItems = [
     showName2: 'download_all_with_fdm', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_fdm.png'
   }, {
+    name: 'download_master', showName: 'menu_download_master',
+    showName2: 'download_all_with_download_master', privateLink: '',
+    supportDownloadAll: true, image: 'images/icon_downloadmaster.png'
+  }, {
+    name: 'getgo', showName: 'menu_getgo',
+    showName2: 'download_all_with_getgo', privateLink: '',
+    supportDownloadAll: true, image: 'images/icon_getgo.png'
+  }, {
+    name: 'dap', showName: 'menu_dap',
+    showName2: 'download_all_with_dap', privateLink: '',
+    supportDownloadAll: false, image: 'images/icon_dap.png'
+  }, {
     name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true,
     supportDownloadAll: false, image: 'images/icon_chrome.png'
   }
@@ -297,6 +354,9 @@ downloaderManager.init = function(plugin) {
   downloaderManager.downloader['orbit'] = new Orbit(plugin);
   downloaderManager.downloader['idm'] = new IDM(plugin);
   downloaderManager.downloader['fdm'] = new FDM(plugin);
+  downloaderManager.downloader['download_master'] = new DownloadMaster(plugin);
+  downloaderManager.downloader['getgo'] = new GetGo(plugin);
+  downloaderManager.downloader['dap'] = new DAP(plugin);
 }
 
 downloaderManager.getEnableDownloaders = function(plugin) {
