@@ -7,6 +7,7 @@
   "download_all_with_thunder": {"message": "使用迅雷下载所有链接"},
   "download_all_with_qq_whirlwind": {"message": "使用QQ旋风下载所有链接"},
   "download_all_with_orbit": {"message": "使用Orbit下载所有链接"},
+  "download_all_with_idm": {"message": "使用IDM下载所有链接"},
   "download_all_with_fdm": {"message": "使用FDM下载所有链接"},
   "download_all_with_download_master": {"message": "使用Download Master下载所有链接"},
   "download_all_with_getgo": {"message": "使用GetGo下载所有链接"},

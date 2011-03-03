@@ -198,6 +198,16 @@ IDM.prototype.download = function(linkObj) {
   this.npObject.Download(linkObj.url);
 }
 
+IDM.prototype.downloadAll = function(links, pageUrl) {
+  var urls = [];
+  var texts = [];
+  for (var i = 0; i < links.length; i++) {
+    urls.push(links[i].url);
+    texts.push(links[i].text);
+  }
+  this.npObject.DownloadAll(urls, texts, pageUrl);
+}
+
 /* FDM */
 function FDM(plugin, progId) {
   FDM.superClass.constructor.apply(this, arguments);
@@ -319,7 +329,7 @@ downloaderManager.menuItems = [
   }, {
     name: 'idm', showName: 'menu_idm',
     showName2: 'download_all_with_idm', privateLink: '',
-    supportDownloadAll: false, image: 'images/icon_idm.png'
+    supportDownloadAll: true, image: 'images/icon_idm.png'
   }, {
     name: 'fdm', showName: 'menu_fdm',
     showName2: 'download_all_with_fdm', privateLink: '',

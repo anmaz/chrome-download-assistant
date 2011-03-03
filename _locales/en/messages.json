@@ -7,6 +7,7 @@
   "download_all_with_thunder": {"message": "Download all links with Thunder"},
   "download_all_with_qq_whirlwind": {"message": "Download all links with QQ Whirlwind"},
   "download_all_with_orbit": {"message": "Download all links with Orbit"},
+  "download_all_with_idm": {"message": "Download all links with IDM"},
   "download_all_with_fdm": {"message": "Download all links with FDM"},
   "download_all_with_download_master": {"message": "Download all links with Download Master"},
   "download_all_with_getgo": {"message": "Download all links with GetGo"},

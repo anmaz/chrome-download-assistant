@@ -1,13 +1,11 @@
 #include "stdafx.h"
-
+#include <comutil.h>
 #include <tchar.h>
 
 #include "internet_download_manager.h"
 #include "log.h"
 
 extern Log g_Log;
-
-TCHAR InternetDownloadManager::idm_exe_path[MAX_PATH] = L"";
 
 InternetDownloadManager::InternetDownloadManager(void) {
 }
@@ -18,13 +16,18 @@ InternetDownloadManager::~InternetDownloadManager(void) {
 NPObject* InternetDownloadManager::Allocate(NPP npp, NPClass *aClass) {
   InternetDownloadManager* pRet = new InternetDownloadManager;
   char logs[256];
-  sprintf_s(logs,"InternetDownloadManager this=%ld",pRet);
-  g_Log.WriteLog("Allocate",logs);
+  sprintf_s(logs, "InternetDownloadManager this=%ld", pRet);
+  g_Log.WriteLog("Allocate", logs);
   if (pRet != NULL) {
     pRet->SetPlugin((PluginBase*)npp->pdata);
     Function_Item item;
     strcpy_s(item.function_name,"Download");
-    item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::Download);
+    item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::
+        Download);
+    pRet->AddFunction(item);
+    strcpy_s(item.function_name,"DownloadAll");
+    item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::
+        DownloadAll);
     pRet->AddFunction(item);
   }
   return pRet;
@@ -32,8 +35,8 @@ NPObject* InternetDownloadManager::Allocate(NPP npp, NPClass *aClass) {
 
 void InternetDownloadManager::Deallocate() {
   char logs[256];
-  sprintf_s(logs,"InternetDownloadManager this=%ld",this);
-  g_Log.WriteLog("Deallocate",logs);
+  sprintf_s(logs, "InternetDownloadManager this=%ld", this);
+  g_Log.WriteLog("Deallocate", logs);
   delete this;
 }
 
@@ -47,22 +50,6 @@ bool InternetDownloadManager::Construct(const NPVariant *args,
   return true;
 }
 
-bool InternetDownloadManager::CheckObject() {
-  DWORD buffer_len = sizeof(idm_exe_path);
-  HKEY hkey;
-  if (RegOpenKey(HKEY_CURRENT_USER, L"Software\\DownloadManager", &hkey))
-    return false;
-  if (RegQueryValueEx(hkey, L"ExePath", NULL, NULL, (LPBYTE)idm_exe_path,
-                      &buffer_len)) {
-    RegCloseKey(hkey);
-    return false;
-  }
-  RegCloseKey(hkey);
-  if (_taccess(idm_exe_path, 0))
-    return false;
-  return true;
-}
-
 bool InternetDownloadManager::Download(const NPVariant *args,
                                        uint32_t argCount,
                                        NPVariant *result) {
@@ -70,29 +57,97 @@ bool InternetDownloadManager::Download(const NPVariant *args,
     return false;
 
   BOOLEAN_TO_NPVARIANT(FALSE, *result);
+  HRESULT hr = CoCreateInstance(__uuidof(CIDMLinkTransmitter), NULL, 
+      CLSCTX_SERVER, __uuidof(ICIDMLinkTransmitter2), (LPVOID*)&disp_pointer_);
 
-  WCHAR* link = new WCHAR[NPVARIANT_TO_STRING(args[0]).UTF8Length + 1];
-  if (!link)
-    return true;
+  if (hr != S_OK)
+    return false;
+  _bstr_t url = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+  MultiByteToWideChar(CP_UTF8, 0, NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                      -1, url, url.length() + 1);
 
-  wstring params;
-  int len = NPVARIANT_TO_STRING(args[0]).UTF8Length + 1;
-  if (!MultiByteToWideChar(CP_UTF8, 0,
-                           NPVARIANT_TO_STRING(args[0]).UTF8Characters,
-                           -1, link, len)) {
-    return true;
-  } else {
-    params = L"/d ";
-    params += link;
-    delete[] link;
+  VARIANT reserved;
+  reserved.vt=VT_EMPTY;
+  hr = disp_pointer_->SendLinkToIDM2(url, "", "", "", "", "", "",
+                                     "", 0, reserved, reserved);
+
+  if (hr == S_OK)
+    BOOLEAN_TO_NPVARIANT(true, *result);
+
+  disp_pointer_->Release();
+  return true;
+}
+
+bool InternetDownloadManager::DownloadAll(const NPVariant *args, 
+                                          uint32_t argCount, 
+                                          NPVariant *result) {
+  if (argCount != 3 || !NPVARIANT_IS_OBJECT(args[0]) ||
+      !NPVARIANT_IS_OBJECT(args[1]) || !NPVARIANT_IS_STRING(args[2]))
+    return false;
+
+  HRESULT hr = CoCreateInstance(__uuidof(CIDMLinkTransmitter), NULL, 
+      CLSCTX_SERVER, __uuidof(ICIDMLinkTransmitter2), (LPVOID*)&disp_pointer_);
+  if (hr != S_OK)
+    return false;
+
+  NPObject* linkObj = NPVARIANT_TO_OBJECT(args[0]);
+  NPObject* commentObj = NPVARIANT_TO_OBJECT(args[1]);
+  NPIdentifier id = NPN_GetStringIdentifier("length");
+  NPVariant ret;
+  if (NPN_GetProperty(plugin_->get_npp(), linkObj, id, &ret) &&
+    (NPVARIANT_IS_INT32(ret) || NPVARIANT_IS_DOUBLE(ret))) {
+    int array_len = NPVARIANT_IS_INT32(ret) ? 
+        NPVARIANT_TO_INT32(ret) : NPVARIANT_TO_DOUBLE(ret);
+    SAFEARRAY* sa = NULL;
+    SAFEARRAYBOUND bound[2];
+    bound[0].lLbound = 0;
+    bound[0].cElements = array_len;
+    bound[1].lLbound = 0;
+    bound[1].cElements = 4;
+    sa = SafeArrayCreate(VT_BSTR, 2, bound);
+    if (!sa)
+      return false;
+
+    long index[2];
+    _bstr_t url, cookie(""), comment, refer;
+    refer = NPVARIANT_TO_STRING(args[2]).UTF8Characters;
+
+    for (int i = 0; i < array_len; i++) {
+      id = NPN_GetIntIdentifier(i);
+      NPN_GetProperty(plugin_->get_npp(), linkObj, id, &ret);
+      if (!NPVARIANT_IS_STRING(ret))
+        continue;
+      const char* array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
+      url = array_item;
+      MultiByteToWideChar(CP_UTF8, 0, array_item, -1,
+          url, url.length() + 1);
+      NPN_GetProperty(plugin_->get_npp(), commentObj, id, &ret);
+      if (!NPVARIANT_IS_STRING(ret))
+        continue;
+      array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
+      comment = array_item;
+      MultiByteToWideChar(CP_UTF8, 0, array_item, -1,
+          comment, comment.length() + 1);
+
+      index[0] = i;
+      index[1] = 0;
+      SafeArrayPutElement(sa, index, (BSTR)url);
+      index[1] = 1;
+      SafeArrayPutElement(sa, index, (BSTR)cookie);
+      index[1] = 2;
+      SafeArrayPutElement(sa, index, (BSTR)comment);
+      index[1] = 3;
+      SafeArrayPutElement(sa, index, NULL);
+    }
+    VARIANT array;
+    VariantInit(&array);
+    array.vt = VT_ARRAY | VT_BSTR;
+    array.parray = sa;
+    disp_pointer_->SendLinksArray(refer, &array);
+    SafeArrayDestroy(sa);
   }
 
-  HINSTANCE ret = ShellExecuteW(NULL, L"open", idm_exe_path, params.c_str(),
-                                NULL, SW_SHOWNORMAL);
-  if (ret != 0)
-    return true;
-
-  BOOLEAN_TO_NPVARIANT(TRUE, *result);
+  disp_pointer_->Release();
 
   return true;
 }

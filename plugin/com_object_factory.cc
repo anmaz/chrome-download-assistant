@@ -61,11 +61,6 @@ bool ComObjectFactory::CheckObject(const NPVariant *args, uint32_t argCount,
     const char* prog_id = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
     g_Log.WriteLog("ProgID", prog_id);
 
-    if (stricmp(prog_id, "DownlWithIDM.LinkProcessor") == 0) {
-      BOOLEAN_TO_NPVARIANT(InternetDownloadManager::CheckObject(), *result);
-      return true;
-    }
-
     TCHAR wchar_prog_id[256];
     MultiByteToWideChar(CP_UTF8, 0, prog_id, -1, wchar_prog_id, 256);
     CLSID clsid;
