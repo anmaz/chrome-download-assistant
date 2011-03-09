@@ -1,36 +1,21 @@
 #include "stdafx.h"
 #include <comutil.h>
-#include <tchar.h>
-
 #include "internet_download_manager.h"
 #include "log.h"
+#include <tchar.h>
+#include "utils.h"
 
 extern Log g_Log;
 
-InternetDownloadManager::InternetDownloadManager(void) {
-}
-
-InternetDownloadManager::~InternetDownloadManager(void) {
-}
-
 NPObject* InternetDownloadManager::Allocate(NPP npp, NPClass *aClass) {
-  InternetDownloadManager* pRet = new InternetDownloadManager;
+  InternetDownloadManager* idm = new InternetDownloadManager;
   char logs[256];
-  sprintf_s(logs, "InternetDownloadManager this=%ld", pRet);
+  sprintf_s(logs, "InternetDownloadManager this=%ld", idm);
   g_Log.WriteLog("Allocate", logs);
-  if (pRet != NULL) {
-    pRet->SetPlugin((PluginBase*)npp->pdata);
-    Function_Item item;
-    strcpy_s(item.function_name,"Download");
-    item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::
-        Download);
-    pRet->AddFunction(item);
-    strcpy_s(item.function_name,"DownloadAll");
-    item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::
-        DownloadAll);
-    pRet->AddFunction(item);
+  if (idm != NULL) {
+    idm->set_plugin((PluginBase*)npp->pdata);
   }
-  return pRet;
+  return idm;
 }
 
 void InternetDownloadManager::Deallocate() {
@@ -40,14 +25,15 @@ void InternetDownloadManager::Deallocate() {
   delete this;
 }
 
-void InternetDownloadManager::Invalidate() {
-
-}
-
-bool InternetDownloadManager::Construct(const NPVariant *args,
-                                         uint32_t argCount,
-                                         NPVariant *result) {
-  return true;
+void InternetDownloadManager::InitHandler() {
+  Function_Item item;
+  item.function_name = "Download";
+  item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::Download);
+  AddFunction(item);
+  item.function_name = "DownloadAll";
+  item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::
+      DownloadAll);
+  AddFunction(item);
 }
 
 bool InternetDownloadManager::Download(const NPVariant *args,
@@ -90,11 +76,12 @@ bool InternetDownloadManager::DownloadAll(const NPVariant *args,
   if (hr != S_OK)
     return false;
 
+  PluginBase* plugin = get_plugin();
   NPObject* linkObj = NPVARIANT_TO_OBJECT(args[0]);
   NPObject* commentObj = NPVARIANT_TO_OBJECT(args[1]);
   NPIdentifier id = NPN_GetStringIdentifier("length");
   NPVariant ret;
-  if (NPN_GetProperty(plugin_->get_npp(), linkObj, id, &ret) &&
+  if (NPN_GetProperty(plugin->get_npp(), linkObj, id, &ret) &&
     (NPVARIANT_IS_INT32(ret) || NPVARIANT_IS_DOUBLE(ret))) {
     int array_len = NPVARIANT_IS_INT32(ret) ? 
         NPVARIANT_TO_INT32(ret) : NPVARIANT_TO_DOUBLE(ret);
@@ -114,14 +101,14 @@ bool InternetDownloadManager::DownloadAll(const NPVariant *args,
 
     for (int i = 0; i < array_len; i++) {
       id = NPN_GetIntIdentifier(i);
-      NPN_GetProperty(plugin_->get_npp(), linkObj, id, &ret);
+      NPN_GetProperty(plugin->get_npp(), linkObj, id, &ret);
       if (!NPVARIANT_IS_STRING(ret))
         continue;
       const char* array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
       url = array_item;
       MultiByteToWideChar(CP_UTF8, 0, array_item, -1,
           url, url.length() + 1);
-      NPN_GetProperty(plugin_->get_npp(), commentObj, id, &ret);
+      NPN_GetProperty(plugin->get_npp(), commentObj, id, &ret);
       if (!NPVARIANT_IS_STRING(ret))
         continue;
       array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;

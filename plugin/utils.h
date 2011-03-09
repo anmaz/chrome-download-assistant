@@ -1,13 +1,48 @@
-#pragma once
-
-#include <windows.h>
+#ifndef UTIL_H_
+#define UTIL_H_
 
 #include "npfunctions.h"
 
-class Utils {
-public:
-  static TCHAR* Utf8ToUnicode(char *utf8);
-  static SAFEARRAY* CreateArray(uint32_t length);
-  static VARIANT ToVariant(SAFEARRAY* psa);
-  static HRESULT GetCom(REFCLSID rclsid, REFIID riid, __deref_out LPVOID* ppv);
-};
+namespace utils {
+  class IdentifiertoString {
+  public:
+    explicit IdentifiertoString(NPIdentifier identifier)
+      : identifier_name_(NULL) {
+        identifier_name_ = NPN_UTF8FromIdentifier(identifier);
+    }
+    const char* identifier_name() const { return identifier_name_; }
+    operator const char*() const { return identifier_name_; }
+    ~IdentifiertoString() { if (identifier_name_) NPN_MemFree(identifier_name_); }
+
+  private:
+    // Disable evil constructors.
+    IdentifiertoString();
+    IdentifiertoString(const IdentifiertoString&);
+
+    char* identifier_name_;
+  };
+
+#ifdef OS_WIN
+  class Utf8ToUnicode {
+  public:
+    explicit Utf8ToUnicode(const char* utf8data)
+      : buffer_(NULL) {
+      int size = MultiByteToWideChar(CP_UTF8, 0, utf8data, -1, 0, 0);
+      if (size > 0)
+        buffer_ = new WCHAR[size];
+      if (buffer_)
+        MultiByteToWideChar(CP_UTF8, 0, utf8data, -1, buffer_, size);
+    }
+    operator WCHAR*() const { return buffer_; }
+    WCHAR** operator &() { return &buffer_; }
+    ~Utf8ToUnicode() { if (buffer_) delete[] buffer_; }
+
+  private:
+    Utf8ToUnicode();
+    Utf8ToUnicode(const Utf8ToUnicode&);
+    WCHAR* buffer_;
+  };
+#endif
+}
+
+#endif

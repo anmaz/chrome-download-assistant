@@ -1,15 +1,7 @@
-#include "stdafx.h"
-
 #include "plugin_base.h"
 
-PluginBase::PluginBase(void) {
-}
-
-PluginBase::~PluginBase(void) {
-}
-
 NPError PluginBase::Init(NPP instance, uint16_t mode, int16_t argc,
-                          char *argn[], char *argv[], NPSavedData *saved) {
+                         char *argn[], char *argv[], NPSavedData *saved) {
   npp_ = instance;
   return NPERR_NO_ERROR;
 }
@@ -19,7 +11,7 @@ NPError PluginBase::UnInit(NPSavedData** save) {
 }
 
 NPError PluginBase::SetWindow(NPWindow* window) {
-  hwnd_ = (HWND)window->window;
+  window_ = (NativeWindow)window->window;
   return NPERR_NO_ERROR;
 }
 

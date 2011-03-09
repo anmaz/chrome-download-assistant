@@ -1,13 +1,26 @@
 #include "stdafx.h"
 
-#include "npfunctions.h"
-#include "log.h"
+#ifdef OS_LINUX
+#include <pthread.h>
+#include <unistd.h>
+#include <wait.h>
+#include <errno.h>
+#endif
 
+#include "log.h"
+#include "npfunctions.h"
+#include "plugin_factory.h"
+
+#ifdef OS_WIN
 HMODULE g_hMod;
+#elif defined OS_LINUX
+pthread_t wait_process_tid = 0;
+#endif
 Log g_Log;
 
 extern NPNetscapeFuncs* g_NpnFuncs;
 
+#ifdef OS_WIN
 BOOL OSCALL DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
   g_hMod = hModule;
   switch(reason) {
@@ -25,6 +38,19 @@ BOOL OSCALL DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
   }
   return TRUE;
 }
+#endif
+
+#ifdef OS_LINUX
+void* WaitChildProcess(void* param) {
+  while(true) {
+    int ret_val = 0;
+    pid_t pid = wait(&ret_val);
+    if (pid == -1) {
+      sleep(1);
+    }
+  }
+}
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,10 +78,15 @@ extern "C" {
 #endif
 
 NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
-#if !defined(_WINDOWS) && !defined(WEBKIT_DARWIN_SDK)
+#if !defined(OS_WIN) && !defined(WEBKIT_DARWIN_SDK)
                , NPPluginFuncs *nppfuncs) {
 #else
                ) {
+#endif
+                 PluginFactory::Init();
+                 //g_Log.OpenLog("NPAPI");
+#ifdef OS_LINUX
+                 pthread_create(&wait_process_tid, NULL, WaitChildProcess, 0);
 #endif
                  if(npnf == NULL) {
                    return NPERR_INVALID_FUNCTABLE_ERROR;
@@ -64,18 +95,25 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
                    return NPERR_INCOMPATIBLE_VERSION_ERROR;
                  }
                  g_NpnFuncs = npnf;
-#if !defined(_WINDOWS) && !defined(WEBKIT_DARWIN_SDK)
+#if !defined(OS_WIN) && !defined(WEBKIT_DARWIN_SDK)
                  NP_GetEntryPoints(nppfuncs);
 #endif
                  return NPERR_NO_ERROR;
 }
 
 NPError  OSCALL NP_Shutdown() {
+#ifdef OS_LINUX
+  if (wait_process_tid != 0) {
+    pthread_cancel(wait_process_tid);
+  }
+#endif
+
   return NPERR_NO_ERROR;
 }
 
+char MIMEType[] = "application/x-npdownload::Download Helper";
 char* NP_GetMIMEDescription(void) {
-  return "";
+  return MIMEType;
 }
 
 // Needs to be present for WebKit based browsers.

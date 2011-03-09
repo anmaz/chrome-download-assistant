@@ -87,7 +87,7 @@ Flashget.prototype.updateNPObjectIfNeeded = function() {
       this.plugin.CheckObject('BHO.IFlashGetNetscapeEx')) {
     this.progId = 'BHO.IFlashGetNetscapeEx';
     this.version = '3.x';
-    this.npObject = null; 
+    this.npObject = null;
   }
   if (!this.npObject)
     this.npObject = this.plugin.CreateObject(this.progId);
@@ -167,7 +167,7 @@ EMule.prototype.download = function(linkObj) {
 }
 
 /* Orbit */
-function Orbit(plugin, progId) {
+function Orbit(plugin) {
   Orbit.superClass.constructor.apply(this, arguments);
   this.progId = 'Orbitmxt.Orbit';
 }
@@ -209,7 +209,7 @@ IDM.prototype.downloadAll = function(links, pageUrl) {
 }
 
 /* FDM */
-function FDM(plugin, progId) {
+function FDM(plugin) {
   FDM.superClass.constructor.apply(this, arguments);
   this.progId = 'WG.WGUrlReceiver';
   this.progId2 = 'WG.WGUrlListReceiver';
@@ -295,89 +295,167 @@ DAP.prototype.download = function(linkObj) {
   this.npObject.MenuUrl2(linkObj.url, linkObj.pageUrl, '', linkObj.text);
 }
 
+/* Linux Downloader */
+function LinuxDownloader(plugin, command) {
+  LinuxDownloader.superClass.constructor.apply(this, arguments);
+  this.command = command;
+  this.progId = command.split(' ')[0];
+}
+extend(LinuxDownloader, Downloader);
+
+LinuxDownloader.prototype.download = function(linkObj) {
+  this.npObject.Download(linkObj.url);
+}
+
 var downloaderManager = {};
 
 downloaderManager.menuItems = [
   {
-    name: 'flashget', showName: 'menu_flashget',
-    showName2: 'download_all_with_flashget', privateLink: 'flashget://',
+    name: 'flashget_windows', showName: 'menu_flashget',
+    showName2: 'download_all_with_flashget',
+    privateLink: 'flashget://', isLinux: false,
     supportDownloadAll: true, image: 'images/icon_flashget.png'
   }, {
-    name: 'mini_flashget', showName: 'menu_mini_flashget',
-    showName2: 'download_all_with_mini_flashget', privateLink: 'flashget://',
+    name: 'mini_flashget_windows', showName: 'menu_mini_flashget',
+    showName2: 'download_all_with_mini_flashget',
+    privateLink: 'flashget://', isLinux: false,
     supportDownloadAll: true, image: 'images/icon_flashget.png'
   }, {
-    name: 'thunder', showName: 'menu_thunder', 
-    showName2: 'download_all_with_thunder', privateLink: 'thunder://',
+    name: 'thunder_windows', showName: 'menu_thunder',
+    showName2: 'download_all_with_thunder',
+    privateLink: 'thunder://', isLinux: false,
     supportDownloadAll: true, image: 'images/icon_thunder.png'
   }, {
-    name: 'mini_thunder', showName: 'menu_mini_thunder',
-    showName2: 'download_all_with_mini_thunder', privateLink: 'thunder://',
+    name: 'mini_thunder_windows', showName: 'menu_mini_thunder',
+    showName2: 'download_all_with_mini_thunder',
+    privateLink: 'thunder://', isLinux: false,
     supportDownloadAll: false, image: 'images/icon_thunder.png'
   }, {
-    name: 'qq_whirlwind', showName: 'menu_qq_whirlwind',
-    showName2: 'download_all_with_qq_whirlwind', privateLink: '',
+    name: 'qq_whirlwind_windows', showName: 'menu_qq_whirlwind',
+    showName2: 'download_all_with_qq_whirlwind',
+    privateLink: '',isLinux: false,
     supportDownloadAll: true, image: 'images/icon_qq.png'
   }, {
-    name: 'emule', showName: 'menu_emule',
+    name: 'emule_windows', showName: 'menu_emule',isLinux: false,
     showName2: 'download_all_with_emule', privateLink: 'ed2k://',
     supportDownloadAll: false, image: 'images/icon_emule.png'
   }, {
-    name: 'orbit', showName: 'menu_orbit',
+    name: 'orbit_windows', showName: 'menu_orbit',isLinux: false,
     showName2: 'download_all_with_orbit', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_orbit.png'
   }, {
-    name: 'idm', showName: 'menu_idm',
+    name: 'idm_windows', showName: 'menu_idm',isLinux: false,
     showName2: 'download_all_with_idm', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_idm.png'
   }, {
-    name: 'fdm', showName: 'menu_fdm',
+    name: 'fdm_windows', showName: 'menu_fdm', isLinux: false,
     showName2: 'download_all_with_fdm', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_fdm.png'
   }, {
-    name: 'download_master', showName: 'menu_download_master',
+    name: 'download_master_windows', showName: 'menu_download_master',
     showName2: 'download_all_with_download_master', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_downloadmaster.png'
   }, {
-    name: 'getgo', showName: 'menu_getgo',
+    name: 'getgo_windows', showName: 'menu_getgo',
     showName2: 'download_all_with_getgo', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_getgo.png'
   }, {
-    name: 'dap', showName: 'menu_dap',
+    name: 'dap_windows', showName: 'menu_dap',
     showName2: 'download_all_with_dap', privateLink: '',
     supportDownloadAll: false, image: 'images/icon_dap.png'
   }, {
-    name: 'chrome_downloader', showName: 'menu_chrome', isSystem: true,
-    supportDownloadAll: false, image: 'images/icon_chrome.png'
+    name: 'flashget_linux', showName: 'menu_flashget',
+    privateLink: '', isLinux: true, command: 'flashget $URL',
+    isUserAdded: false, supportDownloadAll: false,
+    image: 'images/icon_flashget_linux.png'
+  }, {
+    name: 'jdownloader', showName: 'menu_jdownloader',
+    privateLink: '', isLinux: true, command: 'jdownloader $URL',
+    isUserAdded: false, supportDownloadAll: false,
+    image: 'images/icon_jdownloader.png'
+  }, {
+    name: 'gwget', showName: 'menu_gwget', privateLink: '',
+    isLinux: true, command: 'gwget $URL', isUserAdded: false,
+    supportDownloadAll: false, image: 'images/icon_gwget.png'
+  }, {
+    name: 'chrome_downloader', showName: 'menu_chrome',
+    isSystem: true, supportDownloadAll: false,
+    image: 'images/icon_chrome.png'
   }
 ];
 
 downloaderManager.downloader = {};
 
 downloaderManager.init = function(plugin) {
-  downloaderManager.downloader['thunder'] = new Thunder(plugin);
-  downloaderManager.downloader['mini_thunder'] = new MiniThunder(plugin);
-  downloaderManager.downloader['flashget'] = new Flashget(plugin);
-  downloaderManager.downloader['mini_flashget'] = new MiniFlashget(plugin);
-  downloaderManager.downloader['qq_whirlwind'] = new QQWhirlWind(plugin);
-  downloaderManager.downloader['emule'] = new EMule(plugin);
-  downloaderManager.downloader['orbit'] = new Orbit(plugin);
-  downloaderManager.downloader['idm'] = new IDM(plugin);
-  downloaderManager.downloader['fdm'] = new FDM(plugin);
-  downloaderManager.downloader['download_master'] = new DownloadMaster(plugin);
-  downloaderManager.downloader['getgo'] = new GetGo(plugin);
-  downloaderManager.downloader['dap'] = new DAP(plugin);
+  // Create supported downloaders and save them in object
+  // downloaderManager.downloader
+  downloaderManager.downloader['thunder_windows'] =
+      new Thunder(plugin);
+  downloaderManager.downloader['mini_thunder_windows'] =
+      new MiniThunder(plugin);
+  downloaderManager.downloader['flashget_windows'] =
+      new Flashget(plugin);
+  downloaderManager.downloader['mini_flashget_windows'] =
+      new MiniFlashget(plugin);
+  downloaderManager.downloader['qq_whirlwind_windows'] =
+      new QQWhirlWind(plugin);
+  downloaderManager.downloader['emule_windows'] = new EMule(plugin);
+  downloaderManager.downloader['orbit_windows'] = new Orbit(plugin);
+  downloaderManager.downloader['idm_windows'] = new IDM(plugin);
+  downloaderManager.downloader['fdm_windows'] = new FDM(plugin);
+  downloaderManager.downloader['download_master_windows'] =
+      new DownloadMaster(plugin);
+  downloaderManager.downloader['getgo_windows'] = new GetGo(plugin);
+  downloaderManager.downloader['dap_windows'] = new DAP(plugin);
+
+  for (var i = 0; i < downloaderManager.menuItems.length; i++) {
+    var item = downloaderManager.menuItems[i];
+    if (item.isLinux) {
+      // Create downloader in Linux platform and save them.
+      downloaderManager.downloader[item.name] =
+          new LinuxDownloader(plugin, item.command);
+    }
+  }
+
+  // Add user added downloaders
+  downloaderManager.addCustomDownloaders();
 }
 
-downloaderManager.getEnableDownloaders = function(plugin) {
+downloaderManager.addCustomDownloaders = function() {
+  for (var name in localStorage) {
+    if (name.indexOf('downloaderConfigure') == 0) {
+      var customArr = localStorage[name].split(',');
+      downloaderManager.menuItems.push({
+        storageName: name, name: customArr[1], showName: 'menu_custom',
+        isLinux: true, command: customArr[2], isUserAdded: true,
+        supportDownloadAll: false, image: customArr[0]});
+      downloaderManager.downloader[customArr[1]] =
+          new LinuxDownloader(plugin, customArr[2]);
+    }
+  }
+}
+
+downloaderManager.updateCustomDownloaders = function() {
+  for (var i = downloaderManager.menuItems.length - 1; i >= 0; i--) {
+    var item = downloaderManager.menuItems[i];
+    if (item.isUserAdded)
+      downloaderManager.menuItems.splice(i);
+  }
+  downloaderManager.addCustomDownloaders();
+}
+
+downloaderManager.getEnabledDownloaders = function(plugin) {
   var enableMenuItems = [];
+  var last = 0;
   for (var i = 0; i < downloaderManager.menuItems.length; i++) {
     var item = downloaderManager.menuItems[i];
     if (item.isSystem) {
-      enableMenuItems.push(item);
+      // If the downloader is default downloader of Chrome
+      last = i;
     } else {
       var downloader = downloaderManager.downloader[item.name];
       if (downloader.checkDownloader()) {
+        // If the downloader is available, update its NPObject
         downloader.updateNPObjectIfNeeded();
         enableMenuItems.push(item);
       } else {
@@ -385,7 +463,13 @@ downloaderManager.getEnableDownloaders = function(plugin) {
       }
     }
   }
+  enableMenuItems.push(downloaderManager.menuItems[last]);
   return enableMenuItems;
+}
+
+downloaderManager.removeDownloader = function(name) {
+  downloaderManager.downloader[name].resetNPObject();
+  delete downloaderManager.downloader[name];
 }
 
 downloaderManager.copyLinkToClipboard = function(plugin, url) {
