@@ -1,0 +1,224 @@
+﻿{
+   "add_downloader": {
+      "message": "Добавить"
+   },
+   "add_downloader_icon": {
+      "message": "Добавить значок"
+   },
+   "add_url_cancel_btn": {
+      "message": "Отмена"
+   },
+   "add_url_ok_btn": {
+      "message": "OK"
+   },
+   "can_not_add_downloader": {
+      "message": "Не удается добавить этот загрузчик."
+   },
+   "chrome_downloader": {
+      "message": "Chrome"
+   },
+   "dap_windows": {
+      "message": "Download Accelerator Plus"
+   },
+   "default_title": {
+      "message": "Помощник загрузки"
+   },
+   "delete": {
+      "message": "Удалить"
+   },
+   "description": {
+      "message": "Загрузка ссылок на веб-страницы с использованием популярных загрузчиков, таких как FlashGet, FlashGet Mini, Thunder, Mini Thunder, QQ Whirlwind, eMule, Orbit, Internet Download Manager и Free Download Manager."
+   },
+   "disable": {
+      "message": "Отключение меню загрузки правой кнопкой мыши и использования контекстного меню Chrome по умолчанию"
+   },
+   "download_all": {
+      "message": "Загрузить все ссылки"
+   },
+   "download_all_with_dap": {
+      "message": "Загрузить все ссылки, используя DAP"
+   },
+   "download_all_with_download_master": {
+      "message": "Загрузить все ссылки, используя Download Master"
+   },
+   "download_all_with_fdm": {
+      "message": "Загрузить все ссылки, используя FDM"
+   },
+   "download_all_with_flashget": {
+      "message": "Загрузить все ссылки, используя FlashGet"
+   },
+   "download_all_with_getgo": {
+      "message": "Загрузить все ссылки, используя GetGo"
+   },
+   "download_all_with_idm": {
+      "message": "Загрузить все ссылки, используя IDM"
+   },
+   "download_all_with_mini_flashget": {
+      "message": "Загрузить все ссылки, используя FlashGet Mini"
+   },
+   "download_all_with_orbit": {
+      "message": "Загрузить все ссылки, используя Orbit"
+   },
+   "download_all_with_qq_whirlwind": {
+      "message": "Загрузить все ссылки, используя QQ Whirlwind"
+   },
+   "download_all_with_thunder": {
+      "message": "Загрузить все ссылки, используя Thunder"
+   },
+   "download_master_windows": {
+      "message": "Download Master"
+   },
+   "downloader": {
+      "message": "Выбор загрузчика по умолчанию:"
+   },
+   "downloader_command": {
+      "message": "Командная строка"
+   },
+   "downloader_icon": {
+      "message": "Значок"
+   },
+   "downloader_name": {
+      "message": "Название"
+   },
+   "downloader_setting": {
+      "message": "Добавить ещё загрузчики:"
+   },
+   "downloader_settings": {
+      "message": "Вы установили загрузчик, который может работать из командной строки? Теперь Вы можете добавить его в следующую форму и использовать в Chrome. Когда Вы заполняете в командную строку, пожалуйста, используйте '$URL' в качестве заполнителя для фактического URL, например, 'flashget $URL'."
+   },
+   "emule_windows": {
+      "message": "eMule"
+   },
+   "fdm_windows": {
+      "message": "Free Download Manager"
+   },
+   "flashget_linux": {
+      "message": "FlashGet"
+   },
+   "flashget_windows": {
+      "message": "FlashGet"
+   },
+   "getgo_windows": {
+      "message": "GetGo Download Manager"
+   },
+   "gwget": {
+      "message": "Gwget Download Manager"
+   },
+   "icon_url": {
+      "message": "Введите URL"
+   },
+   "idm_windows": {
+      "message": "Internet Download Manager"
+   },
+   "jdownloader": {
+      "message": "JDownloader"
+   },
+   "menu_chrome": {
+      "message": "Загрузить ссылку, используя Chrome"
+   },
+   "menu_copy_link": {
+      "message": "Копировать адрес ссылки"
+   },
+   "menu_custom": {
+      "message": "Загрузить ссылку, используя %s"
+   },
+   "menu_dap": {
+      "message": "Загрузить ссылку, используя DAP"
+   },
+   "menu_disable": {
+      "message": "Отключить меню загрузки"
+   },
+   "menu_download_master": {
+      "message": "Загрузить ссылку, используя Download Master"
+   },
+   "menu_emule": {
+      "message": "Загрузить ссылку, используя eMule"
+   },
+   "menu_fdm": {
+      "message": "Загрузить ссылку, используя FDM"
+   },
+   "menu_flashget": {
+      "message": "Загрузить ссылку, используя FlashGet"
+   },
+   "menu_getgo": {
+      "message": "Загрузить ссылку, используя GetGo"
+   },
+   "menu_gwget": {
+      "message": "Загрузить ссылку, используя Gwget"
+   },
+   "menu_idm": {
+      "message": "Загрузить ссылку, используя IDM"
+   },
+   "menu_jdownloader": {
+      "message": "Загрузить ссылку, используя JDownloader"
+   },
+   "menu_mini_flashget": {
+      "message": "Загрузить ссылку, используя FlashGet Mini"
+   },
+   "menu_mini_thunder": {
+      "message": "Загрузить ссылку, используя Mini Thunder"
+   },
+   "menu_orbit": {
+      "message": "Загрузить ссылку, используя Orbit"
+   },
+   "menu_qq_whirlwind": {
+      "message": "Загрузить ссылку, используя QQ Whirlwind"
+   },
+   "menu_thunder": {
+      "message": "Загрузить ссылку, используя Thunder"
+   },
+   "mini_flashget_windows": {
+      "message": "FlashGet Mini"
+   },
+   "mini_thunder_windows": {
+      "message": "Mini Thunder"
+   },
+   "name": {
+      "message": "Помощник загрузки (от Google)"
+   },
+   "option": {
+      "message": "Параметры"
+   },
+   "orbit_windows": {
+      "message": "Orbit"
+   },
+   "page_title": {
+      "message": "Параметры помощника загрузки"
+   },
+   "qq_whirlwind_windows": {
+      "message": "QQ Whirlwind"
+   },
+   "repeat_add_downloader": {
+      "message": "Вы добавили этот загрузчик."
+   },
+   "save_and_close": {
+      "message": "Сохранить & Закрыть"
+   },
+   "select_default_downloader": {
+      "message": "Установите FlashGet, JDownloader или Gwget Download Manager, или добавьте другие загрузчики в \"Добавить ещё загрузчики\""
+   },
+   "setting_command": {
+      "message": "Введите командную строку, например, \"flashget $URL\""
+   },
+   "setting_name": {
+      "message": "Введите название"
+   },
+   "thunder_windows": {
+      "message": "Thunder"
+   },
+   "tip_no_downloader": {
+      "message": "Загрузчики не обнаружены. Чтобы включить все возможности загрузки, установите FlashGet, FlashGet Mini или Thunder."
+   },
+   "tip_no_downloader1": {
+      "message": "Обнаружен Mini Thunder. Чтобы включить все возможности загрузки, установите FlashGet, FlashGet Mini или Thunder."
+   },
+   "tip_no_link": {
+      "message": "Нет ссылок на этой странице"
+   },
+   "tip_special": {
+      "message": "Это специальная страница. Невозможно использовать Помощник загрузки на этой странице."
+   },
+   "url_address": {
+      "message": "Загрузить значок:"
+   }
+}
