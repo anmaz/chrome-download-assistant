@@ -11,18 +11,19 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
       'useContextMenuAPI': useContextMenuAPI,
       'contextMenuList': enabledDownloaders});
     break;
-  case 'thunder':
-  case 'mini_thunder':
-  case 'flashget':
-  case 'mini_flashget':
-  case 'qq_whirlwind':
-  case 'emule':
-  case 'orbit':
-  case 'idm':
-  case 'fdm':
-  case 'download_master':
-  case 'getgo':
-  case 'dap':
+  case 'thunder_windows':
+  case 'thunder_lite_windows':
+  case 'mini_thunder_windows':
+  case 'flashget_windows':
+  case 'mini_flashget_windows':
+  case 'qq_whirlwind_windows':
+  case 'emule_windows':
+  case 'orbit_windows':
+  case 'idm_windows':
+  case 'fdm_windows':
+  case 'download_master_windows':
+  case 'getgo_windows':
+  case 'dap_windows':
     downloaderManager.downloader[request.msg].download(request.link);
     break;
   case 'copyLink':

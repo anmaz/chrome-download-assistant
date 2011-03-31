@@ -54,6 +54,27 @@ Thunder.prototype.downloadAll = function(links) {
   this.npObject.CommitTasks2(1);
 }
 
+/* Thunder Lite */
+function ThunderLite(plugin) {
+  ThunderLite.superClass.constructor.apply(this, arguments);
+  this.progId = 'MiniThunderAgent.Agent.1';
+}
+extend(ThunderLite, Downloader);
+
+ThunderLite.prototype.download = function(linkObj) {
+  this.npObject.AddTask5(
+      linkObj.url, '', '', '', '', -1, 0, -1, '', '', '', 1, '', -1);
+  this.npObject.CommitTasks5(1, 1);
+}
+
+ThunderLite.prototype.downloadAll = function(links) {
+  for (var i = 0; i < links.length; i++) {
+    this.npObject.AddTask5(
+        links[i].url, '', '', links[i].text, '', -1, 0, -1, '', '', '', 1);
+  }
+  this.npObject.CommitTasks5(1, 1);
+}
+
 /* Mini Thunder */
 function MiniThunder(plugin) {
   MiniThunder.superClass.constructor.apply(this, arguments);
@@ -326,6 +347,11 @@ downloaderManager.menuItems = [
     privateLink: 'thunder://', isLinux: false,
     supportDownloadAll: true, image: 'images/icon_thunder.png'
   }, {
+    name: 'thunder_lite_windows', showName: 'menu_thunder_lite',
+    showName2: 'download_all_with_thunder_lite',
+    privateLink: 'thunder://', isLinux: false,
+    supportDownloadAll: true, image: 'images/icon_thunderlite.png'
+  }, {
     name: 'mini_thunder_windows', showName: 'menu_mini_thunder',
     showName2: 'download_all_with_mini_thunder',
     privateLink: 'thunder://', isLinux: false,
@@ -393,6 +419,8 @@ downloaderManager.init = function(plugin) {
       new Thunder(plugin);
   downloaderManager.downloader['mini_thunder_windows'] =
       new MiniThunder(plugin);
+  downloaderManager.downloader['thunder_lite_windows'] = 
+      new ThunderLite(plugin);
   downloaderManager.downloader['flashget_windows'] =
       new Flashget(plugin);
   downloaderManager.downloader['mini_flashget_windows'] =
@@ -455,6 +483,13 @@ downloaderManager.getEnabledDownloaders = function(plugin) {
     } else {
       var downloader = downloaderManager.downloader[item.name];
       if (downloader.checkDownloader()) {
+        if (item.name == "mini_thunder_windows") {
+          var thunderLite = 
+              downloaderManager.downloader['thunder_lite_windows'];
+          if (thunderLite.checkDownloader())
+            continue;
+        }
+        
         // If the downloader is available, update its NPObject
         downloader.updateNPObjectIfNeeded();
         enableMenuItems.push(item);
