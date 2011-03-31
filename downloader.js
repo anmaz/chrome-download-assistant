@@ -355,7 +355,7 @@ downloaderManager.menuItems = [
     name: 'mini_thunder_windows', showName: 'menu_mini_thunder',
     showName2: 'download_all_with_mini_thunder',
     privateLink: 'thunder://', isLinux: false,
-    supportDownloadAll: false, image: 'images/icon_thunder.png'
+    supportDownloadAll: false, image: 'images/icon_minithunder.png'
   }, {
     name: 'qq_whirlwind_windows', showName: 'menu_qq_whirlwind',
     showName2: 'download_all_with_qq_whirlwind',
