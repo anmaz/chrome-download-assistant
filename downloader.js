@@ -259,8 +259,9 @@ FDM.prototype.download = function(linkObj) {
 }
 
 FDM.prototype.downloadAll = function(links, pageUrl) {
-  if (!this.npObjectAll)
-    this.npObjectAll = this.plugin.CreateObject(this.progId2);
+  // Create new NPObject every time when downloading all links, 
+  // because there is no way to clear the url list from last time.
+  this.npObjectAll = this.plugin.CreateObject(this.progId2);
   this.npObjectAll.Referer = pageUrl;
   this.npObjectAll.Cookies = "";
   for (var i = 0; i < links.length; i++) {
