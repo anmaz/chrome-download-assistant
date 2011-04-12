@@ -65,6 +65,10 @@
    "download_all_with_thunder": {
       "message": "Загрузить все ссылки, используя Thunder"
    },
+   "download_all_with_thunder_lite": {
+      "message": "Загрузить все ссылки, используя Thunder Lite"
+
+   },
    "download_master_windows": {
       "message": "Download Master"
    },
@@ -167,6 +171,9 @@
    "menu_thunder": {
       "message": "Загрузить ссылку, используя Thunder"
    },
+   "menu_thunder_lite": {
+      "message": "Загрузить ссылки, используя Thunder Lite"
+   },
    "mini_flashget_windows": {
       "message": "FlashGet Mini"
    },
@@ -202,6 +209,10 @@
    },
    "setting_name": {
       "message": "Введите название"
+   },
+   "thunder_lite_windows": {
+      "message": "Thunder Lite"
+
    },
    "thunder_windows": {
       "message": "Thunder"
