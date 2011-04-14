@@ -71,5 +71,11 @@
   "setting_name": {"message": "请输入下载器名称"},
   "setting_command": {"message": "请输入下载器命令行，例如：flashget $URL"},
   "icon_url": {"message": "请输入URL地址"},
+  "download_path_title": {"message": "设置下载路径："},
+  "default_path": {"message": "默认下载路径（只对Aria 2，Axel Download Accelerator，cURL和Wget有效）："},
+  "set_download_path": {"message": "浏览..."},
+  "download_finish_info": {"message": "下载结束："},
+  "set_download_dialog_title": {"message": "选择下载路径"},
+  "open_download_path": {"message": "打开文件夹"},
   "select_default_downloader": {"message": "请安装快车、JDownloader 或者 Gwget 下载管理器，或者在“添加更多下载器”中添加其它的下载器。"}
 }

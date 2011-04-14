@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #include "script_object_factory.h"
 
 namespace {
@@ -87,8 +85,8 @@ NPClass npclass_ = {
 ScriptObjectBase* ScriptObjectFactory::CreateObject(NPP npp,
     NPAllocateFunctionPtr allocate) {
   npclass_.allocate = allocate;
-  ScriptObjectBase* object = (ScriptObjectBase*)NPN_CreateObject(npp, 
-                                                                 &npclass_);
+  ScriptObjectBase* object = (ScriptObjectBase*)NPN_CreateObject(
+      npp, &npclass_);
   if (object) {
     object->InitHandler();
   }

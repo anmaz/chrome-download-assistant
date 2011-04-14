@@ -1,12 +1,11 @@
-#include "stdafx.h"
+#include "plugin_factory.h"
 
 #include "download_helper_plugin.h"
-#include "plugin_factory.h"
 
 PluginFactory::PluginTypeMap PluginFactory::plugin_type_map_;
 
 void PluginFactory::Init() {
-  Plugin_Type_Item item;
+  PluginTypeItem item;
   item.mime_type = "application/x-npdownload";
   item.constructor = &DownloadHelperPlugin::CreateObject;
   plugin_type_map_.insert(PluginTypeMap::value_type(item.mime_type, item));

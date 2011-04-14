@@ -2,8 +2,9 @@
 #define PLUGIN_FACTORY_H_
 
 #include <map>
-#include "plugin_base.h"
 #include <string>
+
+#include "plugin_base.h"
 
 typedef PluginBase* (*ConstructorPtr)();
 
@@ -17,12 +18,12 @@ public:
   static PluginBase* NewPlugin(NPMIMEType pluginType);
 
 public:
-  struct Plugin_Type_Item {
+  struct PluginTypeItem {
     std::string mime_type;
     ConstructorPtr constructor;
   };
 
-  typedef std::map<std::string, Plugin_Type_Item> PluginTypeMap;
+  typedef std::map<std::string, PluginTypeItem> PluginTypeMap;
 
 private:
   static PluginTypeMap plugin_type_map_;

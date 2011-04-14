@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INTERNET_DOWNLOAD_MANAGER_H_
+#define INTERNET_DOWNLOAD_MANAGER_H_
 
 #include <map>
 #include <string>
@@ -28,3 +29,5 @@ private:
   ICIDMLinkTransmitter2* disp_pointer_;
 
 };
+
+#endif

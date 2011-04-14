@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "script_object_base.h"
+
 #include "utils.h"
 
 bool ScriptObjectBase::HasMethod(NPIdentifier name) {
@@ -73,7 +73,7 @@ bool ScriptObjectBase::RemoveProperty(NPIdentifier name) {
   return ret;
 }
 
-void ScriptObjectBase::AddProperty(Property_Item& item) {
+void ScriptObjectBase::AddProperty(PropertyItem& item) {
   PropertyMap::iterator iter = property_map_.find(item.property_name);
   if (iter != property_map_.end())
     return;
@@ -81,7 +81,7 @@ void ScriptObjectBase::AddProperty(Property_Item& item) {
   property_map_.insert(PropertyMap::value_type(item.property_name, item));
 }
 
-void ScriptObjectBase::AddFunction(Function_Item& item) {
+void ScriptObjectBase::AddFunction(FunctionItem& item) {
   FunctionMap::iterator iter = function_map_.find(item.function_name);
   if (iter != function_map_.end())
     return;

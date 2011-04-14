@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COM_OBJECT_WAPPER_H_
+#define COM_OBJECT_WAPPER_H_
 
 #include "downloader_script_object.h"
 
@@ -28,3 +29,5 @@ private:
 private:
   IDispatch* disp_pointer_;
 };
+
+#endif
