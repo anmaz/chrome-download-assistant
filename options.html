@@ -241,13 +241,6 @@
     <div id="downloaderOption"></div>
   </td><td> </td></tr>
   </table>
-  <div  id="selectDefaultDownloaderPrompt" style="margin:16px 0;font-size: 12px; display:block;
-     background-color: #f6fbff ;border:1px #ecf6fe solid;height: 69px;">
-     <div style="padding: 14px 0 0 19px;">
-      <span  id="selectDefaultDownloader"  style="line-height: 14px;"></span>
-      <a  id="downloaderSettingsPrompt" href="javascript:" onclick="document.
-          getElementById('downloaderContainer').style.display='block'"></a></div>
-       </div>
   <div id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu">
     <span id="disableMenu"></span></label>
   </div>
@@ -457,8 +450,6 @@
         container.style.height = 'auto';
         container.removeAttribute('class');
       }
-      if (length > 1)
-        $('selectDefaultDownloaderPrompt').style.display = 'none';
     },
 
     addDownloaderOption: function(imageUrl, name, command, id, isAdded) {
@@ -563,8 +554,6 @@
       i18nReplace('urlAddress', 'url_address');
       i18nReplace('addURLOkBtn', 'add_url_ok_btn');
       i18nReplace('addURLCancelBtn', 'add_url_cancel_btn');
-      i18nReplace('selectDefaultDownloader', 'select_default_downloader');
-      i18nReplace('downloaderSettingsPrompt', 'downloader_settings_prompt');
 
       // Use placeholder attribute to show prompting message
       $('settingName').setAttribute('placeholder',
