@@ -30,6 +30,9 @@
   #downloader {
     border-bottom: 3px dotted #CCDDED;
   }
+  #downloadPathTitle {
+    border-bottom: 3px dotted #CCDDED;
+  }
   .downloaderOptionTitle {
     color: #333333;
     line-height: 28px;
@@ -238,15 +241,17 @@
     <div id="downloaderOption"></div>
   </td><td> </td></tr>
   </table>
-  <div  id="selectDefaultDownloaderPrompt" style="margin:16px 0;font-size: 12px; display:block;
-     background-color: #f6fbff ;border:1px #ecf6fe solid;height: 69px;">
-     <div style="padding: 14px 0 0 19px;">
-      <span  id="selectDefaultDownloader"  style="line-height: 14px;"></span>
-      <a  id="downloaderSettingsPrompt" href="javascript:" onclick="document.
-          getElementById('downloaderContainer').style.display='block'"></a></div>
-       </div>
   <div id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu">
     <span id="disableMenu"></span></label>
+  </div>
+  <div id="downloadPathSetting">
+    <h4 id="downloadPathTitle" class="downloaderOptionTitle">Set Download Path</h4>
+    <div style="padding-left: 19px; line-height: 25px">
+      <div id="defaultPath" style="margin-left:4px;">Default download path</div>
+      <input type="text" readonly="" id="downloadPath" size="50">
+      <button id="setDownloadPath">Browse...</button>
+      <button id="openDownloadPath">Go to folder</button>
+    </div>
   </div>
   <div id="downloaderSettingTitle">
    <table><tr>
@@ -338,8 +343,22 @@
   // Number of downloaders, including user added and/or deleted downloaders
   var numDownloadersEverAdded = numDownloaders;
 
+  function setDownloadPath() {
+    localStorage['downloadPath'] = bg.setDownloadPath();
+    $('downloadPath').value = localStorage['downloadPath'];
+  }
+  
   function init() {
     bg.updateEnabledDownloaders();
+    var downloadPath = $('downloadPath');
+    if (localStorage['downloadPath'])
+      downloadPath.value = localStorage['downloadPath'];
+    else {
+      downloadPath.value = bg.getDefaultDownloadPath();
+      localStorage['downloadPath'] = downloadPath.value;
+    }
+    $('setDownloadPath').onclick = setDownloadPath;
+    $('openDownloadPath').onclick = bg.openDownloadPath;
 
     optionList.init();
     if (isLinuxPlatform()) {
@@ -377,6 +396,10 @@
       i18nReplace('downloader', 'downloader');
       i18nReplace('disableMenu', 'menu_disable');
       i18nReplace('saveAndClose', 'save_and_close');
+      i18nReplace('downloadPathTitle', 'download_path_title');
+      i18nReplace('defaultPath', 'default_path');
+      i18nReplace('setDownloadPath', 'set_download_path');
+      i18nReplace('openDownloadPath', 'open_download_path');
 
       optionList.createDownloaderOption();
 
@@ -389,8 +412,12 @@
 
     createDownloaderOption: function() {
       var enableOptions = bg.enabledDownloaders;
+      var exist_no_gui_downloader = false;
       for (var i = 0; i < enableOptions.length; i++) {
         var item = enableOptions[i];
+        if (item.name == 'aria2c' || item.name == 'axel' ||
+            item.name == 'curl' || item.name == 'wget')
+          exist_no_gui_downloader = true;
         var imageUrl =
             item.isLinux ? item.image : chrome.extension.getURL(item.image);
         var command = item.isLinux ? item.command : null;
@@ -399,6 +426,10 @@
           optionList.addDownloaderOption(
               imageUrl, item.name, command, i, item.isUserAdded);
       }
+      if (exist_no_gui_downloader)
+        $('downloadPathSetting').style.display = 'block';
+      else
+        $('downloadPathSetting').style.display = 'none';
       optionList.updateDownloaderOptionView();
     },
 
@@ -419,8 +450,6 @@
         container.style.height = 'auto';
         container.removeAttribute('class');
       }
-      if (length > 1)
-        $('selectDefaultDownloaderPrompt').style.display = 'none';
     },
 
     addDownloaderOption: function(imageUrl, name, command, id, isAdded) {
@@ -525,8 +554,6 @@
       i18nReplace('urlAddress', 'url_address');
       i18nReplace('addURLOkBtn', 'add_url_ok_btn');
       i18nReplace('addURLCancelBtn', 'add_url_cancel_btn');
-      i18nReplace('selectDefaultDownloader', 'select_default_downloader');
-      i18nReplace('downloaderSettingsPrompt', 'downloader_settings_prompt');
 
       // Use placeholder attribute to show prompting message
       $('settingName').setAttribute('placeholder',

@@ -1,12 +1,10 @@
-#include "stdafx.h"
+#include "log.h"
 
 #ifdef OS_LINUX
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
 #endif
-
-#include "log.h"
 
 Log::Log(void) {
   file_ = NULL;

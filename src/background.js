@@ -76,6 +76,32 @@ function updateEnabledDownloaders() {
   }
 }
 
+function getDefaultDownloadPath() {
+  return plugin.GetDefaultDownloadPath();
+}
+
+function openDownloadPath() {
+  var path = localStorage['downloadPath'];
+  plugin.OpenDownloadPath(path);
+}
+
+function openDownloadFilePath(filename) {
+  plugin.OpenDownloadFilePath(filename);
+}
+
+function updateDownloadPath() {
+  var path = localStorage['downloadPath'];
+  if (!path)
+    path = getDefaultDownloadPath();
+  plugin.UpdateDownloadPath(path);
+}
+
+function setDownloadPath() {
+  var path = localStorage['downloadPath'];
+  var title = chrome.i18n.getMessage('set_download_dialog_title');
+  return plugin.SetDownloadPath(title, path);
+}
+
 function createContextMenu(plugin) {
   for (var i = 0; i < enabledDownloaders.length; i++) {
     var downloader = enabledDownloaders[i];
@@ -125,6 +151,7 @@ function init() {
   localStorage['contextMenu'] = localStorage['contextMenu'] || 'true';
   localStorage['rawCount'] = localStorage['rawCount'] || 0;
 
+  updateDownloadPath();
   downloaderManager.init(plugin);
 
   // Get supported downloaders list
@@ -132,6 +159,19 @@ function init() {
   if (useContextMenuAPI) {
     createContextMenu(plugin);
   }
+}
+
+var downloadFileName;
+
+function downloadCallback(retvalue, filename) {
+  downloadFileName = filename;
+  var notification = webkitNotifications.createHTMLNotification(
+      'notification.html');
+  notification.show();
+}
+
+function getFileName() {
+  return downloadFileName;
 }
 
 init();

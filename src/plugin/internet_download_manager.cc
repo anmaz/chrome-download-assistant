@@ -1,17 +1,18 @@
-#include "stdafx.h"
-#include <comutil.h>
 #include "internet_download_manager.h"
-#include "log.h"
+
+#include <comutil.h>
 #include <tchar.h>
+
+#include "log.h"
 #include "utils.h"
 
-extern Log g_Log;
+extern Log g_logger;
 
 NPObject* InternetDownloadManager::Allocate(NPP npp, NPClass *aClass) {
   InternetDownloadManager* idm = new InternetDownloadManager;
   char logs[256];
   sprintf_s(logs, "InternetDownloadManager this=%ld", idm);
-  g_Log.WriteLog("Allocate", logs);
+  g_logger.WriteLog("Allocate", logs);
   if (idm != NULL) {
     idm->set_plugin((PluginBase*)npp->pdata);
   }
@@ -21,12 +22,12 @@ NPObject* InternetDownloadManager::Allocate(NPP npp, NPClass *aClass) {
 void InternetDownloadManager::Deallocate() {
   char logs[256];
   sprintf_s(logs, "InternetDownloadManager this=%ld", this);
-  g_Log.WriteLog("Deallocate", logs);
+  g_logger.WriteLog("Deallocate", logs);
   delete this;
 }
 
 void InternetDownloadManager::InitHandler() {
-  Function_Item item;
+  FunctionItem item;
   item.function_name = "Download";
   item.function_pointer = ON_INVOKEHELPER(&InternetDownloadManager::Download);
   AddFunction(item);

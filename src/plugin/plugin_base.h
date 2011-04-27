@@ -2,6 +2,7 @@
 #define PLUGIN_BASE_H_
 
 #include "stdafx.h"
+
 #include "npapi.h"
 
 class PluginBase {

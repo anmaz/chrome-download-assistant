@@ -1,14 +1,14 @@
-#include "stdafx.h"
-
 #ifdef OS_LINUX
+#include <errno.h>
 #include <pthread.h>
 #include <unistd.h>
 #include <wait.h>
-#include <errno.h>
 #endif
 
-#include "log.h"
 #include "npfunctions.h"
+
+#include "log.h"
+#include "downloader_script_object.h"
 #include "plugin_factory.h"
 
 #ifdef OS_WIN
@@ -16,24 +16,25 @@ HMODULE g_hMod;
 #elif defined OS_LINUX
 pthread_t wait_process_tid = 0;
 #endif
-Log g_Log;
 
-extern NPNetscapeFuncs* g_NpnFuncs;
+Log g_logger;
+
+extern NPNetscapeFuncs* g_npn_funcs;
 
 #ifdef OS_WIN
 BOOL OSCALL DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
   g_hMod = hModule;
   switch(reason) {
     case DLL_PROCESS_ATTACH:
-      g_Log.OpenLog("NPAPI");
-      g_Log.WriteLog("Msg","DLL_PROCESS_ATTACH");
+      g_logger.OpenLog("NPAPI");
+      g_logger.WriteLog("Msg","DLL_PROCESS_ATTACH");
       break;
     case DLL_THREAD_ATTACH:
       break;
     case DLL_THREAD_DETACH:
       break;
     case DLL_PROCESS_DETACH:
-      g_Log.WriteLog("Msg","DLL_PROCESS_DETACH");
+      g_logger.WriteLog("Msg","DLL_PROCESS_DETACH");
       break;
   }
   return TRUE;
@@ -47,6 +48,8 @@ void* WaitChildProcess(void* param) {
     pid_t pid = wait(&ret_val);
     if (pid == -1) {
       sleep(1);
+    } else {
+      DownloaderScriptObject::DownloadFinish(pid, ret_val);
     }
   }
 }
@@ -83,26 +86,30 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 #else
                ) {
 #endif
-                 PluginFactory::Init();
-                 //g_Log.OpenLog("NPAPI");
+  PluginFactory::Init();
+  //g_logger.OpenLog("NPAPI");
 #ifdef OS_LINUX
-                 pthread_create(&wait_process_tid, NULL, WaitChildProcess, 0);
+  DownloaderScriptObject::Init();
+  pthread_create(&wait_process_tid, NULL, WaitChildProcess, 0);
 #endif
-                 if(npnf == NULL) {
-                   return NPERR_INVALID_FUNCTABLE_ERROR;
-                 }
-                 if(HIBYTE(npnf->version) > NP_VERSION_MAJOR) {
-                   return NPERR_INCOMPATIBLE_VERSION_ERROR;
-                 }
-                 g_NpnFuncs = npnf;
+  if(npnf == NULL) {
+    return NPERR_INVALID_FUNCTABLE_ERROR;
+  }
+
+  if(HIBYTE(npnf->version) > NP_VERSION_MAJOR) {
+    return NPERR_INCOMPATIBLE_VERSION_ERROR;
+  }
+  g_npn_funcs = npnf;
 #if !defined(OS_WIN) && !defined(WEBKIT_DARWIN_SDK)
-                 NP_GetEntryPoints(nppfuncs);
+  NP_GetEntryPoints(nppfuncs);
 #endif
-                 return NPERR_NO_ERROR;
+
+  return NPERR_NO_ERROR;
 }
 
 NPError  OSCALL NP_Shutdown() {
 #ifdef OS_LINUX
+  DownloaderScriptObject::UnInit();
   if (wait_process_tid != 0) {
     pthread_cancel(wait_process_tid);
   }

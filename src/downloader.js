@@ -326,7 +326,7 @@ function LinuxDownloader(plugin, command) {
 extend(LinuxDownloader, Downloader);
 
 LinuxDownloader.prototype.download = function(linkObj) {
-  this.npObject.Download(linkObj.url);
+  this.npObject.Download(linkObj.url, linkObj.pageUrl);
 }
 
 var downloaderManager = {};
@@ -404,6 +404,22 @@ downloaderManager.menuItems = [
     name: 'gwget', showName: 'menu_gwget', privateLink: '',
     isLinux: true, command: 'gwget $URL', isUserAdded: false,
     supportDownloadAll: false, image: 'images/icon_gwget.png'
+  }, {
+    name: 'aria2c', showName: 'menu_aria2c', privateLink: '',
+    isLinux: true, command: 'aria2c $URL', isUserAdded: false,
+    supportDownloadAll: false, image: 'images/icon_no_gui.png'
+  }, {
+    name: 'axel', showName: 'menu_axel', privateLink: '',
+    isLinux: true, command: 'axel $URL', isUserAdded: false,
+    supportDownloadAll: false, image: 'images/icon_no_gui.png'
+  }, {
+    name: 'curl', showName: 'menu_curl', privateLink: '',
+    isLinux: true, command: 'curl $URL', isUserAdded: false,
+    supportDownloadAll: false, image: 'images/icon_no_gui.png'
+  }, {
+    name: 'wget', showName: 'menu_wget', privateLink: '',
+    isLinux: true, command: 'wget $URL', isUserAdded: false,
+    supportDownloadAll: false, image: 'images/icon_no_gui.png'
   }, {
     name: 'chrome_downloader', showName: 'menu_chrome',
     isSystem: true, supportDownloadAll: false,

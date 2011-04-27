@@ -1,11 +1,10 @@
-#include "stdafx.h"
+#include "npfunctions.h"
 
 #include "log.h"
-#include "npfunctions.h"
 #include "plugin_base.h"
 #include "plugin_factory.h"
 
-extern Log g_Log;
+extern Log g_logger;
 
 #ifdef XP_UNIX
 char* NPP_GetMIMEDescription() {

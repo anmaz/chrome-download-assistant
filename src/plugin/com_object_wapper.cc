@@ -1,12 +1,11 @@
-#include "stdafx.h"
+#include "com_object_wapper.h"
 
 #include <comdef.h>
 
-#include "com_object_wapper.h"
 #include "log.h"
 #include "utils.h"
 
-extern Log g_Log;
+extern Log g_logger;
 
 ComObjectWapper::ComObjectWapper(void) {
   disp_pointer_ = NULL;
@@ -21,7 +20,7 @@ NPObject* ComObjectWapper::Allocate(NPP npp, NPClass *aClass) {
   ComObjectWapper* pRet = new ComObjectWapper;
   char logs[256];
   sprintf(logs, "ComObjectWapper this=%ld", pRet);
-  g_Log.WriteLog("Allocate", logs);
+  g_logger.WriteLog("Allocate", logs);
   if (pRet != NULL) {
     pRet->set_plugin((PluginBase*)npp->pdata);
   }
@@ -31,7 +30,7 @@ NPObject* ComObjectWapper::Allocate(NPP npp, NPClass *aClass) {
 void ComObjectWapper::Deallocate() {
   char logs[256];
   sprintf(logs, "ComObjectWapper this=%ld", this);
-  g_Log.WriteLog("Deallocate", logs);
+  g_logger.WriteLog("Deallocate", logs);
   delete this;
 }
 
@@ -52,14 +51,14 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
   bool bRet = false;
   char szLog[256];
   utils::IdentifiertoString method_name(name);
-  g_Log.WriteLog("Invoke", method_name);
+  g_logger.WriteLog("Invoke", method_name);
   utils::Utf8ToUnicode unicode_name(method_name);
   DISPID dispid;
   HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &unicode_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
-    g_Log.WriteLog("Invoke", szLog);
+    g_logger.WriteLog("Invoke", szLog);
     VARIANT varRet;
     DISPPARAMS params;
     params.cNamedArgs = 0;
@@ -84,7 +83,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
         case NPVariantType_String:
           {
             const char* param = NPVARIANT_TO_STRING(args[i]).UTF8Characters;
-            g_Log.WriteLog("Param", param);
+            g_logger.WriteLog("Param", param);
             utils::Utf8ToUnicode parameter(param);
             bstrList[i] = parameter;
             varlist[argCount-i-1].vt = VT_BSTR;
@@ -102,7 +101,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
                 int array_len = NPVARIANT_IS_INT32(ret) ? 
                     NPVARIANT_TO_INT32(ret) : NPVARIANT_TO_DOUBLE(ret);
                 sprintf(szLog, "array_len=%d", array_len);
-                g_Log.WriteLog("Array", szLog);
+                g_logger.WriteLog("Array", szLog);
                 SAFEARRAYBOUND rgsabound[1];
                 rgsabound[0].lLbound = 0;
                 rgsabound[0].cElements = array_len;
@@ -114,7 +113,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
                     if (!NPVARIANT_IS_STRING(ret))
                       continue;
                     const char* array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
-                    g_Log.WriteLog("array", array_item);
+                    g_logger.WriteLog("array", array_item);
                     utils::Utf8ToUnicode parameter(array_item);
                     _bstr_t bstr = parameter;
                     VARIANT var_out;
@@ -136,7 +135,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
       }
     }
     params.rgvarg = varlist;
-    g_Log.WriteLog("Invoke", "Before Invoke");
+    g_logger.WriteLog("Invoke", "Before Invoke");
     unsigned int nErrIndex = 0;
 
     hr = disp_pointer_->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT,
@@ -145,7 +144,7 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
     sprintf_s(szLog,
         "Invoke End,hr=0x%X,GetLastError=%ld,nErrIndex=%ld,varRet.Type=%ld",
         hr, GetLastError(), nErrIndex, varRet.vt);
-    g_Log.WriteLog("Invoke", szLog);
+    g_logger.WriteLog("Invoke", szLog);
     for (int i = 0; i < argCount; i++) {
       if (varlist[i].vt == (VT_ARRAY | VT_VARIANT | VT_BYREF)) {
         SafeArrayDestroy(*varlist[i].pparray);
@@ -188,7 +187,7 @@ bool ComObjectWapper::HasProperty(NPIdentifier name) {
     has_property = FindFunctionByInvokeKind(method_name,
         INVOKE_PROPERTYGET | INVOKE_PROPERTYPUT);
     if (has_property) {
-      Property_Item item;
+      PropertyItem item;
       item.property_name = method_name;
       VOID_TO_NPVARIANT(item.value);
       AddProperty(item);
@@ -196,7 +195,7 @@ bool ComObjectWapper::HasProperty(NPIdentifier name) {
     
     has_method = FindFunctionByInvokeKind(method_name, INVOKE_FUNC);
     if (has_method) {
-      Function_Item item;
+      FunctionItem item;
       item.function_name = method_name;
       item.function_pointer = NULL;
       AddFunction(item);
@@ -210,17 +209,17 @@ bool ComObjectWapper::GetProperty(NPIdentifier name, NPVariant *result) {
   bool bRet = false;
   char szLog[256];
   utils::IdentifiertoString property_name(name);
-  g_Log.WriteLog("GetProperty", property_name);
+  g_logger.WriteLog("GetProperty", property_name);
   utils::Utf8ToUnicode unicode_name(property_name);
   DISPID dispid;
   HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &unicode_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
-    g_Log.WriteLog("GetProperty", szLog);
+    g_logger.WriteLog("GetProperty", szLog);
     VARIANT varRet;
     DISPPARAMS params = {0};
-    g_Log.WriteLog("GetProperty", "Before Invoke");
+    g_logger.WriteLog("GetProperty", "Before Invoke");
     unsigned int nErrIndex = 0;
 
     hr = disp_pointer_->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT,
@@ -229,7 +228,7 @@ bool ComObjectWapper::GetProperty(NPIdentifier name, NPVariant *result) {
     sprintf(szLog,
             "Invoke End,hr=0x%X,GetLastError=%ld,nErrIndex=%ld,varRet.Type=%ld",
             hr, GetLastError(), nErrIndex, varRet.vt);
-    g_Log.WriteLog("GetProperty", szLog);
+    g_logger.WriteLog("GetProperty", szLog);
     if (SUCCEEDED(hr)) {
       bRet = true;
       switch(varRet.vt) {
@@ -261,14 +260,14 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
   bool bRet = false;
   char szLog[256];
   utils::IdentifiertoString property_name(name);
-  g_Log.WriteLog("SetProperty", property_name);
+  g_logger.WriteLog("SetProperty", property_name);
   utils::Utf8ToUnicode unicode_name(property_name);
   DISPID dispid;
   HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &unicode_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
-    g_Log.WriteLog("SetProperty", szLog);
+    g_logger.WriteLog("SetProperty", szLog);
     VARIANT varRet;
     DISPPARAMS params = {0};
     DISPID dispidNamed = DISPID_PROPERTYPUT;
@@ -293,7 +292,7 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
       case NPVariantType_String:
         {
           const char* param = NPVARIANT_TO_STRING(*value).UTF8Characters;
-          g_Log.WriteLog("Param", param);
+          g_logger.WriteLog("Param", param);
           utils::Utf8ToUnicode parameter(param);
           bstr = parameter;
           varparam.vt = VT_BSTR;
@@ -305,7 +304,7 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
         break;
     }
     params.rgvarg = &varparam;
-    g_Log.WriteLog("SetProperty", "Before Invoke");
+    g_logger.WriteLog("SetProperty", "Before Invoke");
     unsigned int nErrIndex = 0;
 
     hr = disp_pointer_->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT,
@@ -314,7 +313,7 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
     sprintf(szLog,
             "Invoke End,hr=0x%X,GetLastError=%ld,nErrIndex=%ld,varRet.Type=%ld",
             hr, GetLastError(), nErrIndex, varRet.vt);
-    g_Log.WriteLog("SetProperty", szLog);
+    g_logger.WriteLog("SetProperty", szLog);
   }
   return bRet;
 }
@@ -328,14 +327,14 @@ bool ComObjectWapper::FindFunctionByInvokeKind(const char* name,
                                                int invokekind) {
   char szLog[256];
   bool ret = false;
-  g_Log.WriteLog("FindFunction", name);
+  g_logger.WriteLog("FindFunction", name);
   utils::Utf8ToUnicode method_name(name);
   DISPID dispid;
   HRESULT hr = disp_pointer_->GetIDsOfNames(IID_NULL, &method_name, 1,
                                             LOCALE_USER_DEFAULT, &dispid);
   if (SUCCEEDED(hr)) {
     sprintf_s(szLog, "dispid=%ld", dispid);
-    g_Log.WriteLog("FindFunction", szLog);
+    g_logger.WriteLog("FindFunction", szLog);
     ITypeInfo* typeinfo;
     hr = disp_pointer_->GetTypeInfo(0, LOCALE_USER_DEFAULT, &typeinfo);
     if (SUCCEEDED(hr)) {
