@@ -282,7 +282,6 @@ bool DownloadHelperScriptObject::SetDownloadPath(const NPVariant* args,
     download_path_ = ret_value;
     STRINGZ_TO_NPVARIANT(ret_value, *result);
   }
-
 #endif
   
   return true;
@@ -312,6 +311,10 @@ bool DownloadHelperScriptObject::GetDefaultDownloadPath(const NPVariant* args,
   memcpy(copy, path, length);
   copy[length] = 0;
   STRINGN_TO_NPVARIANT(copy, length, *result);
+#else
+  char* copy = (char*)NPN_MemAlloc(download_path_.length() + 1);
+  strcpy(copy, download_path_.c_str());
+  STRINGZ_TO_NPVARIANT(copy, *result);
 #endif
   
   return true;
