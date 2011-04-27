@@ -24,6 +24,8 @@ public:
 
   void InitHandler();
 
+  static bool CheckObject();
+
 private:
   ICIDMLinkTransmitter2* disp_pointer_;
 

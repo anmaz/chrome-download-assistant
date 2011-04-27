@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName).dll"
+				OutputFile="$(ProjectDir)\$(ProjectName).dll"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile="download_helper.def"

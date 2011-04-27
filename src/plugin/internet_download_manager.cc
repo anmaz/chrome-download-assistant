@@ -36,6 +36,23 @@ void InternetDownloadManager::InitHandler() {
   AddFunction(item);
 }
 
+bool InternetDownloadManager::CheckObject() {
+  TCHAR idm_exe_path[MAX_PATH];
+  DWORD buffer_len = sizeof(idm_exe_path);
+  HKEY hkey;
+  if (RegOpenKey(HKEY_CURRENT_USER, L"Software\\DownloadManager", &hkey))
+    return false;
+  if (RegQueryValueEx(hkey, L"ExePath", NULL, NULL, (LPBYTE)idm_exe_path,
+                      &buffer_len)) {
+    RegCloseKey(hkey);
+    return false;
+  }
+  RegCloseKey(hkey);
+  if (_taccess(idm_exe_path, 0))
+    return false;
+  return true;
+}
+
 bool InternetDownloadManager::Download(const NPVariant *args,
                                        uint32_t argCount,
                                        NPVariant *result) {

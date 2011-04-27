@@ -63,8 +63,9 @@ bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
 
     g_Log.WriteLog("ProgID", pProgID);
     if (stricmp(pProgID, "DownlWithIDM.LinkProcessor") == 0) {
-      DownloaderScriptObject* pObject = (DownloaderScriptObject*)ScriptObjectFactory::
-          CreateObject(get_plugin()->get_npp(), InternetDownloadManager::Allocate);
+      DownloaderScriptObject* pObject = (DownloaderScriptObject*)
+          ScriptObjectFactory::CreateObject(get_plugin()->get_npp(), 
+                                            InternetDownloadManager::Allocate);
       OBJECT_TO_NPVARIANT(pObject, *result);
       return true;
     }
@@ -121,6 +122,11 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
   if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
     const char* prog_id = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
     g_Log.WriteLog("ProgID", prog_id);
+
+    if (stricmp(prog_id, "DownlWithIDM.LinkProcessor") == 0) {
+      BOOLEAN_TO_NPVARIANT(InternetDownloadManager::CheckObject(), *result);
+      return true;
+    }
 
     utils::Utf8ToUnicode wchar_prog_id(prog_id);
     CLSID clsid;
