@@ -19,6 +19,7 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
   case 'qq_whirlwind_windows':
   case 'emule_windows':
   case 'orbit_windows':
+  case 'bitcomet_windows':
   case 'idm_windows':
   case 'fdm_windows':
   case 'download_master_windows':

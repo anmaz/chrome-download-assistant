@@ -208,6 +208,29 @@ Orbit.prototype.downloadAll = function(links, pageUrl) {
   this.npObject.downloadList(urls, texts, pageUrl, "");
 }
 
+/* BitComet */
+function BitComet(plugin) {
+  BitComet.superClass.constructor.apply(this, arguments);
+  this.progId = 'BitCometAgent.BcAgent.1';
+}
+extend(BitComet, Downloader);
+
+BitComet.prototype.download = function(linkObj) {
+  var urls = [];
+  urls.push(linkObj.url);
+  urls.push(linkObj.text);
+  this.npObject.Download(urls, linkObj.pageUrl, "", "");
+}
+
+BitComet.prototype.downloadAll = function(links, pageUrl) {
+  var urls = [];
+  for (var i = 0; i < links.length; i++) {
+    urls.push(links[i].url);
+    urls.push(links[i].text);
+  }
+  this.npObject.Download(urls, pageUrl, "", "");
+}
+
 /* IDM */
 function IDM(plugin) {
   IDM.superClass.constructor.apply(this, arguments);
@@ -371,6 +394,10 @@ downloaderManager.menuItems = [
     showName2: 'download_all_with_orbit', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_orbit.png'
   }, {
+    name: 'bitcomet_windows', showName: 'menu_bitcomet',isLinux: false,
+    showName2: 'download_all_with_bitcomet', privateLink: '',
+    supportDownloadAll: true, image: 'images/icon_bitcomet.png'    
+  }, {
     name: 'idm_windows', showName: 'menu_idm',isLinux: false,
     showName2: 'download_all_with_idm', privateLink: '',
     supportDownloadAll: true, image: 'images/icon_idm.png'
@@ -446,6 +473,7 @@ downloaderManager.init = function(plugin) {
       new QQWhirlWind(plugin);
   downloaderManager.downloader['emule_windows'] = new EMule(plugin);
   downloaderManager.downloader['orbit_windows'] = new Orbit(plugin);
+  downloaderManager.downloader['bitcomet_windows'] = new BitComet(plugin);
   downloaderManager.downloader['idm_windows'] = new IDM(plugin);
   downloaderManager.downloader['fdm_windows'] = new FDM(plugin);
   downloaderManager.downloader['download_master_windows'] =
