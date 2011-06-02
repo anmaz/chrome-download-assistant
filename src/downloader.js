@@ -345,11 +345,16 @@ function LinuxDownloader(plugin, command) {
   LinuxDownloader.superClass.constructor.apply(this, arguments);
   this.command = command;
   this.progId = command.split(' ')[0];
+  this.params = command.substring(this.progId.length + 1);
 }
 extend(LinuxDownloader, Downloader);
 
 LinuxDownloader.prototype.download = function(linkObj) {
-  this.npObject.Download(linkObj.url, linkObj.pageUrl);
+  if (this.params) {
+    var url = this.params.replace("$URL", linkObj.url);
+    url = url.replace("$REFERER", linkObj.pageUrl);
+    this.npObject.Download(url, linkObj.pageUrl);
+  }
 }
 
 var downloaderManager = {};
