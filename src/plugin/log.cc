@@ -1,6 +1,6 @@
 #include "log.h"
 
-#ifdef OS_LINUX
+#ifndef OS_WIN
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
@@ -25,7 +25,7 @@ bool Log::OpenLog(const char* header) {
   sprintf_s(filename, "C:\\Log\\%s_%d%02d%02d_%d.log",
             header, time_.wYear, time_.wMonth, time_.wDay,
             GetCurrentProcessId());
-#elif defined OS_LINUX
+#else
   char filename[260];
   time_t nowtime = time(NULL);
   struct tm* time_ = localtime(&nowtime);
@@ -50,7 +50,7 @@ bool Log::WriteLog(const char* title, const char* contents) {
   if (fprintf(file_, "[%02d:%02d:%02d %03d] [%s] %s\n",
               time_.wHour, time_.wMinute, time_.wSecond, time_.wMilliseconds,
               title, contents) > 0) {
-#elif defined OS_LINUX
+#else
   timeval nowtime;
   gettimeofday(&nowtime, NULL);
   struct tm* time_ = localtime(&nowtime.tv_sec);

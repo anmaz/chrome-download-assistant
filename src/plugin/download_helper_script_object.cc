@@ -11,6 +11,8 @@
 
 #include "com_object_wapper.h"
 #include "internet_download_manager.h"
+#elif defined OS_MAC
+#include "mac_downloader_script_object.h"
 #endif
 
 #include <stdlib.h>
@@ -136,6 +138,39 @@ bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
     if (pObject)
       pObject->set_execute_file(execute_file);
   }
+#elif defined OS_MAC
+  if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
+    const char* appid = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+    g_logger.WriteLog("AppId", appid);
+    MacDownloaderScriptObject* script_object = (MacDownloaderScriptObject*)
+        ScriptObjectFactory::CreateObject(get_plugin()->get_npp(),
+                                          MacDownloaderScriptObject::Allocate);
+    OBJECT_TO_NPVARIANT(script_object, *result);
+    if (script_object) {
+      std::string command = "osascript -e \"tell app \\\"Finder\\\" ";
+      command += "to get app id \\\"";
+      command += appid;
+      command += "\\\"\"";
+      FILE* p = popen(command.c_str(), "r");
+      if (p != NULL) {
+        char echo_contents[MAX_BUFFER] = "";
+        int count = fread(echo_contents, 1, MAX_BUFFER, p);
+        if (count > 0)
+          echo_contents[count] = 0;
+        for (int index = 0; index < strlen(echo_contents); index++) {
+          if (echo_contents[index] == '\n') {
+            echo_contents[index] = 0;
+            break;
+          }            
+        }
+        g_logger.WriteLog("App", echo_contents);
+        if (strlen(echo_contents) && strstr(echo_contents, "error") == NULL) {
+          script_object->set_app_name(echo_contents);
+        }
+        pclose(p);
+      }
+    }      
+  }
 #endif
   
   return true;
@@ -176,12 +211,30 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
   command += downloader_name;
   FILE* p = popen(command.c_str(), "r");
   if (p != NULL) {
-    char echo_contents[256] = "";
-    int count = fread(echo_contents, 1, 256, p);
+    char echo_contents[MAX_BUFFER] = "";
+    int count = fread(echo_contents, 1, MAX_BUFFER, p);
     if (count > 0) {
       echo_contents[count] = 0;
     }
     if (strstr(echo_contents, downloader_name) != NULL)
+      BOOLEAN_TO_NPVARIANT(true, *result);
+    pclose(p);
+  }
+#elif defined OS_MAC
+  if (argCount != 1 || !NPVARIANT_IS_STRING(args[0]))
+    return false;
+  const char* appid = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+	std::string command = "osascript -e \"tell app \\\"Finder\\\" ";
+  command += "to get app id \\\"";
+  command += appid;
+  command += "\\\"\"";
+  FILE* p = popen(command.c_str(), "r");
+  if (p != NULL) {
+    char echo_contents[MAX_BUFFER] = "";
+    int count = fread(echo_contents, 1, MAX_BUFFER, p);
+    if (count > 0) 
+      echo_contents[count] = 0;
+    if (strlen(echo_contents) && strstr(echo_contents, "error") == NULL)
       BOOLEAN_TO_NPVARIANT(true, *result);
     pclose(p);
   }

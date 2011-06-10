@@ -12,6 +12,29 @@ NPError DownloadHelperPlugin::Init(NPP instance, uint16_t mode, int16_t argc,
   g_logger.WriteLog("msg", "DownloadHelperPlugin Init");
   scriptobject_ = NULL;
   instance->pdata = this;
+  
+#ifdef OS_MAC
+  // Select the right drawing model if necessary.
+  NPBool support_core_graphics = false;
+  if (NPN_GetValue(instance, NPNVsupportsCoreGraphicsBool,
+                   &support_core_graphics) == NPERR_NO_ERROR && 
+      support_core_graphics)
+    NPN_SetValue(instance, NPPVpluginDrawingModel,
+                 (void*)NPDrawingModelCoreGraphics);
+  else
+    return NPERR_INCOMPATIBLE_VERSION_ERROR;
+  
+  // Select the Cocoa event model.
+  NPBool support_cocoa_events = false;
+  if (NPN_GetValue(instance, NPNVsupportsCocoaBool,
+                   &support_cocoa_events) == NPERR_NO_ERROR &&
+      support_cocoa_events)
+    NPN_SetValue(instance, NPPVpluginEventModel, 
+                 (void*)NPEventModelCocoa);
+  else
+    return NPERR_INCOMPATIBLE_VERSION_ERROR;
+#endif
+  
   return PluginBase::Init(instance, mode, argc, argn, argv, saved);
 }
 

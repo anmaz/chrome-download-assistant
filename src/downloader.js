@@ -357,6 +357,119 @@ LinuxDownloader.prototype.download = function(linkObj) {
   }
 }
 
+/* Mac Downloader */
+function Folx(plugin) {
+  Folx.superClass.constructor.apply(this, arguments);
+  this.progId = 'com.eltima.Folx';
+}
+extend(Folx, Downloader);
+
+Folx.prototype.download = function(linkObj) {
+  var command = 'add url \\"';
+  command += linkObj.url;
+  command += '\\" with title \\"';
+  command += linkObj.text;
+  command += '\\" with referrer \\"'
+  command += linkObj.pageUrl;
+  command += '\\"';
+  this.npObject.Download(command);
+}
+
+Folx.prototype.downloadAll = function(links, pageUrl) {
+  var urls = [];
+  var texts = [];
+  for (var i = 0; i < links.length; i++) {
+    urls.push(links[i].url);
+    texts.push(links[i].text);
+  }
+  var command = 'add URLs {\\"'
+  command += urls.join('\\",\\"');
+  command += '\\"} '
+  command += 'with referrer \\"'
+  command += pageUrl;
+  command += '\\" with titles {\\"';
+  command += texts.join('\\",\\"');
+  command += '\\"}';
+  this.npObject.Download(command);
+}
+
+function iGetter(plugin) {
+  iGetter.superClass.constructor.apply(this, arguments);
+  this.progId = 'iGET';
+}
+extend(iGetter, Downloader);
+
+iGetter.prototype.download = function(linkObj) {
+  var command = 'DownloadURL {{url:\\"';
+  command += linkObj.url;
+  command += '\\",referrer:\\"';
+  command += linkObj.pageUrl;
+  command += '\\"}}';
+  this.npObject.Download(command);
+}
+
+iGetter.prototype.downloadAll = function(links, pageUrl) {
+  var downloadDescList = [];
+  var downloadDesc = "";
+  for (var i = 0; i < links.length; i++) {
+    downloadDesc = '{url:\\"';
+    downloadDesc += links[i].url;
+    downloadDesc += '\\",referrer:\\"';
+    downloadDesc += pageUrl;
+    downloadDesc += '\\"}';
+    downloadDescList.push(downloadDesc);
+  }
+  this.npObject.Download("DownloadURL {" + downloadDescList.join(',') + "}");
+}
+
+function Leech(plugin) {
+  Leech.superClass.constructor.apply(this, arguments);
+  this.progId = 'com.manytricks.Leech';
+}
+extend(Leech, Downloader);
+
+Leech.prototype.download = function(linkObj) {
+  var command = 'download URLs \\"';
+  command += linkObj.url;
+  command += '\\"'
+  this.npObject.Download(command);
+}
+
+Leech.prototype.downloadAll = function(links, pageUrl) {
+  var command = 'download URLs {\\"';
+  var urls = [];
+  for (var i = 0; i < links.length; i++) {
+    urls.push(links[i].url);
+  }
+  command += urls.join('\\",\\"');
+  command += '\\"}';
+  this.npObject.Download(command);
+}
+
+function SpeedDownload(plugin) {
+  SpeedDownload.superClass.constructor.apply(this, arguments);
+  this.progId = 'Spee';
+}
+extend(SpeedDownload, Downloader);
+
+SpeedDownload.prototype.download = function(linkObj) {
+  var command = 'AddURL \\"';
+  command += linkObj.url;
+  command += '\\"'
+  this.npObject.Download(command);
+}
+
+SpeedDownload.prototype.downloadAll = function(links, pageUrl) {
+  var command = 'AddURL {\\"';
+  var urls = [];
+  for (var i = 0; i < links.length; i++) {
+    urls.push(links[i].url);
+  }
+  command += urls.join('\\",\\"');
+  command += '\\"}';
+  this.npObject.Download(command);
+}
+
 var downloaderManager = {};
 
 downloaderManager.menuItems = [
@@ -453,6 +566,23 @@ downloaderManager.menuItems = [
     isLinux: true, command: 'wget $URL', isUserAdded: false,
     supportDownloadAll: false, image: 'images/icon_no_gui.png'
   }, {
+    name: 'folx_mac', showName: 'menu_folx', privateLink: '',
+    showName2: 'download_all_with_folx', isMac: true, 
+    supportDownloadAll: true, image: 'images/icon_folx.png'
+  }, {
+    name: 'igetter_mac', showName: 'menu_igetter', privateLink: '',
+    showName2: 'download_all_with_igetter', isMac: true,
+    supportDownloadAll: true, image: 'images/icon_igetter.png'
+  }, {
+    name: 'leech_mac', showName: 'menu_leech', privateLink: '',
+    showName2: 'download_all_with_leech', isMac: true,
+    supportDownloadAll: true, image: 'images/icon_leech.png'
+  }, {
+    name: 'speed_download_mac', showName: 'menu_speed_download',
+    privateLink: '', showName2: 'download_all_with_speed_download',
+    isMac: true, supportDownloadAll: true, 
+    image: 'images/icon_speed_download.png'
+  }, {
     name: 'chrome_downloader', showName: 'menu_chrome',
     isSystem: true, supportDownloadAll: false,
     image: 'images/icon_chrome.png'
@@ -485,6 +615,10 @@ downloaderManager.init = function(plugin) {
       new DownloadMaster(plugin);
   downloaderManager.downloader['getgo_windows'] = new GetGo(plugin);
   downloaderManager.downloader['dap_windows'] = new DAP(plugin);
+  downloaderManager.downloader['folx_mac'] = new Folx(plugin);
+  downloaderManager.downloader['igetter_mac'] = new iGetter(plugin);
+  downloaderManager.downloader['leech_mac'] = new Leech(plugin);
+  downloaderManager.downloader['speed_download_mac'] = new SpeedDownload(plugin);
 
   for (var i = 0; i < downloaderManager.menuItems.length; i++) {
     var item = downloaderManager.menuItems[i];

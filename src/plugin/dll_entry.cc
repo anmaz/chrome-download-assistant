@@ -87,7 +87,7 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
                ) {
 #endif
   PluginFactory::Init();
-  //g_logger.OpenLog("NPAPI");
+  g_logger.OpenLog("DA");
 #ifdef OS_LINUX
   DownloaderScriptObject::Init();
   pthread_create(&wait_process_tid, NULL, WaitChildProcess, 0);

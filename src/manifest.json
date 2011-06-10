@@ -26,5 +26,7 @@
     "path": "plugin/download_helper.so"
    }, {
     "path": "plugin/download_helper_64.so"
+   }, {
+    "path": "plugin/download_assistant.plugin"
    } ]
 }
