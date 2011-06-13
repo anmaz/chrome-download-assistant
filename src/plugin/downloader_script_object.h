@@ -35,8 +35,6 @@ public:
 private:
 #ifdef OS_LINUX
   std::string execute_file_;
-  typedef std::map<std::string, std::string> StringMap;
-  static StringMap no_gui_downloader_list_;
   typedef std::map<__pid_t, std::string> DownloadMap;
   typedef std::map<__pid_t, int> IntMap;
   static IntMap download_result_list_;

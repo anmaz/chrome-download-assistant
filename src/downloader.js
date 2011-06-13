@@ -345,15 +345,14 @@ function LinuxDownloader(plugin, command) {
   LinuxDownloader.superClass.constructor.apply(this, arguments);
   this.command = command;
   this.progId = command.split(' ')[0];
-  this.params = command.substring(this.progId.length + 1);
 }
 extend(LinuxDownloader, Downloader);
 
 LinuxDownloader.prototype.download = function(linkObj) {
-  if (this.params) {
-    var url = this.params.replace("$URL", linkObj.url);
-    url = url.replace("$REFERER", linkObj.pageUrl);
-    this.npObject.Download(url, linkObj.pageUrl);
+  if (this.command) {
+    var parameter = this.command.replace("$URL", linkObj.url);
+    parameter = parameter.replace("$REFERER", linkObj.pageUrl);
+    this.npObject.Download(parameter, linkObj.url);
   }
 }
 
@@ -551,20 +550,29 @@ downloaderManager.menuItems = [
     supportDownloadAll: false, image: 'images/icon_gwget.png'
   }, {
     name: 'aria2c', showName: 'menu_aria2c', privateLink: '',
-    isLinux: true, command: 'aria2c $URL', isUserAdded: false,
-    supportDownloadAll: false, image: 'images/icon_no_gui.png'
+    isLinux: true, 
+    command: 'aria2c -c --referer="$REFERER" -d $DOWNLOAD_PATH \
+             -o $FILE_NAME "$URL"',
+    isUserAdded: false, supportDownloadAll: false, 
+    image: 'images/icon_no_gui.png'
   }, {
     name: 'axel', showName: 'menu_axel', privateLink: '',
-    isLinux: true, command: 'axel $URL', isUserAdded: false,
-    supportDownloadAll: false, image: 'images/icon_no_gui.png'
+    isLinux: true, 
+    command: 'axel -H Referer:"$REFERER" --output=$FILE_NAME "$URL"', 
+    isUserAdded: false, supportDownloadAll: false, 
+    image: 'images/icon_no_gui.png'
   }, {
     name: 'curl', showName: 'menu_curl', privateLink: '',
-    isLinux: true, command: 'curl $URL', isUserAdded: false,
-    supportDownloadAll: false, image: 'images/icon_no_gui.png'
+    isLinux: true, 
+    command: 'curl -L -o $FILE_NAME --referer "$REFERER" "$URL"', 
+    isUserAdded: false, supportDownloadAll: false, 
+    image: 'images/icon_no_gui.png'
   }, {
     name: 'wget', showName: 'menu_wget', privateLink: '',
-    isLinux: true, command: 'wget $URL', isUserAdded: false,
-    supportDownloadAll: false, image: 'images/icon_no_gui.png'
+    isLinux: true, 
+    command: 'wget -c --referer="$REFERER" -O $FILE_NAME "$URL"', 
+    isUserAdded: false, supportDownloadAll: false, 
+    image: 'images/icon_no_gui.png'
   }, {
     name: 'folx_mac', showName: 'menu_folx', privateLink: '',
     showName2: 'download_all_with_folx', isMac: true, 

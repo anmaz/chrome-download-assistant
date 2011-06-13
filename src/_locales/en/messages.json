@@ -91,7 +91,7 @@
   "add_url_cancel_btn": {"message": "Cancel"},
   "delete": {"message": "Delete"},
   "setting_name": {"message": "Enter the name"},
-  "setting_command": {"message": "Enter the command line, eg. \"flashget $URL\""},
+  "setting_command": {"message": "Eg：curl -o $FILE_NAME -e \"$REFERER\" \"$URL\""},
   "icon_url": {"message": "Enter the URL"},
   "download_path_title": {"message": "Set Download Path:"},
   "default_path": {"message": "Default download path (only for Aria 2, Axel Download Accelerator, cURL and Wget):"},

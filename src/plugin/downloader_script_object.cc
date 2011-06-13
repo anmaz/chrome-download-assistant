@@ -16,8 +16,6 @@
 extern Log g_logger;
 
 #ifdef OS_LINUX
-DownloaderScriptObject::StringMap
-    DownloaderScriptObject::no_gui_downloader_list_;
 DownloaderScriptObject::DownloadMap
     DownloaderScriptObject::download_process_list_;
 DownloaderScriptObject* DownloaderScriptObject::script_object_ = NULL;
@@ -57,21 +55,6 @@ void DownloaderScriptObject::InitHandler() {
 
 #ifdef OS_LINUX
 void DownloaderScriptObject::Init() {
-  std::string params = "wget -c --referer=\"$REFERER\" ";
-  params += "-O $FILE_NAME \"$URL\"";
-  no_gui_downloader_list_.insert(std::make_pair("wget", params));
-
-  params = "axel -H Referer:\"$REFERER\" ";
-  params += "--output=$FILE_NAME \"$URL\"";
-  no_gui_downloader_list_.insert(std::make_pair("axel", params));
-
-  params = "curl -L -o $FILE_NAME --referer \"$REFERER\" \"$URL\"";
-  no_gui_downloader_list_.insert(std::make_pair("curl", params));
-  
-  params = "aria2c -c --referer=\"$REFERER\" -d $DOWNLOAD_PATH ";
-  params += "-o $FILE_NAME \"$URL\"";
-  no_gui_downloader_list_.insert(std::make_pair("aria2c", params));
-
   if (timer_id_ == 0) {
     pthread_mutex_init(&mutex_, NULL);
     timer_id_ = g_timeout_add_seconds(1, TimerFunction, 0);
@@ -136,16 +119,16 @@ bool DownloaderScriptObject::Download(const NPVariant *args,
 
   const char* path = DownloadHelperScriptObject::download_path().c_str();
   const char* parameter = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-  const char* referer = NPVARIANT_TO_STRING(args[1]).UTF8Characters;
-  StringMap::iterator iter = no_gui_downloader_list_.find(execute_file_);
-  if (iter != no_gui_downloader_list_.end()) {
+  const char* url = NPVARIANT_TO_STRING(args[1]).UTF8Characters;
+  std::string params = parameter;
+  if (params.find("$FILE_NAME") != std::string::npos) {
     GtkWidget *dialog = gtk_file_chooser_dialog_new(
         "Select Download Path", NULL,
         GTK_FILE_CHOOSER_ACTION_SAVE,
         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
         GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT, NULL);
 
-    const char* resource_name = strrchr(parameter, '/');
+    const char* resource_name = strrchr(url, '/');
     if (resource_name == NULL)
       resource_name = "";
     else
@@ -176,36 +159,23 @@ bool DownloaderScriptObject::Download(const NPVariant *args,
 
     __pid_t pid = fork();
     if (pid == 0) {
-      std::string params = iter->second;
       int index = params.find("$DOWNLOAD_PATH");
       if (index != std::string::npos) {
         char* download_path = g_path_get_dirname(ret_value);
         params.replace(index, strlen("$DOWNLOAD_PATH"), download_path);
         g_free(download_path);
         index = params.find("$FILE_NAME");
-        if (index != std::string::npos) {
-          char* name = g_path_get_basename(ret_value);
-          params.replace(index, strlen("$FILE_NAME"), name);
-          g_free(name);
-        }
+        char* name = g_path_get_basename(ret_value);
+        params.replace(index, strlen("$FILE_NAME"), name);
+        g_free(name);
       } else {
         index = params.find("$FILE_NAME");
-        if (index != std::string::npos) {
-          params.replace(index, strlen("$FILE_NAME"), ret_value);
-        }
-      }
-      index = params.find("$REFERER");
-      if (index != std::string::npos) {
-        params.replace(index, strlen("$REFERER"), referer);
+        params.replace(index, strlen("$FILE_NAME"), ret_value);
       }
 
       char* name = g_path_get_basename(ret_value);
-      index = params.find("$URL");
-      if (index != std::string::npos) {
-        params.replace(index, strlen("$URL"), parameter);
-        execlp("xterm", "xterm", "-title", name, "-e", params.c_str(), NULL);
-        exit(0);
-      }
+      execlp("xterm", "xterm", "-title", name, "-e", params.c_str(), NULL);
+      exit(0);
     } else if (pid != -1) {
       pthread_mutex_lock(&mutex_);
       download_process_list_.insert(std::make_pair(pid, ret_value));
@@ -213,7 +183,7 @@ bool DownloaderScriptObject::Download(const NPVariant *args,
     }
   } else {
     if (fork() == 0) {
-      execlp(execute_file_.c_str(), execute_file_.c_str(), parameter, NULL);
+      execlp("sh", "sh", "-c", parameter, NULL);
       exit(0);
     }
   }
