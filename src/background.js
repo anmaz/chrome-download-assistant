@@ -1,4 +1,3 @@
-var useContextMenuAPI = true;
 var enabledDownloaders = [];
 var plugin = document.getElementById('pluginId');
 
@@ -8,7 +7,6 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
     response({
       'defaultDownloader': localStorage['defaultDownloader'],
       'contextMenu': localStorage['contextMenu'],
-      'useContextMenuAPI': useContextMenuAPI,
       'contextMenuList': enabledDownloaders});
     break;
   case 'thunder_windows':
@@ -52,7 +50,6 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId) {
     'msg': 'init_check',
     'defaultDownloader': localStorage['defaultDownloader'],
     'contextMenu': localStorage['contextMenu'],
-    'useContextMenuAPI': useContextMenuAPI,
     'contextMenuList': enabledDownloaders
   }, function(response) {
     // If content script is loaded
@@ -72,10 +69,8 @@ function updateEnabledDownloaders() {
       break;
   if (i == numDownloaders)
     localStorage['defaultDownloader'] = 'chrome_downloader';
-  if (useContextMenuAPI) {
-    chrome.contextMenus.removeAll();
-    createContextMenu(plugin);
-  }
+  chrome.contextMenus.removeAll();
+  createContextMenu(plugin);
 }
 
 function getDefaultDownloadPath() {
@@ -158,9 +153,7 @@ function init() {
 
   // Get supported downloaders list
   enabledDownloaders = downloaderManager.getEnabledDownloaders(plugin);
-  if (useContextMenuAPI) {
-    createContextMenu(plugin);
-  }
+  createContextMenu(plugin);
 }
 
 var downloadFileName;

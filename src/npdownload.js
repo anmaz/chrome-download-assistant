@@ -2,7 +2,6 @@ var npDownload = {
   defaultDownloader: 'chrome_downloader',
   contextMenu: true,
   contextMenuList: [],
-  useContextMenuAPI: false,
   getPageLink: function() {
     var ret_ = [];
 
@@ -58,16 +57,6 @@ var npDownload = {
             return npDownload.download(this);
           }
         }
-        if (!npDownload.useContextMenuAPI) {
-          document.links[i].oncontextmenu = function () {
-            // Not show the original context menu.
-            if (npDownload.contextMenu) {
-              window.event.returnValue = false;
-              var contextMenu = npDownload.generateContextMenu(this);
-              npDownload.showMyContextMenu(contextMenu);
-            }
-          };
-        }
       }
     }
   },
@@ -91,7 +80,6 @@ var npDownload = {
         npDownload.contextMenu = eval(request.contextMenu);
         npDownload.defaultDownloader = request.defaultDownloader;
         npDownload.contextMenuList = request.contextMenuList;
-        npDownload.useContextMenuAPI = request.useContextMenuAPI;
         response(true);
       }
     })
@@ -196,23 +184,12 @@ var npDownload = {
     }
   },
 
-  loadContextMenuCss: function() {
-    var cssRef = document.createElement('link');
-    cssRef.id = 'drag-style';
-    cssRef.rel = 'stylesheet';
-    cssRef.href = chrome.extension.getURL('style.css');
-    cssRef.type = 'text/css';
-    document.getElementsByTagName('head')[0].appendChild(cssRef);
-  },
-
   init: function() {
-    this.loadContextMenuCss();
     this.onRequest();
     this.sendRequest({msg: 'init_loaded'}, function(response) {
       if (response) {
         npDownload.contextMenu = eval(response.contextMenu);
         npDownload.defaultDownloader = response.defaultDownloader;
-        npDownload.useContextMenuAPI = eval(response.useContextMenuAPI);
         npDownload.contextMenuList = response.contextMenuList;
         npDownload.overwritePageLinks();
       }

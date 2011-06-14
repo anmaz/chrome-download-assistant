@@ -94,7 +94,7 @@
   "add_url_cancel_btn": {"message": "取消"},
   "delete": {"message": "删除"},
   "setting_name": {"message": "请输入下载器名称"},
-  "setting_command": {"message": "例如：curl -o $FILE_NAME -e \"$REFERER\" \"$URL\"""},
+  "setting_command": {"message": "例如：curl -o $FILE_NAME -e \"$REFERER\" \"$URL\""},
   "icon_url": {"message": "请输入URL地址"},
   "download_path_title": {"message": "设置下载路径："},
   "default_path": {"message": "默认下载路径（只对Aria 2，Axel Download Accelerator，cURL和Wget有效）："},
