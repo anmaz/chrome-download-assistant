@@ -25,6 +25,7 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
   case 'download_master_windows':
   case 'getgo_windows':
   case 'dap_windows':
+  case 'md_windows':
     downloaderManager.downloader[request.msg].download(request.link);
     break;
   case 'copyLink':

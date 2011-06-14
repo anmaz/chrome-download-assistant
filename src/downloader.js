@@ -340,6 +340,26 @@ DAP.prototype.download = function(linkObj) {
   this.npObject.MenuUrl2(linkObj.url, linkObj.pageUrl, '', linkObj.text);
 }
 
+/* MassDownloader */
+function MassDownloader(plugin) {
+  MassDownloader.superClass.constructor.apply(this, arguments);
+  this.progId = 'MassDown.AddUrl.1';
+}
+extend(MassDownloader, Downloader);
+
+MassDownloader.prototype.download = function(linkObj) {
+  this.npObject.AddUrlWithReferer(linkObj.url, linkObj.text, linkObj.pageUrl);
+}
+
+MassDownloader.prototype.downloadAll = function(links, pageUrl) {
+  this.npObject.AddUrl('Begin.', 'Begin.');
+  for (var i = 0; i < links.length; i++) {
+    this.npObject.AddUrlWithReferer(links[i].url, links[i].text, pageUrl);
+  }
+  this.npObject.AddUrl('End.', 'End.');
+}
+
+
 /* Linux Downloader */
 function LinuxDownloader(plugin, command) {
   LinuxDownloader.superClass.constructor.apply(this, arguments);
@@ -535,6 +555,10 @@ downloaderManager.menuItems = [
     showName2: 'download_all_with_dap', privateLink: '',
     supportDownloadAll: false, image: 'images/icon_dap.png'
   }, {
+    name: 'md_windows', showName: 'menu_md',isLinux: false,
+    showName2: 'download_all_with_md', privateLink: '',
+    supportDownloadAll: true, image: 'images/icon_md.png'
+  }, {    
     name: 'flashget_linux', showName: 'menu_flashget',
     privateLink: '', isLinux: true, command: 'flashget $URL',
     isUserAdded: false, supportDownloadAll: false,
@@ -623,6 +647,7 @@ downloaderManager.init = function(plugin) {
       new DownloadMaster(plugin);
   downloaderManager.downloader['getgo_windows'] = new GetGo(plugin);
   downloaderManager.downloader['dap_windows'] = new DAP(plugin);
+  downloaderManager.downloader['md_windows'] = new MassDownloader(plugin);
   downloaderManager.downloader['folx_mac'] = new Folx(plugin);
   downloaderManager.downloader['igetter_mac'] = new iGetter(plugin);
   downloaderManager.downloader['leech_mac'] = new Leech(plugin);
