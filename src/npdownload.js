@@ -1,7 +1,5 @@
 var npDownload = {
   defaultDownloader: 'chrome_downloader',
-  contextMenu: true,
-  contextMenuList: [],
   getPageLink: function() {
     var ret_ = [];
 
@@ -77,66 +75,10 @@ var npDownload = {
   onRequest: function() {
     chrome.extension.onRequest.addListener(function(request, sender, response) {
       if (request.msg == 'init_check') {
-        npDownload.contextMenu = eval(request.contextMenu);
         npDownload.defaultDownloader = request.defaultDownloader;
-        npDownload.contextMenuList = request.contextMenuList;
         response(true);
       }
     })
-  },
-
-  generateContextMenu: function(link) {
-    var otherItem = [
-      {name: 'copyLink', showName: 'menu_copy_link'},
-      {name: '', showName: ''},
-      {name: 'contextMenu', showName: 'menu_disable'}
-    ];
-    var contextMenuList = npDownload.contextMenuList.concat(otherItem);
-    var contextMenu = document.createElement('DIV');
-    contextMenu.id = 'dh-menu';
-    var privateLink = ['flashget://', 'thunder://'];
-    var isPrivateLink = false;
-    var index;
-    for (index = 0; index < privateLink.length; index++) {
-      if (link.href.toLowerCase().indexOf(privateLink[index]) == 0) {
-        isPrivateLink = true;
-        break;
-      }
-    }
-    for (var i = 0; i < contextMenuList.length; i++) {
-      var item = contextMenuList[i];
-      var menuItem = document.createElement('DIV');
-
-      if (item.name) {
-        if (isPrivateLink && item.privateLink &&
-            privateLink[index] != item.privateLink) {
-          menuItem.className = 'dh-menu-item-disable';
-        } else {
-          menuItem.className = 'dh-menu-item';
-        }
-        var a = document.createElement('A');
-        a.href = 'javascript:void(0)';
-        a.innerText = chrome.i18n.getMessage(item.showName);
-        menuItem.appendChild(a);
-        contextMenu.appendChild(menuItem);
-        if (item.name == 'chrome_downloader') {
-          a.href = link.href;
-        } else {
-          (function(message, element) {
-            element.onclick = function() {
-              if (message == 'contextMenu') {
-                npDownload.contextMenu = false;
-              }
-              npDownload.sendDownloadCommandToBg(link, message);
-            }
-          })(item.name, a);
-        }
-      } else {
-        menuItem.className = 'dh-menu-line';
-      }
-      contextMenu.appendChild(menuItem);
-    }
-    return contextMenu;
   },
 
   checkFrameByUrlAndDown: function(url, downloader) {
@@ -160,37 +102,11 @@ var npDownload = {
     this.sendRequest(message_, function() {});
   },
 
-  showMyContextMenu: function(contextMenu) {
-    if (contextMenu.id && document.getElementById(contextMenu.id)) {
-      document.getElementById(contextMenu.id).parentNode.removeChild(
-          document.getElementById(contextMenu.id))
-    }
-    var bodyStyle = window.getComputedStyle(document.body, "style");
-    var top = event.pageY;
-    var left = event.pageX;
-    if (bodyStyle.position == 'relative') {
-      left -= parseInt(bodyStyle.marginLeft);
-      top -= parseInt(bodyStyle.marginTop);
-    }
-    contextMenu.style.top = top + 'px';
-    contextMenu.style.left = left + 'px';
-    contextMenu.style.display = 'block';
-
-    document.body.appendChild(contextMenu);
-    document.onclick = function() {
-      if (document.getElementById(contextMenu.id)) {
-        contextMenu.parentNode.removeChild(contextMenu);
-      }
-    }
-  },
-
   init: function() {
     this.onRequest();
     this.sendRequest({msg: 'init_loaded'}, function(response) {
       if (response) {
-        npDownload.contextMenu = eval(response.contextMenu);
         npDownload.defaultDownloader = response.defaultDownloader;
-        npDownload.contextMenuList = response.contextMenuList;
         npDownload.overwritePageLinks();
       }
     });

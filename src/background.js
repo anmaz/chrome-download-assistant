@@ -4,10 +4,7 @@ var plugin = document.getElementById('pluginId');
 chrome.extension.onRequest.addListener(function(request, sender, response) {
   switch(request.msg) {
   case 'init_loaded':
-    response({
-      'defaultDownloader': localStorage['defaultDownloader'],
-      'contextMenu': localStorage['contextMenu'],
-      'contextMenuList': enabledDownloaders});
+    response({'defaultDownloader': localStorage['defaultDownloader']});
     break;
   case 'thunder_windows':
   case 'thunder_lite_windows':
@@ -26,13 +23,6 @@ chrome.extension.onRequest.addListener(function(request, sender, response) {
   case 'md_windows':
     downloaderManager.downloader[request.msg].download(request.link);
     break;
-  case 'copyLink':
-    downloaderManager.copyLinkToClipboard(plugin, request.link.url);
-    break;
-  case 'contextMenu':
-    localStorage['contextMenu'] = 'false';
-    response({contextMenu: false});
-    break;
   case 'downloadAll':
     downloaderManager.downloader[request.downloader].downloadAll(
         request.links, request.pageUrl);
@@ -49,8 +39,6 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId) {
   chrome.tabs.sendRequest(tabId, {
     'msg': 'init_check',
     'defaultDownloader': localStorage['defaultDownloader'],
-    'contextMenu': localStorage['contextMenu'],
-    'contextMenuList': enabledDownloaders
   }, function(response) {
     // If content script is loaded
     if (response)
@@ -145,8 +133,6 @@ function init() {
   // Initialize setting in localStorage
   localStorage['defaultDownloader'] =
       localStorage['defaultDownloader'] || 'chrome_downloader';
-  localStorage['contextMenu'] = localStorage['contextMenu'] || 'true';
-  localStorage['rawCount'] = localStorage['rawCount'] || 0;
 
   updateDownloadPath();
   downloaderManager.init(plugin);

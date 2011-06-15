@@ -60,9 +60,6 @@
     margin: 50px auto 20px auto;
     width: 657px;
   }
-  #contextMenuItem {
-    margin-left: 32px;
-  }
   #footer {
     text-align: center;
     font-size: 13px;
@@ -241,9 +238,6 @@
     <div id="downloaderOption"></div>
   </td><td> </td></tr>
   </table>
-  <div id="contextMenuItem"><label><input type="checkbox" id="checkboxContextMenu">
-    <span id="disableMenu"></span></label>
-  </div>
   <div id="downloadPathSetting">
     <h4 id="downloadPathTitle" class="downloaderOptionTitle">Set Download Path</h4>
     <div style="padding-left: 19px; line-height: 25px">
@@ -333,7 +327,6 @@
 
   var defaultDownloader =
       localStorage['defaultDownloader'] || 'chrome_downloader';
-  var checkboxContextMenu = $('checkboxContextMenu');
   var bg = chrome.extension.getBackgroundPage();
   var downloaderManager = bg.downloaderManager;
 
@@ -377,8 +370,6 @@
   // Save settting and close option page
   function saveAndClose() {
     localStorage['defaultDownloader'] = defaultDownloader;
-    localStorage['contextMenu'] =
-        checkboxContextMenu.checked ? 'false' : 'true';
 
     if (isLinuxPlatform()) {
       optionTable.saveDownloader();
@@ -394,7 +385,6 @@
     init: function() {
       i18nReplace('pageTitle', 'page_title');
       i18nReplace('downloader', 'downloader');
-      i18nReplace('disableMenu', 'menu_disable');
       i18nReplace('saveAndClose', 'save_and_close');
       i18nReplace('downloadPathTitle', 'download_path_title');
       i18nReplace('defaultPath', 'default_path');
@@ -402,12 +392,6 @@
       i18nReplace('openDownloadPath', 'open_download_path');
 
       optionList.createDownloaderOption();
-
-      if (bg.useContextMenuAPI) {
-        $('contextMenuItem').style.display = 'none';
-      } else if (!eval(localStorage['contextMenu'])) {
-        checkboxContextMenu.checked = true;
-      }
     },
 
     createDownloaderOption: function() {
@@ -541,7 +525,6 @@
   };
 
   var optionTable = {
-    rowCount: 0,
     modifyTempValue: '',
 
     init: function() {

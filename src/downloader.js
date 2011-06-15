@@ -574,28 +574,24 @@ downloaderManager.menuItems = [
     supportDownloadAll: false, image: 'images/icon_gwget.png'
   }, {
     name: 'aria2c', showName: 'menu_aria2c', privateLink: '',
-    isLinux: true, 
     command: 'aria2c -c --referer="$REFERER" -d $DOWNLOAD_PATH \
              -o $FILE_NAME "$URL"',
-    isUserAdded: false, supportDownloadAll: false, 
+    isLinux: true, isUserAdded: false, supportDownloadAll: false, 
     image: 'images/icon_no_gui.png'
   }, {
     name: 'axel', showName: 'menu_axel', privateLink: '',
-    isLinux: true, 
     command: 'axel -H Referer:"$REFERER" --output=$FILE_NAME "$URL"', 
-    isUserAdded: false, supportDownloadAll: false, 
+    isLinux: true, isUserAdded: false, supportDownloadAll: false, 
     image: 'images/icon_no_gui.png'
   }, {
     name: 'curl', showName: 'menu_curl', privateLink: '',
-    isLinux: true, 
     command: 'curl -L -o $FILE_NAME --referer "$REFERER" "$URL"', 
-    isUserAdded: false, supportDownloadAll: false, 
+    isLinux: true, isUserAdded: false, supportDownloadAll: false, 
     image: 'images/icon_no_gui.png'
   }, {
     name: 'wget', showName: 'menu_wget', privateLink: '',
-    isLinux: true, 
     command: 'wget -c --referer="$REFERER" -O $FILE_NAME "$URL"', 
-    isUserAdded: false, supportDownloadAll: false, 
+    isLinux: true, isUserAdded: false, supportDownloadAll: false, 
     image: 'images/icon_no_gui.png'
   }, {
     name: 'folx_mac', showName: 'menu_folx', privateLink: '',
@@ -699,19 +695,24 @@ downloaderManager.getEnabledDownloaders = function(plugin) {
       last = i;
     } else {
       var downloader = downloaderManager.downloader[item.name];
-      if (downloader.checkDownloader()) {
-        if (item.name == "mini_thunder_windows") {
-          var thunderLite = 
-              downloaderManager.downloader['thunder_lite_windows'];
-          if (thunderLite.checkDownloader())
+      if (!item.isLinux && !item.isMac &&
+          downloaderManager.isPlatform('windows') ||
+          item.isLinux && downloaderManager.isPlatform('linux') ||
+          item.isMac && downloaderManager.isPlatform('mac')) {
+        if (downloader.checkDownloader()) {
+          // If Mini Thunder and Thunder Lite are both installed, we only keep
+          // Thunder Lite
+          if (item.name == "mini_thunder_windows" &&
+              downloaderManager.downloader['thunder_lite_windows'].
+                  checkDownloader())
             continue;
+      
+          // If the downloader is available, update its NPObject
+          downloader.updateNPObjectIfNeeded();
+          enableMenuItems.push(item);
+        } else {
+          downloader.resetNPObject();
         }
-        
-        // If the downloader is available, update its NPObject
-        downloader.updateNPObjectIfNeeded();
-        enableMenuItems.push(item);
-      } else {
-        downloader.resetNPObject();
       }
     }
   }
@@ -724,6 +725,6 @@ downloaderManager.removeDownloader = function(name) {
   delete downloaderManager.downloader[name];
 }
 
-downloaderManager.copyLinkToClipboard = function(plugin, url) {
-  plugin.CopyToClipboard(url);
+downloaderManager.isPlatform = function(platform) {
+  return navigator.userAgent.toLowerCase().indexOf(platform) > -1;
 }
