@@ -142,17 +142,4 @@ function init() {
   createContextMenu(plugin);
 }
 
-var downloadFileName;
-
-function downloadCallback(retvalue, filename) {
-  downloadFileName = filename;
-  var notification = webkitNotifications.createHTMLNotification(
-      'notification.html');
-  notification.show();
-}
-
-function getFileName() {
-  return downloadFileName;
-}
-
 init();

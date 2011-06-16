@@ -19,7 +19,7 @@
       "128": "images/icon_128.png"
    },
    "options_page": "options.html",
-   "permissions": [ "tabs", "http://*/", "https://*/", "contextMenus", "notifications" ],
+   "permissions": [ "tabs", "http://*/", "https://*/", "contextMenus" ],
    "plugins": [ {
       "path": "plugin/download_helper.dll"
    }, {
