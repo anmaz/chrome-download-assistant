@@ -1,5 +1,5 @@
 {
-  "name": {"message": "下载助手（由Google提供）"},
+  "name": {"message": "下载助手"},
   "default_title": {"message": "下载助手"},
   "description": {"message": "使用快车、迷你快车、迅雷、迷你迅雷、QQ旋风、电驴、Orbit、Internet Download Manager或Free Download Manager下载网页链接。"},
   "download_all_with_flashget": {"message": "使用快车下载所有链接"},

@@ -1,5 +1,5 @@
 {
-  "name": {"message": "Download Assistant (by Google)"},
+  "name": {"message": "Download Assistant"},
   "default_title": {"message": "Download Assistant"},
   "description": {"message": "Download links on a web page with popular downloaders such as FlashGet, FlashGet Mini, Thunder, Mini Thunder, QQ Whirlwind, eMule, Orbit, Internet Download Manager and Free Download Manager."},
   "download_all_with_flashget": {"message": "Download all links with FlashGet"},
