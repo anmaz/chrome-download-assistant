@@ -1,0 +1,53 @@
+#dh-menu {
+  border:1px solid #cccccc;
+  background:#ffffff;
+  width:210px;
+  padding:5px 0;
+  display:none;
+  position:absolute;
+  font-family: arial;
+  -webkit-box-shadow: #777 3px 3px 3px 0.8px;
+}
+.dh-menu-item, .dh-menu-item-disable {
+  width:210px;
+  margin:0;
+}
+.dh-menu-item a, .dh-menu-item-disable a {
+  text-align: left;
+  text-indent:1.5em;
+  display:block;
+  text-decoration:none;
+  line-height:26px;
+  font-size:12px;
+  border:0px;
+}
+.dh-menu-item a {
+  color:#333;
+}
+.dh-menu-item-disable {
+  display:none;
+}
+
+.dh-menu-item-disable a {
+  color:#aaa;
+}
+.dh-menu-item a:hover, .dh-menu-item-disable a:hover {
+  color:#333;
+  background:#e0edfe;
+  line-height:26px;
+  border:0px;
+}
+
+.dh-menu-item a:link {
+  border:0px;
+}
+
+.dh-menu-item a:visited {
+  border:0px;
+}
+
+.dh-menu-line {
+  background:#cccccc;
+  height:1px;
+  margin:5px 0;
+}
