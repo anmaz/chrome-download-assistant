@@ -86,90 +86,82 @@ bool DownloadHelperScriptObject::CreateObject(const NPVariant* args,
                                               NPVariant* result) {
   char logs[256];
   NULL_TO_NPVARIANT(*result);
+  if (argCount != 1 || !NPVARIANT_IS_STRING(args[0]))
+    return false;
+
+  std::string prog_id(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                      NPVARIANT_TO_STRING(args[0]).UTF8Length);
+  g_logger.WriteLog("ProgID", prog_id.c_str());
+
 #ifdef OS_WIN
-  if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
-    const char* pProgID = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+  if (prog_id == "DownlWithIDM.LinkProcessor") {
+    DownloaderScriptObject* pObject =
+        (DownloaderScriptObject*)ScriptObjectFactory::
+        CreateObject(get_plugin()->get_npp(),
+                     InternetDownloadManager::Allocate);
+    OBJECT_TO_NPVARIANT(pObject, *result);
+    return true;
+  }
 
-    g_logger.WriteLog("ProgID", pProgID);
-    if (stricmp(pProgID, "DownlWithIDM.LinkProcessor") == 0) {
-      DownloaderScriptObject* pObject =
-          (DownloaderScriptObject*)ScriptObjectFactory::
-          CreateObject(get_plugin()->get_npp(),
-                       InternetDownloadManager::Allocate);
-      OBJECT_TO_NPVARIANT(pObject, *result);
-      return true;
-    }
-
-    utils::Utf8ToUnicode progID(pProgID);
-    IDispatch* pInterface;
-    CLSID clsid;
-    HRESULT hr = CLSIDFromProgID(progID, &clsid);
-    TCHAR* pClssID;
-    StringFromCLSID(clsid, &pClssID);
-    _bstr_t bstr(pClssID);
-    g_logger.WriteLog("CLSIDFromProgID", bstr);
+  utils::Utf8ToUnicode progID(prog_id.c_str());
+  IDispatch* pInterface;
+  CLSID clsid;
+  HRESULT hr = CLSIDFromProgID(progID, &clsid);
+  TCHAR* pClssID;
+  StringFromCLSID(clsid, &pClssID);
+  _bstr_t bstr(pClssID);
+  g_logger.WriteLog("CLSIDFromProgID", bstr);
+  if (SUCCEEDED(hr)) {
+    hr = CoCreateInstance(clsid, NULL, CLSCTX_SERVER, IID_IDispatch,
+        (LPVOID*)&pInterface);
+    g_logger.WriteLog("CreateObject", "CoCreateInstance");
     if (SUCCEEDED(hr)) {
-      hr = CoCreateInstance(clsid, NULL, CLSCTX_SERVER, IID_IDispatch,
-          (LPVOID*)&pInterface);
-      g_logger.WriteLog("CreateObject", "CoCreateInstance");
-      if (SUCCEEDED(hr)) {
-        ComObjectWapper* pObject = (ComObjectWapper*)ScriptObjectFactory::
-            CreateObject(get_plugin()->get_npp(), ComObjectWapper::Allocate);
-        OBJECT_TO_NPVARIANT(pObject, *result);
-        pObject->disp_pointer_ = pInterface;
-        sprintf(logs, "pInterface=0x%X,pObject=%ld", pInterface, pObject);
-        g_logger.WriteLog("CreateObject", logs);
-      } else {
-        sprintf(logs, "GetLastError=%ld,hr=0x%X", GetLastError(), hr);
-        g_logger.WriteLog("Error", logs);
-      }
+      ComObjectWapper* pObject = (ComObjectWapper*)ScriptObjectFactory::
+          CreateObject(get_plugin()->get_npp(), ComObjectWapper::Allocate);
+      OBJECT_TO_NPVARIANT(pObject, *result);
+      pObject->disp_pointer_ = pInterface;
+      sprintf(logs, "pInterface=0x%X,pObject=%ld", pInterface, pObject);
+      g_logger.WriteLog("CreateObject", logs);
+    } else {
+      sprintf(logs, "GetLastError=%ld,hr=0x%X", GetLastError(), hr);
+      g_logger.WriteLog("Error", logs);
     }
   }
 #elif defined OS_LINUX
-  if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
-    const char* execute_file = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-
-    g_logger.WriteLog("ProgID", execute_file);
-
-    DownloaderScriptObject* pObject = (DownloaderScriptObject*)
-        ScriptObjectFactory::CreateObject(get_plugin()->get_npp(),
-        DownloaderScriptObject::Allocate);
-    OBJECT_TO_NPVARIANT(pObject, *result);
-    if (pObject)
-      pObject->set_execute_file(execute_file);
-  }
+  DownloaderScriptObject* pObject = (DownloaderScriptObject*)
+      ScriptObjectFactory::CreateObject(get_plugin()->get_npp(),
+      DownloaderScriptObject::Allocate);
+  OBJECT_TO_NPVARIANT(pObject, *result);
+  if (pObject)
+    pObject->set_execute_file(prog_id.c_str());
 #elif defined OS_MAC
-  if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
-    const char* appid = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-    g_logger.WriteLog("AppId", appid);
-    MacDownloaderScriptObject* script_object = (MacDownloaderScriptObject*)
-        ScriptObjectFactory::CreateObject(get_plugin()->get_npp(),
-                                          MacDownloaderScriptObject::Allocate);
-    OBJECT_TO_NPVARIANT(script_object, *result);
-    if (script_object) {
-      std::string command = "osascript -e \"tell app \\\"Finder\\\" ";
-      command += "to get app id \\\"";
-      command += appid;
-      command += "\\\"\"";
-      FILE* p = popen(command.c_str(), "r");
-      if (p != NULL) {
-        char echo_contents[MAX_BUFFER] = "";
-        int count = fread(echo_contents, 1, MAX_BUFFER, p);
-        if (count > 0)
-          echo_contents[count] = 0;
-        for (int index = 0; index < strlen(echo_contents); index++) {
-          if (echo_contents[index] == '\n') {
-            echo_contents[index] = 0;
-            break;
-          }            
-        }
-        g_logger.WriteLog("App", echo_contents);
-        if (strlen(echo_contents) && strstr(echo_contents, "error") == NULL) {
-          script_object->set_app_name(echo_contents);
-        }
-        pclose(p);
+  MacDownloaderScriptObject* script_object = (MacDownloaderScriptObject*)
+      ScriptObjectFactory::CreateObject(get_plugin()->get_npp(),
+                                        MacDownloaderScriptObject::Allocate);
+  OBJECT_TO_NPVARIANT(script_object, *result);
+  if (script_object) {
+    std::string command = "osascript -e \"tell app \\\"Finder\\\" ";
+    command += "to get app id \\\"";
+    command += prog_id;
+    command += "\\\"\"";
+    FILE* p = popen(command.c_str(), "r");
+    if (p != NULL) {
+      char echo_contents[MAX_BUFFER] = "";
+      int count = fread(echo_contents, 1, MAX_BUFFER, p);
+      if (count > 0)
+        echo_contents[count] = 0;
+      for (int index = 0; index < strlen(echo_contents); index++) {
+        if (echo_contents[index] == '\n') {
+          echo_contents[index] = 0;
+          break;
+        }            
       }
-    }      
+      g_logger.WriteLog("App", echo_contents);
+      if (strlen(echo_contents) && strstr(echo_contents, "error") == NULL) {
+        script_object->set_app_name(echo_contents);
+      }
+      pclose(p);
+    }
   }
 #endif
   
@@ -181,34 +173,31 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
                                              uint32_t argCount,
                                              NPVariant* result) {
   BOOLEAN_TO_NPVARIANT(false, *result);
-#ifdef OS_WIN
-  if (argCount == 1 && NPVARIANT_IS_STRING(args[0])) {
-    const char* prog_id = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-    g_logger.WriteLog("ProgID", prog_id);
-
-    if (stricmp(prog_id, "DownlWithIDM.LinkProcessor") == 0) {
-      BOOLEAN_TO_NPVARIANT(InternetDownloadManager::CheckObject(), *result);
-      return true;
-    }
-
-    utils::Utf8ToUnicode wchar_prog_id(prog_id);
-    CLSID clsid;
-    HRESULT hr = CLSIDFromProgID(wchar_prog_id, &clsid);
-    TCHAR* pClssID;
-    StringFromCLSID(clsid, &pClssID);
-    _bstr_t bstr(pClssID);
-    g_logger.WriteLog("CLSIDFromProgID", bstr);
-    if (SUCCEEDED(hr)) {
-      BOOLEAN_TO_NPVARIANT(true, *result);
-    }
-  }
-#elif defined OS_LINUX
   if (argCount != 1 || !NPVARIANT_IS_STRING(args[0]))
     return false;
 
-  const char* downloader_name = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+  std::string prog_id(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                      NPVARIANT_TO_STRING(args[0]).UTF8Length);
+  g_logger.WriteLog("ProgID", prog_id.c_str());
+#ifdef OS_WIN
+  if (prog_id == "DownlWithIDM.LinkProcessor") {
+    BOOLEAN_TO_NPVARIANT(InternetDownloadManager::CheckObject(), *result);
+    return true;
+  }
+
+  utils::Utf8ToUnicode wchar_prog_id(prog_id.c_str());
+  CLSID clsid;
+  HRESULT hr = CLSIDFromProgID(wchar_prog_id, &clsid);
+  TCHAR* pClssID;
+  StringFromCLSID(clsid, &pClssID);
+  _bstr_t bstr(pClssID);
+  g_logger.WriteLog("CLSIDFromProgID", bstr);
+  if (SUCCEEDED(hr)) {
+    BOOLEAN_TO_NPVARIANT(true, *result);
+  }
+#elif defined OS_LINUX
   std::string command = "which ";
-  command += downloader_name;
+  command += prog_id;
   FILE* p = popen(command.c_str(), "r");
   if (p != NULL) {
     char echo_contents[MAX_BUFFER] = "";
@@ -216,17 +205,14 @@ bool DownloadHelperScriptObject::CheckObject(const NPVariant* args,
     if (count > 0) {
       echo_contents[count] = 0;
     }
-    if (strstr(echo_contents, downloader_name) != NULL)
+    if (strstr(echo_contents, prog_id.c_str()) != NULL)
       BOOLEAN_TO_NPVARIANT(true, *result);
     pclose(p);
   }
 #elif defined OS_MAC
-  if (argCount != 1 || !NPVARIANT_IS_STRING(args[0]))
-    return false;
-  const char* appid = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
 	std::string command = "osascript -e \"tell app \\\"Finder\\\" ";
   command += "to get app id \\\"";
-  command += appid;
+  command += prog_id;
   command += "\\\"\"";
   FILE* p = popen(command.c_str(), "r");
   if (p != NULL) {
@@ -255,11 +241,12 @@ bool DownloadHelperScriptObject::OpenDownloadPath(const NPVariant* args,
     return false;
 
 #ifdef OS_LINUX
-  const char* path = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+  std::string path(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                   NPVARIANT_TO_STRING(args[0]).UTF8Length);
 
   if (fork() == 0) {
-    execlp("xdg-open", "xdg-open", path, NULL);
-    execlp("gnome-open", "gnome-open", path, NULL);
+    execlp("xdg-open", "xdg-open", path.c_str(), NULL);
+    execlp("gnome-open", "gnome-open", path.c_str(), NULL);
     exit(1);
   }
 #endif
@@ -274,8 +261,9 @@ bool DownloadHelperScriptObject::OpenDownloadFilePath(const NPVariant* args,
     return false;
 
 #ifdef OS_LINUX
-  const char* file_name = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-  char* path = g_path_get_dirname(file_name);
+  std::string file_name(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                        NPVARIANT_TO_STRING(args[0]).UTF8Length);
+  char* path = g_path_get_dirname(file_name.c_str());
 
   if (fork() == 0) {
     execlp("xdg-open", "xdg-open", path, NULL);
@@ -298,18 +286,20 @@ bool DownloadHelperScriptObject::SetDownloadPath(const NPVariant* args,
     if (!NPVARIANT_IS_STRING(args[index]))
       return false;
 
-  const char* path = NULL;
-  const char* title = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+  std::string path;
+  std::string title(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                    NPVARIANT_TO_STRING(args[0]).UTF8Length);
   if (argCount == 2)
-    path = NPVARIANT_TO_STRING(args[1]).UTF8Characters;
+    path.append(NPVARIANT_TO_STRING(args[1]).UTF8Characters,
+                NPVARIANT_TO_STRING(args[1]).UTF8Length);
 
   GtkWidget *dialog = gtk_file_chooser_dialog_new(
-      title, NULL,
+      title.c_str(), NULL,
       GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
   gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
+  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path.c_str());
   gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
   
   char* ret_value = NULL;
@@ -323,12 +313,10 @@ bool DownloadHelperScriptObject::SetDownloadPath(const NPVariant* args,
     }
     g_free(folder);
   } else {
-    if (path) {
-      int len = strlen(path);
-      ret_value = (char*)NPN_MemAlloc(len + 1);
-      memcpy(ret_value, path, len);
-      ret_value[len] = 0;
-    }
+    int len = path.length();
+    ret_value = (char*)NPN_MemAlloc(len + 1);
+    memcpy(ret_value, path.c_str(), len);
+    ret_value[len] = 0;
   }
   gtk_widget_destroy(dialog);
   if (ret_value) {
@@ -346,8 +334,9 @@ bool DownloadHelperScriptObject::UpdateDownloadPath(const NPVariant* args,
   if (argCount != 1 || !NPVARIANT_IS_STRING(args[0]))
     return false;
 
-  const char* path = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-  download_path_ = path;
+  download_path_.clear();
+  download_path_.append(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                        NPVARIANT_TO_STRING(args[0]).UTF8Length);
   
   return true;
 }

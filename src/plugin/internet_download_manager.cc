@@ -66,13 +66,13 @@ bool InternetDownloadManager::Download(const NPVariant *args,
 
   if (hr != S_OK)
     return false;
-  _bstr_t url = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-  MultiByteToWideChar(CP_UTF8, 0, NPVARIANT_TO_STRING(args[0]).UTF8Characters,
-                      -1, url, url.length() + 1);
+
+  utils::Utf8ToUnicode url(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                           NPVARIANT_TO_STRING(args[0]).UTF8Length);
 
   VARIANT reserved;
   reserved.vt=VT_EMPTY;
-  hr = disp_pointer_->SendLinkToIDM2(url, "", "", "", "", "", "",
+  hr = disp_pointer_->SendLinkToIDM2((wchar_t*)url, "", "", "", "", "", "",
                                      "", 0, reserved, reserved);
 
   if (hr == S_OK)
@@ -115,24 +115,21 @@ bool InternetDownloadManager::DownloadAll(const NPVariant *args,
 
     long index[2];
     _bstr_t url, cookie(""), comment, refer;
-    refer = NPVARIANT_TO_STRING(args[2]).UTF8Characters;
+    refer = utils::Utf8ToUnicode(NPVARIANT_TO_STRING(args[2]).UTF8Characters,
+                                 NPVARIANT_TO_STRING(args[2]).UTF8Length);
 
     for (int i = 0; i < array_len; i++) {
       id = NPN_GetIntIdentifier(i);
       NPN_GetProperty(plugin->get_npp(), linkObj, id, &ret);
       if (!NPVARIANT_IS_STRING(ret))
         continue;
-      const char* array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
-      url = array_item;
-      MultiByteToWideChar(CP_UTF8, 0, array_item, -1,
-          url, url.length() + 1);
+      url = utils::Utf8ToUnicode(NPVARIANT_TO_STRING(ret).UTF8Characters,
+                                 NPVARIANT_TO_STRING(ret).UTF8Length);
       NPN_GetProperty(plugin->get_npp(), commentObj, id, &ret);
       if (!NPVARIANT_IS_STRING(ret))
         continue;
-      array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
-      comment = array_item;
-      MultiByteToWideChar(CP_UTF8, 0, array_item, -1,
-          comment, comment.length() + 1);
+      comment = utils::Utf8ToUnicode(NPVARIANT_TO_STRING(ret).UTF8Characters,
+                                     NPVARIANT_TO_STRING(ret).UTF8Length);
 
       index[0] = i;
       index[1] = 0;

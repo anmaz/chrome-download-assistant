@@ -39,12 +39,13 @@ bool MacDownloaderScriptObject::Download(const NPVariant *args,
     return false;
   
   const char* download_contents = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+  unsigned int length = NPVARIANT_TO_STRING(args[0]).UTF8Length;
   
   std::string command = "osascript -e \"tell application \\\"";
   command += app_name_;
   command += "\\\"\" ";
   command += "-e \"";
-  command += download_contents;
+  command.append(download_contents, length);
   command += "\" ";
   command += "-e \"end tell\"";
   system(command.c_str());

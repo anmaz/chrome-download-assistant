@@ -83,8 +83,9 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
         case NPVariantType_String:
           {
             const char* param = NPVARIANT_TO_STRING(args[i]).UTF8Characters;
+            int param_len = NPVARIANT_TO_STRING(args[i]).UTF8Length;
             g_logger.WriteLog("Param", param);
-            utils::Utf8ToUnicode parameter(param);
+            utils::Utf8ToUnicode parameter(param, param_len);
             bstrList[i] = parameter;
             varlist[argCount-i-1].vt = VT_BSTR;
             varlist[argCount-i-1].bstrVal = bstrList[i];
@@ -113,8 +114,9 @@ bool ComObjectWapper::Invoke(NPIdentifier name, const NPVariant *args,
                     if (!NPVARIANT_IS_STRING(ret))
                       continue;
                     const char* array_item = NPVARIANT_TO_STRING(ret).UTF8Characters;
+                    int array_item_len = NPVARIANT_TO_STRING(ret).UTF8Length;
                     g_logger.WriteLog("array", array_item);
-                    utils::Utf8ToUnicode parameter(array_item);
+                    utils::Utf8ToUnicode parameter(array_item, array_item_len);
                     _bstr_t bstr = parameter;
                     VARIANT var_out;
                     var_out.vt = VT_BSTR;
@@ -292,8 +294,9 @@ bool ComObjectWapper::SetProperty(NPIdentifier name,
       case NPVariantType_String:
         {
           const char* param = NPVARIANT_TO_STRING(*value).UTF8Characters;
+          int param_len = NPVARIANT_TO_STRING(*value).UTF8Length;
           g_logger.WriteLog("Param", param);
-          utils::Utf8ToUnicode parameter(param);
+          utils::Utf8ToUnicode parameter(param, param_len);
           bstr = parameter;
           varparam.vt = VT_BSTR;
           varparam.bstrVal = bstr;

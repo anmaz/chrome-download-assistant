@@ -118,9 +118,11 @@ bool DownloaderScriptObject::Download(const NPVariant *args,
     return false;
 
   const char* path = DownloadHelperScriptObject::download_path().c_str();
-  const char* parameter = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
-  const char* url = NPVARIANT_TO_STRING(args[1]).UTF8Characters;
-  std::string params = parameter;
+  std::string params(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                     NPVARIANT_TO_STRING(args[0]).UTF8Length);
+  std::string url(NPVARIANT_TO_STRING(args[1]).UTF8Characters,
+                  NPVARIANT_TO_STRING(args[1]).UTF8Length);
+
   if (params.find("$FILE_NAME") != std::string::npos) {
     GtkWidget *dialog = gtk_file_chooser_dialog_new(
         "Select Download Path", NULL,
@@ -128,7 +130,7 @@ bool DownloaderScriptObject::Download(const NPVariant *args,
         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
         GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT, NULL);
 
-    const char* resource_name = strrchr(url, '/');
+    const char* resource_name = strrchr(url.c_str(), '/');
     if (resource_name == NULL)
       resource_name = "";
     else
@@ -183,7 +185,7 @@ bool DownloaderScriptObject::Download(const NPVariant *args,
     }
   } else {
     if (fork() == 0) {
-      execlp("sh", "sh", "-c", parameter, NULL);
+      execlp("sh", "sh", "-c", params.c_str(), NULL);
       exit(0);
     }
   }
