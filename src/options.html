@@ -187,10 +187,6 @@
     font-weight: bold;
     color: #6587a2;
   }
-  #bottomLine {
-    border-top: 1px solid #c1d1e0;
-    display: none;
-  }
   #downloaderSettingTitle {
      margin: 20px 0 3px;
      display: none;
@@ -238,15 +234,6 @@
     <div id="downloaderOption"></div>
   </td><td> </td></tr>
   </table>
-  <div id="downloadPathSetting">
-    <h4 id="downloadPathTitle" class="downloaderOptionTitle">Set Download Path</h4>
-    <div style="padding-left: 19px; line-height: 25px">
-      <div id="defaultPath" style="margin-left:4px;">Default download path</div>
-      <input type="text" readonly="" id="downloadPath" size="50">
-      <button id="setDownloadPath">Browse...</button>
-      <button id="openDownloadPath">Go to folder</button>
-    </div>
-  </div>
   <div id="downloaderSettingTitle">
    <table><tr>
    <td style="width: 251px;"> <span id="downloaderSetting" class="downloaderOptionTitle">
@@ -287,6 +274,15 @@
       </div>
     </div>
   </div>
+  <div id="downloadPathSetting">
+    <h4 id="downloadPathTitle" class="downloaderOptionTitle">Set Download Path</h4>
+    <div style="padding-left: 19px; line-height: 25px">
+      <div id="defaultPath" style="margin-left:4px;">Default download path</div>
+      <input type="text" readonly="" id="downloadPath" size="50">
+      <button id="setDownloadPath">Browse...</button>
+      <button id="openDownloadPath">Go to folder</button>
+    </div>
+  </div>
   <div>
     <div id="addURLDialog" class="addURL-Dialog">
       <div class="body">
@@ -301,11 +297,10 @@
       </div></div>
     </div>
   </div>
-  <h4 id="bottomLine"></h4>
-   <div id="closeBtn" style="margin: 14px 0 30px 0;">
-      <button  id="saveAndClose"  onclick="saveAndClose()"></button>
-    </div>
-    <div style="height: 50px;" id="bottomDiv"></div>
+  <div id="closeBtn" style="margin: 14px 0 30px 0;">
+    <button  id="saveAndClose"  onclick="saveAndClose()"></button>
+  </div>
+  <div style="height: 50px;" id="bottomDiv"></div>
 </div>
 <div id="footer" style="margin: 30px 0 0 0;">&copy;2011 Google</div>
 <script>
