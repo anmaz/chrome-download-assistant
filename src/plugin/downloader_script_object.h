@@ -20,6 +20,8 @@ public:
 
   virtual bool Download(const NPVariant *args, uint32_t argCount,
                         NPVariant *result);
+  virtual bool DownloadAll(const NPVariant *args, uint32_t argCount,
+                           NPVariant *result);
 
   void InitHandler();
 

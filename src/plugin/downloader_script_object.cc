@@ -48,8 +48,12 @@ void DownloaderScriptObject::Deallocate() {
 void DownloaderScriptObject::InitHandler() {
   FunctionItem item;
   item.function_name = "Download";
-  item.function_pointer = ON_INVOKEHELPER(&DownloaderScriptObject::
-      Download);
+  item.function_pointer = ON_INVOKEHELPER(
+      &DownloaderScriptObject::Download);
+  AddFunction(item);
+  item.function_name = "DownloadAll";
+  item.function_pointer = ON_INVOKEHELPER(
+      &DownloaderScriptObject::DownloadAll);
   AddFunction(item);
 }
 
@@ -180,7 +184,9 @@ bool DownloaderScriptObject::Download(const NPVariant *args,
       exit(0);
     } else if (pid != -1) {
       pthread_mutex_lock(&mutex_);
-      download_process_list_.insert(std::make_pair(pid, ret_value));
+      char* download_path = g_path_get_dirname(ret_value);      
+      download_process_list_.insert(std::make_pair(pid, download_path));
+      g_free(download_path);
       pthread_mutex_unlock(&mutex_);
     }
   } else {
@@ -188,6 +194,66 @@ bool DownloaderScriptObject::Download(const NPVariant *args,
       execlp("sh", "sh", "-c", params.c_str(), NULL);
       exit(0);
     }
+  }
+#endif
+  return true;
+}
+
+bool DownloaderScriptObject::DownloadAll(const NPVariant *args,
+                                         uint32_t argCount,
+                                         NPVariant *result) {
+#ifdef OS_LINUX
+  if (argCount != 2 || !NPVARIANT_IS_STRING(args[0]) ||
+      !NPVARIANT_IS_STRING(args[1]))
+    return false;
+
+  const char* path = DownloadHelperScriptObject::download_path().c_str();
+  std::string params(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                     NPVARIANT_TO_STRING(args[0]).UTF8Length);
+  std::string url(NPVARIANT_TO_STRING(args[1]).UTF8Characters,
+                  NPVARIANT_TO_STRING(args[1]).UTF8Length);
+
+
+  GtkWidget *dialog = gtk_file_chooser_dialog_new(
+      "Select Download Path", NULL,
+      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
+
+  gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
+  gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
+
+  char* ret_value = NULL;
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+    char* folder = gtk_file_chooser_get_current_folder(
+        GTK_FILE_CHOOSER(dialog));
+    if (folder) {
+      int len = strlen(folder);
+      ret_value = (char*)NPN_MemAlloc(len + 1);
+      memcpy(ret_value, folder, len);
+      ret_value[len] = 0;
+    }
+    g_free(folder);
+  }
+  gtk_widget_destroy(dialog);
+  if (ret_value == NULL)
+    return true;
+
+  __pid_t pid = fork();
+  if (pid == 0) {
+    int index = params.find("$DOWNLOAD_PATH");
+    if (index != std::string::npos) {
+      params.replace(index, strlen("$DOWNLOAD_PATH"), ret_value);
+    }
+
+    execlp("xterm", "xterm", "-title", url.c_str(), 
+           "-e", params.c_str(), NULL);
+    exit(0);
+  } else if (pid != -1) {
+    pthread_mutex_lock(&mutex_);
+    download_process_list_.insert(std::make_pair(pid, ret_value));
+    pthread_mutex_unlock(&mutex_);
   }
 #endif
   return true;

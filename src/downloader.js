@@ -361,9 +361,10 @@ MassDownloader.prototype.downloadAll = function(links, pageUrl) {
 
 
 /* Linux Downloader */
-function LinuxDownloader(plugin, command) {
+function LinuxDownloader(plugin, command, command2) {
   LinuxDownloader.superClass.constructor.apply(this, arguments);
   this.command = command;
+  this.command2 = command2;
   this.progId = command.split(' ')[0];
 }
 extend(LinuxDownloader, Downloader);
@@ -375,6 +376,19 @@ LinuxDownloader.prototype.download = function(linkObj) {
     this.npObject.Download(parameter, linkObj.url);
   }
 }
+
+LinuxDownloader.prototype.downloadAll = function(links, pageUrl) {
+  if (this.command2) {
+    var urls = [];
+    for (var i = 0; l = links.length, i < l; i++) {
+      urls.push(links[i].url);
+    }
+    var parameter = this.command2.replace("$URL", urls.join('" "'));
+    parameter = parameter.replace("$REFERER", pageUrl);
+    this.npObject.DownloadAll(parameter, pageUrl);
+  }
+}
+
 
 /* Mac Downloader */
 function Folx(plugin) {
@@ -590,8 +604,10 @@ downloaderManager.menuItems = [
     image: 'images/icon_no_gui.png'
   }, {
     name: 'wget', showName: 'menu_wget', privateLink: '',
+    showName2: 'download_all_with_wget',
     command: 'wget -c --referer="$REFERER" -O $FILE_NAME "$URL"', 
-    isLinux: true, isUserAdded: false, supportDownloadAll: false, 
+    command2: 'wget -c --referer="$REFERER" -P $DOWNLOAD_PATH "$URL"',
+    isLinux: true, isUserAdded: false, supportDownloadAll: true, 
     image: 'images/icon_no_gui.png'
   }, {
     name: 'folx_mac', showName: 'menu_folx', privateLink: '',
@@ -654,7 +670,7 @@ downloaderManager.init = function(plugin) {
     if (item.isLinux) {
       // Create downloader in Linux platform and save them.
       downloaderManager.downloader[item.name] =
-          new LinuxDownloader(plugin, item.command);
+          new LinuxDownloader(plugin, item.command, item.command2);
     }
   }
 

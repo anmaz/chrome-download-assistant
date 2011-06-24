@@ -261,16 +261,14 @@ bool DownloadHelperScriptObject::OpenDownloadFilePath(const NPVariant* args,
     return false;
 
 #ifdef OS_LINUX
-  std::string file_name(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
-                        NPVARIANT_TO_STRING(args[0]).UTF8Length);
-  char* path = g_path_get_dirname(file_name.c_str());
+  std::string path(NPVARIANT_TO_STRING(args[0]).UTF8Characters,
+                   NPVARIANT_TO_STRING(args[0]).UTF8Length);
 
   if (fork() == 0) {
-    execlp("xdg-open", "xdg-open", path, NULL);
-    execlp("gnome-open", "gnome-open", path, NULL);
+    execlp("xdg-open", "xdg-open", path.c_str(), NULL);
+    execlp("gnome-open", "gnome-open", path.c_str(), NULL);
     exit(1);
   }
-  g_free(path);
 #endif
 
   return true;

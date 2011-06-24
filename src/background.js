@@ -142,4 +142,17 @@ function init() {
   createContextMenu(plugin);
 }
 
+var downloadPath;
+
+function downloadCallback(retvalue, path) {
+  downloadPath = path;
+  var notification = webkitNotifications.createHTMLNotification(
+      'notification.html');
+  notification.show();
+}
+
+function getDownloadPath() {
+  return downloadPath;
+}
+
 init();
